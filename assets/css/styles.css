@@ -1,0 +1,161 @@
+@font-face {
+    font-family: Pae-font;
+    src: url(../font/CostaMala\ Regular.ttf);
+}
+
+body {
+    background: #030208;
+}
+.contenedor-padre {
+    display: grid;
+    grid-template-columns: .20fr 1.75fr;
+    grid-gap: 40px;
+}
+
+.contenedor-nav h2 {
+    font-family: "Pae-font";
+    text-align: center;
+    font-size: 40px;
+    padding: 30px;
+    width: 100%;
+    margin-bottom: 30px;
+    display: flex;
+}
+
+.contenedor-nav h2 img {
+    width: 40px;
+    margin: auto 10px;
+    cursor: pointer;
+}
+
+.contenedor-nav {
+    color: #646369;
+    position: fixed;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    overflow: hidden;
+    padding: 20px 0;
+    width: 200px;
+    min-width: 200px;
+    transition: .3s ease all;
+}
+
+.contenedor-nav ul {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    list-style: none;
+}
+
+.contenedor-nav div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: auto;
+}
+
+.contenedor-nav li a:hover {
+    background: #FC413A;
+    color: #eeecf1;
+    border-radius: 20px;
+    cursor: pointer
+}
+
+.contenedor-nav ul li a {
+    width: 100%;
+    font-size: 17px;
+    padding: 10px 17px;
+    margin: 20px 0;
+    display: grid;
+    color: #646369;
+    grid-template-columns: .55fr 1.50fr;
+    transition: background .2s, border-radius .2s, color .2s;
+    text-decoration: none;
+}
+
+.contenedor-nav p {
+    padding: 0;
+    margin: 0;
+}
+
+.contenedor {
+    background: #eeecf1;
+    width: 97%;
+    height: 95.5vh;
+    margin: 20px auto;
+    grid-column-start: 2;
+    border-radius: 35px;
+
+    padding: 30px;
+    overflow: scroll;
+}
+
+.contenedor-tabla {
+    overflow: auto;
+    position: relative;
+    z-index: 2;
+}
+
+.contenedor-tabla table {
+    border-collapse: collapse;
+    text-align: left;
+    width: 100%;
+}
+
+.contenedor-tabla table th {
+    padding: 0 10px;
+    user-select: none;
+    background: #f4f3f6;
+    color: rgb(97 104 120 / 75%);
+}
+.contenedor-tabla table :is(th, td) {
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 32px;
+    border: 1px solid #e9e5f3;
+}
+
+.contenido-celda {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    translate: 0 -50%;
+}
+
+.ajustable {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: col-resize;
+}
+
+.escondida {
+    grid-template-columns: .009fr 1.75fr;
+    grid-gap: 40px;
+}
+
+.escondida .contenedor-nav ul{
+    padding: 0;
+    transition: .3s ease all;
+}
+
+.escondida h2 div, .escondida .contenedor-nav ul li p{
+    visibility: hidden;
+}
+
+.escondida .contenedor-nav ul li{
+    width: 51px;
+    margin-left: 6px;
+    text-align: center;
+    align-items: center;
+    transition: .3s ease all;
+}
+
+.escondida h2 img {
+    margin-left: -15px;
+}
