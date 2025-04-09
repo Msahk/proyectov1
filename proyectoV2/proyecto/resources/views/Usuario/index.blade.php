@@ -16,10 +16,9 @@
                     <th>Id</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
-                    <th>Password</th>
                     <th>Email</th>
                     <th>Estado</th>
-                    <th>Opciones</th>
+                    <th>Tipo</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +27,6 @@
                         <td>{{ $item->idUsuario }}</td>
                         <td>{{ $item->nombreUsuario }}</td>
                         <td>{{ $item->apellidoUsuario }}</td>
-                        <td>{{ $item->password }}</td>
                         <td>{{ $item->emailUsuario }}</td>
                         <td>{{ $item->estadoUsuario }}</td>
                         <td>{{ $item->tipo_usuario->TipoUsuario }}</td>
