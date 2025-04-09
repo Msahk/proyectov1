@@ -19,9 +19,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'cod_tipo_fk',
         'email',
         'password',
     ];
+
+    public function tipou() {
+        return $this->belongsTo(Tipou::class, 'cod_sexo_fk', 'cod_tipo');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
