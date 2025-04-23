@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Usuario;
 use App\Models\TipoUsuario;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UsuarioController extends Controller
 {
@@ -83,5 +84,12 @@ class UsuarioController extends Controller
         $Usuario->delete();
 
         return redirect()->route('Usuario.index');
+    }
+
+
+    public function GenerarPDF() {
+        $Usuario = Usuario::all();
+        $pdf = PDF::loadView('Usuario.pdf', compact('Usuario'));
+        return $pdf->download('reporte_usuarios.pdf');
     }
 }

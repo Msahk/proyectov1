@@ -4,7 +4,10 @@
     <div class="row">
         <div class="col-md-12">
             <h2 class="text-success">CRUD TIPO USUARIO</h2>
-            <a href="{{ route('Usuario.create') }}" class="btn btn-primary">Agregar</a>
+                
+                        <a href="{{ route('Usuario.create') }}" class="btn btn-primary">Agregar</a>
+                    
+        
         </div>
     </div>
 
@@ -43,6 +46,8 @@
             </tbody>
         </table>
     </div>
+
+    <a class="btn btn-success" href="{{ url('usuarios/pdf') }}">{{ __('Generar PDF') }}</a>
 
 </div>
 @endsection

@@ -65,6 +65,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('TipoUsuario.index') }}">{{ __('TipoUsuario') }}</a>
                         </li>
+
                         @endif
 
 

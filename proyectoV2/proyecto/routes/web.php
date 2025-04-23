@@ -19,8 +19,11 @@ Route::get('/', function () {
 Route::resource('TipoUsuario',TipoUsuarioController::class);
 Route::resource('Usuario',UsuarioController::class);
 Route::resource('Empleado',EmpleadoController::class);
+Route::resource('GenerarPDF', UsuarioController::class);
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/usuarios/pdf', [ UsuarioController::class, 'GenerarPDF'])->name('usuarios.pdf');
