@@ -1,0 +1,122 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif; 
+}
+
+body {
+  background-image: url('../img/Tienda2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #fff;
+}
+
+/* HEADER */
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: #111;
+  padding: 20px 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+}
+
+.header .logo img {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+}
+
+.header .navbar a {
+  margin: 0 10px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.header .navbar a:hover {
+  color: #f1c40f;
+  transform: scale(1.1);
+}
+
+/* ICONOS DEL HEADER */
+.header .icons div,
+.header .icons a div {
+  font-size: 22px;
+  color: #fff;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.header .icons div:hover,
+.header .icons a:hover div {
+  color: #f1c40f;
+  transform: scale(1.2);
+}
+
+
+.home {
+  background: url('coffee-bg.jpg') no-repeat center center/cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  text-align: center;
+  padding: 0 20px;
+  position: relative;
+}
+
+.home::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+.home .content {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+}
+
+.home .content h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.home .content p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  color: #fff;
+}
+
+.btn {
+  display: inline-block;
+  background: #f1c40f;
+  color: #000;
+  padding: 12px 30px;
+  border-radius: 5px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background: #fff200;
+  color: #111;
+  box-shadow: 0 4px 10px rgba(241, 196, 15, 0.7);
+}

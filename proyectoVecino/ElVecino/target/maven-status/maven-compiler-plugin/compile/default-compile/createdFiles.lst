@@ -1,0 +1,8 @@
+models\credito.class
+models\cliente.class
+models\producto.class
+controllers\usuarioController.class
+models\pago.class
+models\usuario.class
+config\Conexion.class
+models\usuarioDao.class
