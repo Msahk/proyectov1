@@ -126,7 +126,12 @@ input {
   box-shadow: 0 0 0 2px var(--color-primario);
 }
 
-.caja input:is(:focus, :not(:invalid)) ~ label {
+.caja input:is(:focus, :not(:valid)) ~ label {
+  scale: 0.725;
+  translate: 0 -112%;
+}
+
+.caja :is(:not(:placeholder-shown)) ~ label{
   scale: 0.725;
   translate: 0 -112%;
 }
