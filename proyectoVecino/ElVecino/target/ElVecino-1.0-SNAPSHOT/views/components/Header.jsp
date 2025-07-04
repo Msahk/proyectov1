@@ -9,6 +9,11 @@
     String rol = usu.getRol();
     String tipoUsuario = "Empleado";
     if ("A".equals(rol)) tipoUsuario = "Administrador";
+
+    // Prevención de cache para que no pueda volver con el botón atrás tras logout
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
 %>
 
 <!-- Estilos globales y fuentes -->
@@ -28,6 +33,15 @@
     </div>
     <div class="user-info">
         <span><%= tipoUsuario %>: <%= usu.getNombreUsuario() %></span>
-        <a href="${pageContext.request.contextPath}/index.jsp" class="logout-btn">Cerrar Sesión</a>
+        <a href="${pageContext.request.contextPath}/logoutController" class="logout-btn">Cerrar Sesión</a>
     </div>
 </header>
+
+<!-- Evitar volver atrás después del logout -->
+<script>
+    window.history.forward();
+    function noBack() {
+        window.history.forward();
+    }
+</script>
+<body onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">

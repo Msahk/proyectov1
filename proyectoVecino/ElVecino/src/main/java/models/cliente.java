@@ -1,45 +1,45 @@
 package models;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class cliente {
-
-    private String docCliente;
+    private int idCliente;
     private String nombre;
     private String apellidos;
     private String telefono;
     private String direccion;
-    private String categoriaCrediticia; 
-    private Date fechaRegistro;
-    private int limite_creditos;
-    private int creditos_actuales;
-    private String docUsuario;
+    private String categoriaCrediticia;
+    private LocalDateTime fechaRegistro;
+    private int limiteCreditos;
+    private int creditosActuales;
+    private int idUsuario;
 
     public cliente() {
     }
 
-    public cliente(String docCliente, String nombre, String apellidos, String telefono, String direccion,
-                   String categoriaCrediticia, Date fechaRegistro, int limite_creditos,
-                   int creditos_actuales, String docUsuario) {
-        this.docCliente = docCliente;
+    public cliente(int idCliente, String nombre, String apellidos, String telefono, String direccion,
+                   String categoriaCrediticia, LocalDateTime fechaRegistro,
+                   int limiteCreditos, int creditosActuales, int idUsuario) {
+        this.idCliente = idCliente;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.telefono = telefono;
         this.direccion = direccion;
         this.categoriaCrediticia = categoriaCrediticia;
         this.fechaRegistro = fechaRegistro;
-        this.limite_creditos = limite_creditos;
-        this.creditos_actuales = creditos_actuales;
-        this.docUsuario = docUsuario;
+        this.limiteCreditos = limiteCreditos;
+        this.creditosActuales = creditosActuales;
+        this.idUsuario = idUsuario;
     }
 
+    // Getters y Setters
 
-    public String getDocCliente() {
-        return docCliente;
+    public int getIdCliente() {
+        return idCliente;
     }
 
-    public void setDocCliente(String docCliente) {
-        this.docCliente = docCliente;
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
     public String getNombre() {
@@ -82,51 +82,51 @@ public class cliente {
         this.categoriaCrediticia = categoriaCrediticia;
     }
 
-    public Date getFechaRegistro() {
+    public LocalDateTime getFechaRegistro() {
         return fechaRegistro;
     }
 
-    public void setFechaRegistro(Date fechaRegistro) {
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
 
-    public int getLimite_creditos() {
-        return limite_creditos;
+    public int getLimiteCreditos() {
+        return limiteCreditos;
     }
 
-    public void setLimite_creditos(int limite_creditos) {
-        this.limite_creditos = limite_creditos;
+    public void setLimiteCreditos(int limiteCreditos) {
+        this.limiteCreditos = limiteCreditos;
     }
 
-    public int getCreditos_actuales() {
-        return creditos_actuales;
+    public int getCreditosActuales() {
+        return creditosActuales;
     }
 
-    public void setCreditos_actuales(int creditos_actuales) {
-        this.creditos_actuales = creditos_actuales;
+    public void setCreditosActuales(int creditosActuales) {
+        this.creditosActuales = creditosActuales;
     }
 
-    public String getDocUsuario() {
-        return docUsuario;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setDocUsuario(String docUsuario) {
-        this.docUsuario = docUsuario;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     @Override
     public String toString() {
-        return "Cliente{" +
-                "docCliente='" + docCliente + '\'' +
+        return "cliente{" +
+                "idCliente=" + idCliente +
                 ", nombre='" + nombre + '\'' +
                 ", apellidos='" + apellidos + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", direccion='" + direccion + '\'' +
                 ", categoriaCrediticia='" + categoriaCrediticia + '\'' +
                 ", fechaRegistro=" + fechaRegistro +
-                ", limite_creditos=" + limite_creditos +
-                ", creditos_actuales=" + creditos_actuales +
-                ", docUsuario='" + docUsuario + '\'' +
+                ", limiteCreditos=" + limiteCreditos +
+                ", creditosActuales=" + creditosActuales +
+                ", idUsuario=" + idUsuario +
                 '}';
     }
 }

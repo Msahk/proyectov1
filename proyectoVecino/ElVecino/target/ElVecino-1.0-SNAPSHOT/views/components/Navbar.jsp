@@ -12,28 +12,30 @@
 <nav class="main-nav">
     <ul>
         <li>
-            <a href="${pageContext.request.contextPath}/views/dashboard/Clientes.jsp" class="nav-link">
+            <!-- Enlace corregido: ahora apunta al controlador con la acción listar -->
+            <a href="${pageContext.request.contextPath}/clienteController?accion=listar" class="nav-link">
                 <span class="material-symbols-outlined">group</span>
                 <l>Clientes</l>
             </a>
         </li>
         <li>
+            <!-- Asegúrate de tener un controlador para Créditos también -->
             <a href="${pageContext.request.contextPath}/views/dashboard/Creditos.jsp" class="nav-link">
                 <span class="material-symbols-outlined">credit_card</span>
                 <l>Créditos</l>
             </a>
         </li>
         <li>
+            <!-- Y uno para Pagos si aplica -->
             <a href="${pageContext.request.contextPath}/views/dashboard/Pagos.jsp" class="nav-link">
                 <span class="material-symbols-outlined">paid</span>
                 <l>Pagos</l>
             </a>
         </li>
-        
-         <li>
+        <li>
             <a href="${pageContext.request.contextPath}/views/dashboard/Index.jsp" class="nav-link">
                 <span class="material-symbols-outlined">dashboard</span>
-                <l>Panel Cliente</l>
+                <l>Panel Principal</l>
             </a>
         </li>
 

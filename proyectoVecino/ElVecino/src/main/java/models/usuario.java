@@ -1,31 +1,30 @@
 package models;
 
 public class usuario {
-    public String docUsuario;       
-    public String nombreUsuario;    
-    public String rol;              
-    public String password;        
-    public String email;           
 
-   
+    private int idUsuario;
+    private String nombreUsuario;
+    private String rol;
+    private String password;
+    private String email;
+
     public usuario() {
     }
 
-    public usuario(String docUsuario, String nombreUsuario, String rol, String password, String email) {
-        this.docUsuario = docUsuario;
+    public usuario(int idUsuario, String nombreUsuario, String rol, String password, String email) {
+        this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
         this.rol = rol;
         this.password = password;
         this.email = email;
     }
 
-
-    public String getDocUsuario() {
-        return docUsuario;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setDocUsuario(String docUsuario) {
-        this.docUsuario = docUsuario;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getNombreUsuario() {
@@ -62,11 +61,10 @@ public class usuario {
 
     @Override
     public String toString() {
-        return "Usuario{" +
-                "docUsuario='" + docUsuario + '\'' +
+        return "usuario{" +
+                "idUsuario=" + idUsuario +
                 ", nombreUsuario='" + nombreUsuario + '\'' +
                 ", rol='" + rol + '\'' +
-                ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 '}';
     }

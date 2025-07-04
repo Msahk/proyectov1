@@ -1,8 +1,12 @@
+controllers\logoutController.class
 models\credito.class
+controllers\clienteController.class
 models\cliente.class
 models\producto.class
 controllers\usuarioController.class
+models\clienteDao.class
 models\pago.class
 models\usuario.class
 config\Conexion.class
 models\usuarioDao.class
+utils\Encriptador.class

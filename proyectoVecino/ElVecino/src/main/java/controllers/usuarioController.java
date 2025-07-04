@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,6 @@ public class usuarioController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         response.sendRedirect("views/formularios/login.jsp");
     }
 
@@ -31,28 +31,15 @@ public class usuarioController extends HttpServlet {
 
         switch (accion != null ? accion : "") {
             case "listar":
-                try {
-                    List<usuario> listaUsuarios = u_dao.listar();
-                    request.setAttribute("usuarios", listaUsuarios);
-                    request.getRequestDispatcher("views/dashboard/Usuario.jsp").forward(request, response);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    request.setAttribute("error", "No se pudo listar usuarios.");
-                    request.getRequestDispatcher("views/dashboard/error.jsp").forward(request, response);
-                }
+                List<usuario> listaUsuarios = u_dao.listar();
+                request.setAttribute("usuarios", listaUsuarios);
+                request.getRequestDispatcher("views/dashboard/Usuario.jsp").forward(request, response);
                 break;
 
             case "editar":
-                String docEdit = request.getParameter("docUsuario");
-                usuario userEdit = u_dao.obtenerPorDocumento(docEdit);
+                int idEdit = Integer.parseInt(request.getParameter("idUsuario"));
+                usuario userEdit = u_dao.obtenerPorId(idEdit);
                 request.setAttribute("usuario", userEdit);
-                request.getRequestDispatcher("views/dashboard/editarUsuario.jsp").forward(request, response);
-                break;
-
-            case "editarVista":
-                String docEditVista = request.getParameter("docUsuario");
-                usuario userEditVista = u_dao.obtenerPorDocumento(docEditVista);
-                request.setAttribute("usuario", userEditVista);
                 request.getRequestDispatcher("views/dashboard/editarUsuario.jsp").forward(request, response);
                 break;
 
@@ -61,8 +48,8 @@ public class usuarioController extends HttpServlet {
                 break;
 
             case "eliminar":
-                String docEliminar = request.getParameter("docUsuario");
-                u_dao.eliminar(docEliminar);
+                int idEliminar = Integer.parseInt(request.getParameter("idUsuario"));
+                u_dao.eliminar(idEliminar);
                 response.sendRedirect("usuarioController?accion=listar");
                 break;
 
@@ -101,14 +88,13 @@ public class usuarioController extends HttpServlet {
                         request.getRequestDispatcher("views/formularios/login.jsp").forward(request, response);
                     }
                 } else {
-                    request.setAttribute("fail", "Datos no existen en BD");
+                    request.setAttribute("fail", "Datos incorrectos");
                     request.getRequestDispatcher("views/formularios/login.jsp").forward(request, response);
                 }
                 break;
 
             case "agregar":
                 usuario nuevo = new usuario();
-                nuevo.setDocUsuario(request.getParameter("docUsuario"));
                 nuevo.setNombreUsuario(request.getParameter("nombreUsuario"));
                 nuevo.setRol(request.getParameter("rol"));
                 nuevo.setPassword(request.getParameter("password"));
@@ -119,7 +105,7 @@ public class usuarioController extends HttpServlet {
 
             case "actualizar":
                 usuario actualizado = new usuario();
-                actualizado.setDocUsuario(request.getParameter("docUsuario"));
+                actualizado.setIdUsuario(Integer.parseInt(request.getParameter("idUsuario")));
                 actualizado.setNombreUsuario(request.getParameter("nombreUsuario"));
                 actualizado.setRol(request.getParameter("rol"));
                 actualizado.setPassword(request.getParameter("password"));
@@ -135,6 +121,6 @@ public class usuarioController extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Controlador de usuarios con CRUD completo";
+        return "Controlador de usuarios con CRUD y login seguro.";
     }
 }
