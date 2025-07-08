@@ -21,6 +21,11 @@ SET time_zone = "+00:00";
 -- Base de datos: `elvecino`
 --
 
+drop database elvecino;
+create database elvecino;
+use elvecino;
+
+
 -- --------------------------------------------------------
 
 --
@@ -243,3 +248,15 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+select * from cliente;
+select * from producto;
+
+describe producto;
+
+INSERT INTO producto (nombre, descripcion, precio_unitario, unidad_medida, stock_actual, pago)
+VALUES 
+('Manzana', 'Fruta fresca roja', 600.00, 'kg', 100, 'Efectivo'),
+('Leche', 'Leche entera 1L', 5000.00, 'litro', 50, 'Tarjeta'),
+('Pan', 'Pan integral artesanal', 300.00, 'unidad', 80, 'Efectivo');
