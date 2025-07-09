@@ -64,7 +64,7 @@ CREATE TABLE `credito` (
   `fec_cred` date NOT NULL,
   `fec_venc` date NOT NULL,
   `monto_total` decimal(12,2) NOT NULL,
-  `estado` enum('A','P','V') NOT NULL,
+  `estado` enum('Activo','Pagado','Vencido') NOT NULL,
   `idCliente` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -107,7 +107,7 @@ CREATE TABLE `pagos` (
 CREATE TABLE `producto` (
   `idProducto` int(11) NOT NULL,
   `nombre` varchar(45) NOT NULL,
-  `descripcion` varchar(45) NOT NULL,
+  `descripcion` varchar(45) NULL,
   `precio_Unitario` decimal(12,2) NOT NULL,
   `unidad_medida` varchar(20) NOT NULL,
   `stock_actual` int(11) NOT NULL,
@@ -195,7 +195,7 @@ ALTER TABLE `cliente`
 -- AUTO_INCREMENT de la tabla `credito`
 --
 ALTER TABLE `credito`
-  MODIFY `idCredito` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idCredito` int(11) NOT NULL;
 
 --
 -- AUTO_INCREMENT de la tabla `pagos`
@@ -251,12 +251,37 @@ COMMIT;
 
 
 select * from cliente;
-select * from producto;
+select * from producto;SELECT `producto`.`idProducto`,
+    `producto`.`nombre`,
+    `producto`.`descripcion`,
+    `producto`.`precio_Unitario`,
+    `producto`.`unidad_medida`,
+    `producto`.`stock_actual`,
+    `producto`.`pago`
+FROM `elvecino`.`producto`;
+
+select * from credito;
 
 describe producto;
+describe credito;
+describe detalle_credito;
 
 INSERT INTO producto (nombre, descripcion, precio_unitario, unidad_medida, stock_actual, pago)
 VALUES 
 ('Manzana', 'Fruta fresca roja', 600.00, 'kg', 100, 'Efectivo'),
 ('Leche', 'Leche entera 1L', 5000.00, 'litro', 50, 'Tarjeta'),
 ('Pan', 'Pan integral artesanal', 300.00, 'unidad', 80, 'Efectivo');
+
+use elvecino;
+select * from producto;
+SELECT * FROM credito;
+describe detalle_credito;
+describe producto;
+
+SELECT * FROM detalle_credito WHERE idCredito = 1;
+DELETE FROM credito WHERE idCredito = 2;
+
+UPDATE producto SET nombre = "De toditoRico", descripcion = "papas", precio_Unitario = 3000.0, unidad_medida = "gramos", stock_actual = 20 WHERE idProducto= 2;
+
+
+SELECT dc.*, p.nombre AS nombreProducto FROM detalle_credito dc JOIN producto p ON dc.idProducto = p.idProducto WHERE dc.idCredito = 1;

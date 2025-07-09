@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="4.0" 
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+
+    <servlet>
+        <servlet-name>usuariosController</servlet-name>
+        <servlet-class>controllers.usuariosController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>insumosController</servlet-name>
+        <servlet-class>controllers.insumosController</servlet-class>
+    </servlet>
+
+    <!-- Se elimina esta definición para evitar conflicto -->
+    <!--
+    <servlet>
+        <servlet-name>produccionController</servlet-name>
+        <servlet-class>controllers.produccionController</servlet-class>
+    </servlet>
+    -->
+
+    <servlet>
+        <servlet-name>detalle_produccion</servlet-name>
+        <servlet-class>controllers.detalle_produccion</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>detalle_produccionController</servlet-name>
+        <servlet-class>controllers.detalle_produccionController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>producciondetalleController</servlet-name>
+        <servlet-class>controllers.producciondetalleController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ventasController</servlet-name>
+        <servlet-class>controllers.ventasController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>VentaClientePedidoController</servlet-name>
+        <servlet-class>controllers.VentaClientePedidoController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>detalle_ventaController</servlet-name>
+        <servlet-class>controllers.detalle_ventaController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>pedidosController</servlet-name>
+        <servlet-class>controllers.pedidosController</servlet-class>
+    </servlet>
+
+    <!-- Servlet mappings -->
+    <servlet-mapping>
+        <servlet-name>usuariosController</servlet-name>
+        <url-pattern>/usuariosController</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>insumosController</servlet-name>
+        <url-pattern>/insumosController</url-pattern>
+    </servlet-mapping>
+
+    <!-- Se elimina este mapping también -->
+    <!--
+    <servlet-mapping>
+        <servlet-name>produccionController</servlet-name>
+        <url-pattern>/produccionController</url-pattern>
+    </servlet-mapping>
+    -->
+
+    <servlet-mapping>
+        <servlet-name>detalle_produccion</servlet-name>
+        <url-pattern>/detalle_produccion</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>detalle_produccionController</servlet-name>
+        <url-pattern>/detalle_produccionController</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>producciondetalleController</servlet-name>
+        <url-pattern>/producciondetalleController</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ventasController</servlet-name>
+        <url-pattern>/ventasController</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>VentaClientePedidoController</servlet-name>
+        <url-pattern>/VentaClientePedidoController</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>detalle_ventaController</servlet-name>
+        <url-pattern>/detalle_ventaController</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>pedidosController</servlet-name>
+        <url-pattern>/pedidosController</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ignore</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <welcome-file-list>
+        <welcome-file>faces/index.xhtml</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
