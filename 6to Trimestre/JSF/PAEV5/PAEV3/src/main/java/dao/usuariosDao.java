@@ -292,14 +292,14 @@ public boolean agregar(usuarios u) {
 
   
     
-    // Validar usuario por email y contraseña
-    public usuarios Validar(String email, String pass) throws ClassNotFoundException {
+    
+    public usuarios Validar(String email, String pass){
     usuarios obj_usu = null;
     String sql = "SELECT * FROM usuarios WHERE correo = ? OR documento = ?";
     try {
         ps = ConDB.conectar().prepareStatement(sql);
         ps.setString(1, email);
-        ps.setString(2, email); // por si es documento
+        ps.setString(2, email); 
         rs = ps.executeQuery();
 
         if (rs.next()) {

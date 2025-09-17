@@ -14,7 +14,7 @@
         <div class="logo">Péguele a la Empanada 🥟</div>
         <nav class="navbar">
             <a href="#inicio">Inicio</a>
-            <a class="boton" onclick="login()">Ingresar</a>
+            <a class="boton" href="views/Login.xhtml">Ingresar</a>
         </nav>
     </header>
     
@@ -24,7 +24,7 @@
             <div class="contenido">
                 <h1>¡Bienvenido al sistema!</h1>
                 <p>Optimiza tus procesos, organiza tu inventario y controla tus operaciones.</p>
-                <a onclick="login()" class="boton">Ingresar al sistema</a>
+                <a href="views/Login.xhtml" class="boton">Ingresar al sistema</a>
             </div>
             <div class="imagenes">
                 <img src="#{request.contextPath}/assets/img/1.png" alt="Empanada tradicional"/>
@@ -36,9 +36,9 @@
 
     <!-- FORMULARIO JSF OCULTO (fuera del SweetAlert) -->
     <h:form id="loginForm" style="display: none;">
-        <h:inputText id="correoInput" value="#{usuarioBean.correo}" />
-        <h:inputSecret id="passwordInput" value="#{usuarioBean.password}" />
-        <h:commandButton id="loginButton" value="Login" action="#{usuarioBean.login}" />
+        <h:inputText id="correoInput" value="#{usuarios.correo}" />
+        <h:inputSecret id="passwordInput" value="#{usuarios.password}" />
+        <h:commandButton id="loginButton" value="Login" action="#{usuarios.login}" />
     </h:form>
 
     <!-- FOOTER -->
