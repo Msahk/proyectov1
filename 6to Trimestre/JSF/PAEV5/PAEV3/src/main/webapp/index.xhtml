@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      lang="es">
+<h:head>
+    <meta charset="UTF-8"/>
+    <title>Péguele a la Empanada</title>
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/assets/css/index.css"/>
+</h:head>
+<h:body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo">Péguele a la Empanada 🥟</div>
+        <nav class="navbar">
+            <a href="#inicio">Inicio</a>
+            <a class="boton" onclick="login()">Ingresar</a>
+        </nav>
+    </header>
+    
+    <!-- MAIN -->
+    <main>
+        <section class="inicio" id="inicio">
+            <div class="contenido">
+                <h1>¡Bienvenido al sistema!</h1>
+                <p>Optimiza tus procesos, organiza tu inventario y controla tus operaciones.</p>
+                <a onclick="login()" class="boton">Ingresar al sistema</a>
+            </div>
+            <div class="imagenes">
+                <img src="#{request.contextPath}/assets/img/1.png" alt="Empanada tradicional"/>
+                <img src="#{request.contextPath}/assets/img/2.png" alt="Empanada de queso"/>
+                <img src="#{request.contextPath}/assets/img/4.png" alt="Empanada picante"/>
+            </div>
+        </section>
+    </main>
+
+    <!-- FORMULARIO JSF OCULTO (fuera del SweetAlert) -->
+    <h:form id="loginForm" style="display: none;">
+        <h:inputText id="correoInput" value="#{usuarioBean.correo}" />
+        <h:inputSecret id="passwordInput" value="#{usuarioBean.password}" />
+        <h:commandButton id="loginButton" value="Login" action="#{usuarioBean.login}" />
+    </h:form>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p> 2025 Péguele a la Empanada. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Script de login CORREGIDO -->
+    <script>
+    window.login = function () {
+        Swal.fire({
+            html: `
+            <section class='ingreso'>
+                <h2>Inicia sesión</h2>
+                <div>
+                    <input type="text" id="swal-correo" placeholder="Correo o documento" class="inputText" style="width: 80%; margin: 10px; padding: 10px;"/>
+                    <input type="password" id="swal-password" placeholder="Contraseña" class="inputText" style="width: 80%; margin: 10px; padding: 10px;"/>
+                    <button onclick="submitLogin()" class="boton" style="margin: 10px; padding: 10px 20px;">Iniciar</button>
+                </div>
+            </section>
+            `,
+            showConfirmButton: false,
+            showCloseButton: true
+        });
+    }
+
+    // Función para transferir datos y enviar el formulario JSF
+    window.submitLogin = function() {
+        // Obtener valores del SweetAlert
+        const correo = document.getElementById('swal-correo').value;
+        const password = document.getElementById('swal-password').value;
+        
+        // Validación básica
+        if (!correo || !password) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campos vacíos',
+                text: 'Por favor ingresa correo y contraseña',
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+        
+        // Transferir valores al formulario JSF oculto
+        document.getElementById('loginForm:correoInput').value = correo;
+        document.getElementById('loginForm:passwordInput').value = password;
+        
+        // Cerrar SweetAlert
+        Swal.close();
+        
+        // Enviar formulario JSF
+        document.getElementById('loginForm:loginButton').click();
+    }
+    </script>
+
+    <!-- Mensajes JSF -->
+    <h:panelGroup rendered="#{not empty facesContext.externalContext.requestMap['loginError']}">
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error...',
+                text: '#{facesContext.externalContext.requestMap["loginError"]}',
+                confirmButtonColor: '#d33'
+            });
+        </script>
+    </h:panelGroup>
+    
+    <h:panelGroup rendered="#{not empty facesContext.externalContext.requestMap['Exitosamente']}">
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Login exitoso',
+                text: '#{facesContext.externalContext.requestMap["Exitosamente"]}',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        </script>
+    </h:panelGroup>
+</h:body>
+</html>

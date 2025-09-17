@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <h:head>
+        <meta charset="UTF-8" />
+        <title>Inventario</title>
+
+        <link rel="stylesheet" href="#{request.contextPath}/assets/css/inventario.css" />
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<h:outputStylesheet library="css" name="import.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    </h:head>
+
+    <h:body>
+
+        <!-- <ui:include src="navbar.xhtml" /> -->
+
+        <div class="container">
+            <div class="page-header">
+                <h1>Gestión de Inventario</h1>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">
+                        #{insumosBean.listaInsumos.size()}
+                    </div>
+                    <div class="stat-label">Total Ingredientes</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-number">
+                        <!-- contamos stock bajo -->
+                        #{insumosBean.contarStockBajo()}
+                    </div>
+                    <div class="stat-label">Stock Bajo</div>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="actions-bar">
+                <div class="search-box">
+                    <p:inputText id="buscarIngrediente"
+                                 value="#{insumosBean.busqueda}"
+                                 placeholder="Buscar ingrediente..."
+                                 onkeyup="filtrarIngredientes()"
+                                 styleClass="search-input"/>
+
+
+                </div>
+
+  
+
+
+
+
+
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-primary" type="button" onclick="abrirModalNuevo()">➕ Nuevo Ingrediente</button>
+                    <h:link outcome="/views/inv_entradas" 
+                            styleClass="btn btn-info" 
+                            value="📥 Detalles Entradas"/>
+
+                    <h:link outcome="/views/inv_salidas" 
+                            styleClass="btn btn-warning" 
+                            value="📤 Detalles Salidas"/>
+
+                </div>
+            </div>
+
+
+            <!-- Lista dinámica -->
+            <div class="inventario-grid" id="inventarioGrid">
+                <ui:repeat value="#{insumosBean.listaInsumos}" var="i">
+                    <ui:param name="stockClass"
+                              value="#{i.cantidad le i.stock_min ? 'stock-bajo' : (i.cantidad gt i.stock_min * 2 ? 'stock-alto' : 'stock-medio')}" />
+
+                    <div class="ingrediente-card #{stockClass}">
+                        <div class="card-header">
+                            <div>
+                                <div class="ingrediente-nombre">#{i.nombre}</div>
+                                <div class="ingrediente-codigo">ID: #{i.id_ins}</div>
+                            </div>
+                            <span class="stock-badge #{stockClass}-badge">
+                                <h:outputText value="Stock Bajo" rendered="#{stockClass eq 'stock-bajo'}"/>
+                                <h:outputText value="Stock Alto" rendered="#{stockClass eq 'stock-alto'}"/>
+                                <h:outputText value="Stock Medio" rendered="#{stockClass eq 'stock-medio'}"/>
+                            </span>
+                        </div>
+                        <div class="stock-info">
+                            <div class="stock-item">
+                                <div class="stock-value">#{i.cantidad}</div>
+                                <div class="stock-label">#{i.unidad_medida} Disponible</div>
+                            </div>
+                            <div class="stock-item">
+                                <div class="stock-value">#{i.stock_min}</div>
+                                <div class="stock-label">#{i.unidad_medida} Mínimo</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary btn-small"
+                                    type="button"
+                                    onclick="abrirModalEditar('#{i.id_ins}', '#{i.nombre}', '#{i.unidad_medida}',#{i.cantidad},#{i.stock_min})">
+                                ✏️ Editar
+                            </button>
+                            <button class="btn btn-danger btn-small"
+                                    type="button"
+                                    onclick="confirmarEliminar(#{i.id_ins})">
+                                🗑️ Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </ui:repeat>
+            </div>
+
+            <div id="noResultados" style="display: none; text-align: center; margin-top: 2rem;">
+                <p>😕 No se encontraron ingredientes con ese nombre.</p>
+            </div>
+        </div>
+
+        <!-- Modal Crear Ingrediente -->
+        <div id="modalNuevo" class="modal">
+            <h:form styleClass="modal-content">
+                <div class="modal-header">
+                    <h3>Nuevo Ingrediente</h3>
+                    <button type="button" class="close" onclick="cerrarModal()">×</button>
+
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label for="nuevoNombre">Nombre:</label>
+                        <h:inputText id="nuevoNombre" value="#{insumosBean.insumo.nombre}" styleClass="form-input" required="true"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevaUnidad">Unidad de medida:</label>
+                        <h:selectOneMenu id="nuevaUnidad" value="#{insumosBean.insumo.unidad_medida}" styleClass="form-input">
+                            <f:selectItem itemValue="kg" itemLabel="Kilogramos"/>
+                            <f:selectItem itemValue="g" itemLabel="Gramos"/>
+                            <f:selectItem itemValue="L" itemLabel="Litros"/>
+                            <f:selectItem itemValue="ml" itemLabel="Mililitros"/>
+                            <f:selectItem itemValue="und" itemLabel="Unidades"/>
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevaCantidad">Cantidad:</label>
+                        <h:inputText id="nuevaCantidad" value="#{insumosBean.insumo.cantidad}" styleClass="form-input" required="true"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoStockMin">Stock mínimo:</label>
+                        <h:inputText id="nuevoStockMin" value="#{insumosBean.insumo.stock_min}" styleClass="form-input" required="true"/>
+                    </div>
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <h:commandButton value="Crear" action="#{insumosBean.crear}" styleClass="btn btn-primary" style="flex:1;"/>
+                        <button class="btn btn-secondary" type="button" onclick="cerrarModal()" style="flex:1;">Cancelar</button>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+
+        <!-- Modal Editar Ingrediente -->
+        <div id="modalEditar" class="modal">
+            <h:form id="formEditar" styleClass="modal-content" prependId="false">
+                <h:inputHidden id="editarId" value="#{insumosBean.insumo.id_ins}"/>
+
+                <div class="modal-header">
+                    <h3>Editar Ingrediente</h3>
+                    <button type="button" class="close" onclick="cerrarModal()">×</button>
+                </div>
+
+                <div>
+                    <div class="form-group">
+                        <label for="editarNombre">Nombre:</label>
+                        <h:inputText id="editarNombre"
+                                     value="#{insumosBean.insumo.nombre}"
+                                     styleClass="form-input"
+                                     required="true"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editarUnidad">Unidad de medida:</label>
+                        <h:selectOneMenu id="editarUnidad"
+                                         value="#{insumosBean.insumo.unidad_medida}"
+                                         styleClass="form-input">
+                            <f:selectItem itemValue="kg" itemLabel="Kilogramos"/>
+                            <f:selectItem itemValue="g"  itemLabel="Gramos"/>
+                            <f:selectItem itemValue="L"  itemLabel="Litros"/>
+                            <f:selectItem itemValue="ml" itemLabel="Mililitros"/>
+                            <f:selectItem itemValue="und" itemLabel="Unidades"/>
+                        </h:selectOneMenu>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editarCantidad">Cantidad:</label>
+                        <h:inputText id="editarCantidad"
+                                     value="#{insumosBean.insumo.cantidad}"
+                                     styleClass="form-input"
+                                     required="true"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editarStockMin">Stock mínimo:</label>
+                        <h:inputText id="editarStockMin"
+                                     value="#{insumosBean.insumo.stock_min}"
+                                     styleClass="form-input"
+                                     required="true"/>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <h:commandButton value="Actualizar"
+                                         action="#{insumosBean.actualizar}"
+                                         styleClass="btn btn-primary"
+                                         style="flex:1;"/>
+                        <button class="btn btn-secondary"
+                                type="button"
+                                onclick="cerrarModal()"
+                                style="flex:1;">Cancelar</button>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+
+          <h:form id="formExportar" style="display:flex; justify-content:flex-end; gap:0.5rem; align-items:center;">
+
+    <!-- Exportar PDF -->
+    <p:commandButton icon="fas fa-file-pdf"
+                     styleClass="btn-circle pdf-btn"
+                     actionListener="#{insumosBean.exportarPDF}"
+                     ajax="false" />
+
+    <!-- Exportar Excel -->
+    <p:commandButton icon="fas fa-file-excel"
+                     styleClass="btn-circle excel-btn"
+                     actionListener="#{insumosBean.exportarExcel}"
+                     ajax="false" />
+
+    <!-- Importar Excel -->
+    <p:fileUpload id="importarExcel"
+              mode="advanced"
+              dragDropSupport="false"
+              auto="true"
+              sizeLimit="1048576"
+              allowTypes="/(\.|\/)(xls|xlsx)$/"
+              styleClass="btn-circle import-btn"
+              label="📂"
+              uploadLabel=""
+              cancelLabel=""
+              style="line-height:0;"
+              listener="#{insumosBean.importarExcel}" />
+    
+</h:form>
+
+
+
+        <footer class="footer">
+            <p>©copy; 2025 Péguele a la Empanada. Sistema de Inventario.</p>
+            
+                    
+        </footer>
+
+        <script>
+            let modalActual = null;
+
+            function abrirModalNuevo() {
+                document.getElementById('modalNuevo').style.display = 'block';
+                modalActual = 'nuevo';
+            }
+
+            function abrirModalEditar(id, nombre, unidad, cantidad, stockMin) {
+                document.getElementById('editarId').value = id;
+                document.getElementById('editarNombre').value = nombre;
+                document.getElementById('editarUnidad').value = unidad;
+                document.getElementById('editarCantidad').value = cantidad;
+                document.getElementById('editarStockMin').value = stockMin;
+                document.getElementById('modalEditar').style.display = 'block';
+                modalActual = 'editar';
+            }
+
+            function confirmarEliminar(id) {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "¡No podrás revertir esta acción!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d32f2f',
+                    cancelButtonColor: '#9e9e9e',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'inventario.xhtml?eliminarId=' + id;
+                    }
+                });
+            }
+
+            function cerrarModal() {
+                ['modalNuevo', 'modalEditar'].forEach(id => {
+                    document.getElementById(id).style.display = 'none';
+                });
+                modalActual = null;
+            }
+
+            function filtrarIngredientes() {
+                const filtro = document.getElementById("buscarIngrediente").value.toLowerCase();
+                const tarjetas = document.querySelectorAll(".ingrediente-card");
+                let hayCoincidencias = false;
+
+                tarjetas.forEach(card => {
+                    const nombre = card.querySelector(".ingrediente-nombre").textContent.toLowerCase();
+                    const visible = nombre.includes(filtro);
+                    card.style.display = visible ? "block" : "none";
+                    if (visible)
+                        hayCoincidencias = true;
+                });
+
+                document.getElementById("noResultados").style.display = hayCoincidencias ? "none" : "block";
+            }
+
+            window.onclick = function (event) {
+                if (event.target.classList.contains("modal")) {
+                    cerrarModal();
+                }
+            }
+        </script>
+
+    </h:body>
+</html>

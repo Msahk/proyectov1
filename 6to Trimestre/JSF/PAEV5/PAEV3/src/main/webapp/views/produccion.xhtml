@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:head>
+        <meta charset="UTF-8"/>
+        <title>Gestión de Producciones</title>
+        <link rel="stylesheet" href="#{request.contextPath}/assets/css/inventario.css"/>
+        <style>
+            .ingrediente-nombre {
+                font-weight: bold;
+                font-size: 1.2rem;
+            }
+
+            .receta-list {
+                margin-top: 0.5rem;
+                padding: 0.5rem;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.8rem;
+                max-height: 120px;
+                overflow-y: auto;
+            }
+
+            .receta-item {
+                background-color: #f0f4ff;
+                color: #333;
+                padding: 0.5rem 1rem;
+                border-radius: 16px;
+                font-size: 0.95rem;
+                border: 1px solid #d0d7ff;
+                min-width: 120px;
+                text-align: center;
+            }
+
+            .receta-item2 {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .receta-list::-webkit-scrollbar {
+                width: 6px;
+            }
+            .receta-list::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .receta-list::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 6px;
+            }
+            .receta-list::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+            #recetasContainer {
+                max-height: 300px;
+                overflow-y: auto;
+                padding: 0.8rem;
+                margin-top: 1rem;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            #recetasContainer::-webkit-scrollbar {
+                width: 8px;
+            }
+            #recetasContainer::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            #recetasContainer::-webkit-scrollbar-thumb {
+                background-color: #d32f2f;
+                border-radius: 10px;
+            }
+            #recetasContainer::-webkit-scrollbar-thumb:hover {
+                background-color: #b71c1c;
+            }
+
+            .modal-content {
+                max-height: 90vh;
+                overflow-y: auto;
+                padding: 1.5rem;
+            }
+
+            .ingrediente-card {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .card-actions {
+                margin-top: auto;
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+
+            .modal-editar {
+                display: none;
+                position: fixed;
+                z-index: 1050;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow-y: auto;
+                background-color: rgba(0,0,0,0.5);
+            }
+
+            .modal-editar-content {
+                background-color: #fff;
+                margin: 5% auto;
+                padding: 1.5rem;
+                border-radius: 12px;
+                width: 400px;
+                max-width: 90%;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+                animation: slideDown 0.3s ease-out;
+            }
+
+            @keyframes slideDown {
+                from {
+                    transform: translateY(-50px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .modal-footer {
+                margin-top: 1rem;
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.5rem;
+            }
+
+            .btn-finalizar {
+                display: block;
+                width: 100%;
+                text-align: center;
+                background-color: #4caf50;
+                color: #fff;
+                padding: 0.25rem 0;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: bold;
+                margin-top: 0.5rem;
+                transition: background-color 0.3s ease;
+            }
+
+            .btn-finalizar:hover {
+                background-color: #388e3c;
+                color: #fff;
+            }
+        </style>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </h:head>
+
+    <h:body>
+        <!-- <ui:include src="navbar.xhtml"/> --> 
+
+        <div class="container">
+            <div class="page-header">
+                <h1>Gestión de Producciones</h1>
+            </div>
+
+            <!-- Barra de acciones -->
+            <div class="actions-bar">
+                <div class="search-box">
+                    <label for="buscarProduccion" style="display:none;">Buscar producción</label>
+                    <input type="text" class="search-input" placeholder="Buscar producción..." id="buscarProduccion" oninput="filtrarProducciones()" />
+                </div>  
+                <div style="display:flex; gap: 1rem;">
+                    <button class="btn btn-primary" onclick="abrirModal()">➕ Nueva Producción</button>
+                    <h:link outcome="/views/recetas" value="📜 Ver Recetas" styleClass="btn btn-secondary"/>
+                </div>
+            </div>
+
+            <!-- Tarjetas de producciones -->
+            <h:panelGroup id="produccionesGrid" layout="block" styleClass="inventario-grid">
+                <c:forEach var="p" items="#{produccionBean.listaProducciones}">
+
+                    <c:set var="estadoClass" value="#{p.estado eq 'PENDIENTE' ? 'stock-bajo' : 'stock-alto'}"/>
+                    <div class="ingrediente-card #{estadoClass}">
+                        <div class="card-header">
+                            <div>
+                                <div class="ingrediente-nombre">Producción #${p.id_proc}</div>
+                                <div class="ingrediente-codigo">Fecha: ${p.fecha_produccion}</div>
+                                <div class="ingrediente-codigo">Usuario: ${p.usuario}</div>
+                            </div>
+                            <span class="stock-badge #{estadoClass}-badge">${p.estado}</span>
+                        </div>
+
+                        <div class="stock-info">
+                            <div class="stock-item">
+                                <div class="stock-value">
+                                    <div class="stock-label">Recetas</div>
+                                    <div class="receta-list">
+                                        <c:forEach var="pr" items="${p.recetas}">
+                                            <div class="receta-item receta-item2">${pr.nombreReceta} - ${pr.cantidad}</div>
+                                        </c:forEach>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-actions">
+                            <!-- EDITAR -->
+                            <h:commandButton value="✏️ Editar"
+                                             action="#{produccionBean.cargarProduccion(p.id_proc)}"
+                                             styleClass="btn btn-secondary btn-small">
+                                <f:ajax render="formEditarProduccion" onevent="onEditarLoaded"/>
+                            </h:commandButton>
+
+
+                            <h:commandButton id="btnEliminar_#{p.id_proc}"
+                                             action="#{produccionBean.eliminarProduccion(p.id_proc)}"
+                                             style="display:none;">
+                                <f:ajax execute="@this" render="produccionesGrid noResultados" />
+                            </h:commandButton>
+
+                            <button type="button" 
+                                    class="btn btn-danger btn-small" 
+                                    onclick="confirmarEliminar('btnEliminar_#{p.id_proc}')">
+                                🗑 Eliminar
+                            </button>
+
+
+                            <!-- FINALIZAR (solo si no está finalizada) -->
+                            <h:panelGroup rendered="#{p.estado ne 'FINALIZADA'}">
+                                <h:commandButton value="✅ Finalizar Producción"
+                                                 action="#{produccionBean.finalizarProduccion(p.id_proc)}"
+                                                 styleClass="btn btn-success btn-small">
+                                    <f:ajax execute="@this" render="@form produccionesGrid noResultados" />
+                                </h:commandButton>
+                            </h:panelGroup>
+                        </div>
+
+                    </div>
+                </c:forEach>
+            </h:panelGroup>
+
+            <div id="noResultados" style="display: none; text-align: center; margin-top: 2rem;">
+                <p>😕 No se encontraron producciones con ese criterio.</p>
+            </div>
+        </div>
+
+        <!-- Aquí siguen exactamente los modales y JS tal como los tienes -->
+        <!-- (no eliminé nada, solo corregí sintaxis para ser válido en XHTML) -->
+
+        <!-- Modal para registrar producción -->
+        <div id="modalProduccion" class="modal">
+            <div class="modal-content">
+                <h2>Nueva Producción</h2>
+
+                <h:form id="formProduccion">
+
+                    <!-- Fecha Producción -->
+                    <h:outputLabel for="fechaProduccion" value="Fecha Producción:" />
+                    <h:inputText id="fechaProduccion"
+                                 value="#{produccionBean.produccion.fecha_produccion}"
+                                 required="true"
+                                 styleClass="form-input">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:inputText>
+
+                    <!-- Recetas -->
+                    <h:panelGroup id="recetasContainer" layout="block" style="margin-top:1rem;">
+                        <ui:repeat value="#{produccionBean.recetasSeleccionadas}" var="recetaSel" varStatus="st">
+                            <div class="receta-item" style="display:flex; gap:1rem; align-items:flex-end; margin-top:1rem;">
+
+                                <!-- Select Receta -->
+                                <div style="flex:1;">
+                                    <h:outputLabel value="Receta:" />
+                                    <h:selectOneMenu value="#{recetaSel.id_rec}" styleClass="form-input" required="true">
+                                        <f:selectItem itemLabel="Seleccione una receta" itemValue="#{null}" noSelectionOption="true"/>
+                                        <f:selectItems value="#{produccionBean.listaRecetas}" var="r"
+                                                       itemLabel="#{r.nombre}" itemValue="#{r.id_rec}" />
+                                    </h:selectOneMenu>
+                                </div>
+
+                                <!-- Cantidad -->
+                                <div style="width:120px;">
+                                    <h:outputLabel value="Cantidad:" />
+                                    <h:inputText value="#{recetaSel.cantidad}" styleClass="form-input" required="true">
+                                        <f:validateLongRange minimum="1" />
+                                    </h:inputText>
+                                </div>
+
+                                <!-- Botón eliminar receta -->
+                                <div>
+                                    <h:commandButton value="✖"
+                                                     actionListener="#{produccionBean.recetasSeleccionadas.remove(recetaSel)}"
+                                                     styleClass="btn btn-danger">
+                                        <f:ajax execute="@this" render="recetasContainer" />
+                                    </h:commandButton>
+                                </div>
+
+                            </div>
+                        </ui:repeat>
+                    </h:panelGroup>
+
+                    <!-- Botón agregar receta -->
+                    <h:commandButton value="➕ Agregar Receta"
+                                     actionListener="#{produccionBean.agregarReceta}"
+                                     styleClass="btn btn-secondary">
+                        <f:ajax execute="@this" render="recetasContainer" />
+                    </h:commandButton>
+
+                    <!-- Footer -->
+                    <div class="modal-footer" style="margin-top:1rem; text-align:right;">
+
+                        <h:commandButton value="Guardar"
+                                         action="#{produccionBean.registrarProduccion}"
+                                         styleClass="btn btn-primary">
+                            <f:ajax execute="@form" render="produccionesGrid noResultados" onevent="onGuardarNueva" />
+                        </h:commandButton>
+
+
+                        <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cancelar</button>
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+
+        <!-- Modal Editar Producción -->
+        <div id="modalEditarProduccion" class="modal-editar">
+            <div class="modal-editar-content">
+                <h2>Editar Producción</h2>
+                <h:form id="formEditarProduccion">
+
+                    <h:inputHidden id="editarId" value="#{produccionBean.produccion.id_proc}" />
+
+                    <div class="form-group">
+                        <h:outputLabel for="editarFecha" value="Fecha Producción:" />
+                        <h:inputText id="editarFecha"
+                                     value="#{produccionBean.produccion.fecha_produccion}"
+                                     required="true" styleClass="form-input">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:inputText>
+                    </div>
+
+                    <div class="form-group">
+                        <h:outputLabel for="selectEstado" value="Estado:" />
+                        <h:selectOneMenu id="selectEstado"
+                                         value="#{produccionBean.produccion.estado}"
+                                         styleClass="form-input" required="true">
+                            <f:selectItem itemLabel="-- Seleccione --" itemValue="" noSelectionOption="true" />
+                            <f:selectItem itemValue="PENDIENTE" itemLabel="Pendiente" />
+                            <f:selectItem itemValue="FINALIZADA" itemLabel="Finalizada" />
+                        </h:selectOneMenu>
+                    </div>
+
+                    <h:commandButton value="Guardar"
+                                     action="#{produccionBean.actualizarProduccion}"
+                                     styleClass="btn btn-primary">
+                        <f:ajax execute="@form" render="produccionesGrid formEditarProduccion" onevent="onGuardarEditar" />
+                    </h:commandButton>
+
+                    <button type="button" class="btn btn-danger" onclick="cerrarModalEditar()">Cancelar</button>
+                </h:form>
+            </div>
+        </div>
+
+
+
+
+        <!-- Scripts: idénticos, no se eliminó nada -->
+        <script type="text/javascript">
+            // <![CDATA[
+            const contextPath = '#{request.contextPath}';
+            // ==========================
+            // MODALES NUEVA PRODUCCIÓN
+            // ==========================
+            function abrirModal() {
+                document.getElementById("modalProduccion").style.display = "block";
+                const fechaInput = document.getElementById("formProduccion:fechaProduccion");
+                const hoy = new Date();
+                if (fechaInput) {
+                    fechaInput.value = hoy.toISOString().split("T")[0];
+                }
+            }
+
+            function cerrarModal() {
+                document.getElementById("modalProduccion").style.display = "none";
+            }
+
+            // ==========================
+            // MODALES EDITAR PRODUCCIÓN
+            // ==========================
+            function abrirModalEditar(btn) {
+                const modal = document.getElementById("modalEditarProduccion");
+                modal.style.display = "block";
+                // rellenar valores
+                document.getElementById("formEditarProduccion:editarId").value = btn.dataset.id;
+                document.getElementById("formEditarProduccion:editarFecha").value = btn.dataset.fecha;
+                document.getElementById("formEditarProduccion:selectEstado").value = btn.dataset.estado;
+            }
+
+            function cerrarModalEditar() {
+                document.getElementById("modalEditarProduccion").style.display = "none";
+            }
+
+            // ==========================
+            // CREAR SELECT DE RECETAS
+            // ==========================
+            function crearSelectRecetas() {
+                const select = document.createElement("select");
+                select.name = "recetas[]";
+                select.classList.add("form-input");
+                select.required = true;
+                const optionDefault = document.createElement("option");
+                optionDefault.value = "";
+                optionDefault.textContent = "Seleccione una receta";
+                select.appendChild(optionDefault);
+                if (typeof recetasData !== "undefined") {
+                    recetasData.forEach(r => {
+                        const option = document.createElement("option");
+                        option.value = r.id;
+                        option.textContent = r.nombre;
+                        select.appendChild(option);
+                    });
+                }
+
+                return select;
+            }
+
+            // ==========================
+            // AGREGAR RECETA (NUEVA PROD.)
+            // ==========================
+            function agregarReceta() {
+                const container = document.getElementById("recetasContainer");
+                const item = document.createElement("div");
+                item.classList.add("receta-item");
+                item.style.display = "flex";
+                item.style.gap = "1rem";
+                item.style.alignItems = "flex-end";
+                item.style.marginTop = "1rem";
+                const selectReceta = crearSelectRecetas();
+                item.innerHTML =
+                        '<div style="flex:1;">' +
+                        '<label>Receta:</label>' +
+                        '</div>' +
+                        '<div style="width:120px;">' +
+                        '<label>Cantidad:</label>' +
+                        '<input type="number" name="cantidades[]" class="form-input" min="1" value="1" required="required" />' +
+                        '</div>' +
+                        '<div>' +
+                        '<button type="button" class="btn btn-danger" onclick="eliminarReceta(this)">✖</button>' +
+                        '</div>';
+                item.querySelector("div").appendChild(selectReceta);
+                container.appendChild(item);
+            }
+
+            // ==========================
+            // AGREGAR RECETA (EDITAR PROD.)
+            // ==========================
+            function agregarRecetaEditar(id = '', nombre = '', cantidad = 1) {
+                const cont = document.getElementById("recetasEditarContainer");
+                const item = document.createElement("div");
+                item.classList.add("receta-item");
+                item.style.display = "flex";
+                item.style.gap = "1rem";
+                item.style.alignItems = "flex-end";
+                item.style.marginTop = "0.5rem";
+                const selectReceta = crearSelectRecetas();
+                if (id) {
+                    selectReceta.value = id;
+                }
+
+                item.innerHTML =
+                        '<div style="flex:1;">' +
+                        '<label>Receta:</label>' +
+                        '</div>' +
+                        '<div style="width:120px;">' +
+                        '<label>Cantidad:</label>' +
+                        '<input type="number" name="cantidades[]" class="form-input" min="1" value="' + cantidad + '" required="required" />' +
+                        '</div>' +
+                        '<div>' +
+                        '<button type="button" class="btn btn-danger" onclick="eliminarReceta(this)">✖</button>' +
+                        '</div>';
+                item.querySelector("div").appendChild(selectReceta);
+                cont.appendChild(item);
+            }
+
+            // ==========================
+            // ELIMINAR RECETA
+            // ==========================
+            function eliminarReceta(btn) {
+                btn.closest(".receta-item").remove();
+            }
+
+            // ==========================
+            // CONFIRMAR ELIMINAR PRODUCCIÓN
+            // ==========================
+
+            function confirmarEliminar(btnId) {
+                Swal.fire({
+                    title: '¿Eliminar producción?',
+                    text: "Esta acción no se puede deshacer.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById(btnId).click(); // ahora sí clic al commandButton oculto
+                    }
+                });
+            }
+
+
+
+
+
+            // ==========================
+            // FINALIZAR PRODUCCIÓN
+            // ==========================
+            function finalizarProduccion(url) {
+                Swal.fire({
+                    title: '¿Finalizar producción?',
+                    text: "Se descontarán los insumos y el estado pasará a FINALIZADA.",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, finalizar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            }
+
+            // ==========================
+            // FILTRAR PRODUCCIONES
+            // ==========================
+            function filtrarProducciones() {
+                const filtro = document.getElementById("buscarProduccion").value.toLowerCase();
+                const grid = document.getElementById("produccionesGrid");
+                const cards = grid.getElementsByClassName("ingrediente-card");
+                let encontrados = 0;
+                for (let i = 0; i < cards.length; i++) {
+                    const texto = cards[i].innerText.toLowerCase();
+                    if (texto.includes(filtro)) {
+                        cards[i].style.display = "block";
+                        encontrados++;
+                    } else {
+                        cards[i].style.display = "none";
+                    }
+                }
+
+                document.getElementById("noResultados").style.display = (encontrados === 0) ? "block" : "none";
+            }
+
+            // ==========================
+            // CERRAR MODALES AL CLIC FUERA
+            // ==========================
+            window.onclick = function (event) {
+                if (event.target.classList.contains("modal")) {
+                    cerrarModal();
+                }
+                if (event.target.classList.contains("modal-editar")) {
+                    cerrarModalEditar();
+                }
+            };
+            // ]]>
+            function onEditarLoaded(data) {
+                if (data.status === 'success') {
+                    document.getElementById("modalEditarProduccion").style.display = "block";
+                }
+            }
+
+            function onGuardarEditar(data) {
+                if (data.status === 'success') {
+                    cerrarModalEditar();
+                }
+            }
+
+            function onGuardarNueva(data) {
+                if (data.status === 'success') {
+                    cerrarModal(); // cerrar modal cuando se guarda bien
+                }
+            }
+
+
+            function cerrarModalEditar() {
+                document.getElementById("modalEditarProduccion").style.display = "none";
+            }
+
+        </script>
+
+
+
+        <footer class="footer">
+            <p>copy; 2025 Péguele a la Empanada. Sistema de Producción.</p>
+        </footer>
+    </h:body>
+</html>

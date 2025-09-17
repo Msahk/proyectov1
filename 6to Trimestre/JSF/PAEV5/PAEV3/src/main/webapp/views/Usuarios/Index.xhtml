@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head
+        <title>Gestión de Usuarios</title>
+    </h:head>
+    <h:body>
+        <f:event type="preRenderView" listener="#{usuariosBean.listar()}" />
+        <h1>Gestión de Usuarios</h1>
+        <center>
+            <h:form>
+                <p:commandButton value="Nuevo Usuario" action="nuevousu" />
+                <p:commandButton style="margin-left: 15px;" value="Cargar Uusarios" action="migrar"  />
+                <br/><br/>
+                <h:dataTable value="#{usuariosBean.lstUsu}" var="usu" border="1">
+                    <p:column>
+                        <f:facet name="header">Id</f:facet>
+                        <p:outputLabel value="#{usu.id_usu}" />
+                    </p:column>
+                    
+                    <p:column>
+                        <f:facet name="header">DOCUMENTO</f:facet>
+                        <p:outputLabel value="#{usu.documento}" />
+                    </p:column>
+                    
+                    <p:column>
+                        <f:facet name="header">Nombres</f:facet>
+                        <p:outputLabel value="#{usu.nombres}" />
+                    </p:column>
+                    
+                    <p:column>
+                        <f:facet name="header">Apellidos</f:facet>
+                        <p:outputLabel value="#{usu.apellidos}" />
+                    </p:column>
+                    
+                     <p:column>
+                        <f:facet name="header">Teléfono</f:facet>
+                        <p:outputLabel value="#{usu.telefono}" />
+                    </p:column>
+                    
+                    <p:column>
+                        <f:facet name="header">Dirección</f:facet>
+                        <p:outputLabel value="#{usu.direccion}" />
+                    </p:column>
+                    
+                    <p:column>
+                        <f:facet name="header">Correo</f:facet>
+                        <p:outputLabel value="#{usu.correo}" />
+                    </p:column>
+                    
+                     <p:column>
+                        <f:facet name="header">Rol</f:facet>
+                        <p:outputLabel value="#{usu.rol}" />
+                    </p:column>
+                    
+                     <p:column>
+                        <f:facet name="header">estado</f:facet>
+                        <p:outputLabel value="#{usu.estado}" />
+                    </p:column>
+                    
+                    <p:column>
+                        <f:facet name="header">Opciones</f:facet>
+                        <p:commandButton ajax="false" value="Editar" actionListener="#{usueedorBean.editar(usu)}" action="editarusu" />
+                        <p:commandButton ajax="false" value="Eliminar" actionListener="#{usueedorBean.eliminar(usu)}" 
+                                         onclick="return(confirm('Está segur@ de ELIMINAR el usueedor??!!'))" />
+                    </p:column>
+                </h:dataTable>
+                <br/>
+                <p:commandButton value="Menú anterior" action="/admin" />
+            </h:form>
+        </center>
+    </h:body>
+</html>

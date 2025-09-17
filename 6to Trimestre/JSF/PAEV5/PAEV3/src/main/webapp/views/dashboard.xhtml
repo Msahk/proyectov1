@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      lang="es">
+<h:head>
+  <meta charset="UTF-8"/>
+  <title>Dashboard - Péguele a la Empanada</title>
+
+  <!-- ESTILOS INTERNOS: Tema rojo (igual al login) -->
+  <style>
+    :root {
+      --brand: #b71c1c;
+      --brand-dark: #8e0000;
+      --bg: #f3f3f3;
+      --card-border: #e8e8e8;
+      --text-muted: #666666;
+    }
+
+    /* Reset básico */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans";
+      color: #111;
+      background: var(--bg);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* NAVBAR */
+    .navbar {
+      position: sticky; top: 0; z-index: 50;
+      background: #000; color: #fff;
+      padding: 0.9rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 2px solid rgba(0,0,0,0.25);
+      border-radius: 8px;
+      margin: 8px;
+    }
+    .nav-brand h2 {
+      font-size: 1.35rem; letter-spacing: .2px; margin: 0;
+      color: var(--brand);
+      font-weight: 700;
+    }
+    .nav-links { display: flex; gap: 1rem; align-items: center; }
+    .nav-links a {
+      font-weight: 600; color: #fff; opacity: .95;
+      padding: .35rem .6rem; border-radius: .5rem;
+      transition: opacity .18s ease, background-color .2s ease, transform .18s ease;
+    }
+    .nav-links a:hover { opacity: 1; background: rgba(255,255,255,.06); transform: translateY(-2px); }
+
+    .nav-user { display: flex; align-items: center; gap: .75rem; font-size: .95rem; opacity: .95; }
+    .btn-logout {
+      display: inline-block;
+      background: var(--brand); color: #fff; border: 1px solid rgba(0,0,0,.15);
+      padding: .45rem .9rem; border-radius: .6rem;
+      cursor: pointer; transition: background .18s ease, transform .15s ease;
+      font-weight: 600;
+    }
+    .btn-logout:hover { background: var(--brand-dark); transform: translateY(-2px); }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.95));
+      padding: 4.5rem 1.25rem;
+      margin: 1rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 8px 28px rgba(0,0,0,.06);
+    }
+    .hero h1 {
+      font-size: 3rem;
+      color: var(--brand);
+      margin: 0 0 .5rem 0;
+      font-weight: 800;
+    }
+    .hero p { color: var(--text-muted); font-size: 1.05rem; margin: 0 0 1.25rem 0; }
+
+    .hero .cta {
+      display: inline-block;
+      background: var(--brand); color: #fff;
+      padding: .9rem 1.2rem; border-radius: .75rem;
+      font-weight: 700; font-size: 1rem;
+      border: none; cursor: pointer; transition: background .18s ease, transform .15s ease;
+    }
+    .hero .cta:hover { background: var(--brand-dark); transform: translateY(-2px); }
+
+    /* Tarjetas */
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 1rem; }
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem; margin-top: 1.25rem;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.4rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,.04);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      text-align: center;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 36px rgba(0,0,0,.07);
+      border-color: #e6e6e6;
+    }
+    .card h3 { margin: 0 0 .45rem 0; font-size: 1.15rem; color: #222; }
+    .card p { margin: 0; color: var(--text-muted); }
+
+    .btn-primary {
+      margin-top: .9rem;
+      background: var(--brand); color: #fff;
+      border: 1px solid rgba(0,0,0,.08);
+      padding: .6rem 1rem; border-radius: .75rem;
+      font-size: .95rem; cursor: pointer; font-weight: 700;
+      transition: background .18s ease, transform .15s ease;
+    }
+    .btn-primary:hover { background: var(--brand-dark); transform: translateY(-2px); }
+
+    /* Responsive */
+    @media (max-width: 1100px) { .dashboard-cards { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 700px)  {
+      .dashboard-cards { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hero h1 { font-size: 2rem; }
+    }
+
+    /* Accesibilidad: respeta “Reduce motion” */
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; transform: none !important; }
+    }
+  </style>
+</h:head>
+
+<h:body>
+  <!-- NAVBAR: sin "Reportes" -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h2>Péguele a la Empanada 🥟</h2>
+    </div>
+
+    <div class="nav-links">
+      <a href="#">Inicio</a>
+      <a href="#">Ventas</a>
+      <h:link outcome="/views/inventario.xhtml" value="Inventario" styleClass="nav-link" />
+      <a href="#">Pedidos</a>
+      <!-- Reportes eliminado -->
+    </div>
+
+    <div class="nav-user">
+      <span>Bienvenido: #{sessionScope.usuarios.correo}</span>
+      <h:form style="display:inline;">
+        <h:commandLink value="Cerrar Sesión" action="#{usuarioBean.logout}" styleClass="btn-logout"/>
+      </h:form>
+    </div>
+  </nav>
+
+  <!-- HERO (similar a la imagen que compartiste) -->
+  <main class="main-content">
+    <section class="hero" role="region" aria-label="Bienvenida">
+      <h1>¡Bienvenido al sistema!</h1>
+      <p>Optimiza tus procesos, organiza tu inventario y controla tus operaciones.</p>
+      <button class="cta">Ingresar al sistema</button>
+    </section>
+
+    <!-- TARJETAS: ahora solo 3 (Productos, Inventario, Pedidos) -->
+    <div class="dashboard-cards" role="list">
+      <div class="card" role="listitem">
+        <h3>Ventas</h3>
+        <p>Gestiona tus ventas</p>
+        <button class="btn-primary">Ver ventas</button>
+      </div>
+
+      <div class="card" role="listitem">
+        <h3>Inventario</h3>
+        <p>Controla tu stock y materiales</p>
+        <button class="btn-primary">Ver Inventario</button>
+      </div>
+
+      <div class="card" role="listitem">
+        <h3>Pedidos</h3>
+        <p>Administra los pedidos de clientes</p>
+        <button class="btn-primary">Ver Pedidos</button>
+      </div>
+    </div>
+  </main>
+</h:body>
+</html>

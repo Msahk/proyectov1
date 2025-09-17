@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <meta charset="UTF-8"/>
+    <title>Insumos de la Receta</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: #d62828;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f7f7f7;
+        }
+        .btn {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-edit {
+            background-color: #007bff;
+        }
+        .btn-edit:hover {
+            background-color: #0056b3;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+        }
+        .btn-delete:hover {
+            background-color: #a71d2a;
+        }
+        .empty-msg {
+            text-align: center;
+            padding: 10px;
+            color: #777;
+            font-style: italic;
+        }
+    </style>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</h:head>
+
+<h:body>
+
+    <h:form id="formInsumos">
+        <h:panelGroup rendered="#{not empty recetaInsumosBean.listaInsumos}">
+            <h:dataTable value="#{recetaInsumosBean.listaInsumos}" var="ri" styleClass="table">
+                <h:column>
+                    <f:facet name="header">Insumo</f:facet>
+                    #{ri.nombre_insumo}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Cantidad</f:facet>
+                    #{ri.cantidad}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Unidad</f:facet>
+                    #{ri.unidad}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Acciones</f:facet>
+
+                    <!-- Botón editar -->
+                    <h:commandButton value="Editar" styleClass="btn btn-edit"
+                                     action="#{recetaInsumosBean.editar(ri.id_rec_ins)}"/>
+
+                    <!-- Botón eliminar con confirm -->
+                    <h:commandButton value="Eliminar" styleClass="btn btn-delete"
+                                     onclick="return confirmDelete(this);"
+                                     action="#{recetaInsumosBean.eliminar(ri.id_rec_ins)}"/>
+                </h:column>
+            </h:dataTable>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{empty recetaInsumosBean.listaInsumos}"
+>
+            <div class="empty-msg">No hay insumos asignados a esta receta.</div>
+        </h:panelGroup>
+    </h:form>
+
+    <script>
+    function confirmDelete(btn) {
+        event.preventDefault();
+        const form = btn.closest("form");
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d32f2f',
+            cancelButtonColor: '#9e9e9e',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+        return false;
+    }
+    </script>
+
+</h:body>
+</html>
