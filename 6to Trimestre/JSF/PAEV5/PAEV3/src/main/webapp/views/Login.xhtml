@@ -20,25 +20,24 @@
         <h1>Ingreso de Usuarios</h1>
         <center>
             <h:form>
-                <p:outputLabel value="Correo: "/>
-                <p:inputText required="true" id="correo" value="#{usuariosBean.usuarios.correo}"
-                             requiredMessage=" Debe escribir el correo" 
-                             validatorMessage=" Mínimo 3 y máximo 10 caracteres" >
-                </p:inputText>
-                
-                <p:message for="IdUsr" style="color: red;" />
+                <p:outputLabel value="Correo o Documento: " />
+                <p:inputText required="true" id="correoDoc" 
+                             value="#{usuariosBean.usuario.correo}"
+                             requiredMessage=" Debe escribir el correo o documento" />
+                <p:message for="correoDoc" style="color: red;" />
+
                 <br/><br/>
-                
+
                 <p:outputLabel value="Contraseña: "/>                
-                <p:password required="true" id="PwUsr" value="#{usuariosBean.usuarios.password}"
-                               requiredMessage=" Debe escribir la Contraseña" 
-                               validatorMessage=" Una Mayúscula, una minúscula, un número (4 a 10 caracteres)">                    
-                    <f:validateRegex pattern="" />
+                <p:password required="true" id="PwUsr" value="#{usuariosBean.usuario.password}"
+                            requiredMessage=" Debe escribir la Contraseña" >
                 </p:password>
                 <p:message for="PwUsr" style="color: red;" />
                 <br/><br/>
-                
-                <p:commandButton value="Aceptar" actionListener="#{usuariosBean.autenticar()}" />
+
+                <p:commandButton value="Aceptar" action="#{usuariosBean.autenticar}" update="msj" />
+
+
                 <br/><br/>
                 <p:commandLink value="Olvidé mi Contraseña"  style="margin-right: 15px;"/>
                 <p:commandLink value="Regístrate AQUI" />
