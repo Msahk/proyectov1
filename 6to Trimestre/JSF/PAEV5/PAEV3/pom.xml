@@ -33,6 +33,8 @@
             <version>8.0</version>
         </dependency>
 
+        
+
         <!-- MySQL Connector -->
         
         
@@ -86,7 +88,7 @@
             <scope>provided</scope>
         </dependency>
         
-         <dependency>
+        <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
             <version>1.3.30</version>

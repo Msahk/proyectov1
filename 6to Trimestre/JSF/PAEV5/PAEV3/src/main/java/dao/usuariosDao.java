@@ -30,7 +30,7 @@ public class usuariosDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 usuarios obj = new usuarios();
-                obj.setId_usu(rs.getInt("id_usu"));
+                obj.setIdUsu(rs.getInt("id_usu"));
                 obj.setDocumento(rs.getInt("documento"));
                 obj.setNombres(rs.getString("nombres"));
                 obj.setApellidos(rs.getString("apellidos"));
@@ -95,7 +95,7 @@ public boolean agregar(usuarios u) {
                     ps.setString(6, u.getDireccion());
                     ps.setLong(7, u.getTelefono());
                     ps.setInt(8, u.getDocumento());
-                    ps.setInt(9, u.getId_usu());
+                    ps.setInt(9, u.getIdUsu());
 
                     return ps.executeUpdate() > 0;
 
@@ -113,12 +113,12 @@ public boolean agregar(usuarios u) {
 
     try {
         ps = ConDB.conectar().prepareStatement(sql);
-        ps.setInt(1, u.getId_usu());
+        ps.setInt(1, u.getIdUsu());
         rs = ps.executeQuery();
 
         if (rs.next()) {
             usu = new usuarios();
-            usu.setId_usu(rs.getInt("id_usu"));
+            usu.setIdUsu(rs.getInt("id_usu"));
             usu.setDocumento(rs.getInt("documento"));
             usu.setNombres(rs.getString("nombres"));
             usu.setApellidos(rs.getString("apellidos"));
@@ -146,7 +146,7 @@ public boolean agregar(usuarios u) {
 
         if (rs.next()) {
             usu = new usuarios();
-            usu.setId_usu(rs.getInt("id_usu"));
+            usu.setIdUsu(rs.getInt("id_usu"));
             usu.setDocumento(rs.getInt("documento"));
             usu.setNombres(rs.getString("nombres"));
             usu.setApellidos(rs.getString("apellidos"));
@@ -164,12 +164,11 @@ public boolean agregar(usuarios u) {
 }
     
 
-    // Eliminar un usuario por documento
         public void eliminar(usuarios u) {
         String sql = "DELETE FROM usuarios WHERE id_usu=?";
         try {
             ps = ConDB.conectar().prepareStatement(sql);
-            ps.setInt(1, u.getId_usu());
+            ps.setInt(1, u.getIdUsu());
             ps.executeUpdate();
             
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso", "Producto eliminado exitosamente"));
@@ -226,7 +225,7 @@ public boolean agregar(usuarios u) {
         rs = ps.executeQuery();
         while (rs.next()) {
             usuarios u = new usuarios();
-            u.setId_usu(rs.getInt("id_usu"));
+            u.setIdUsu(rs.getInt("id_usu"));
             u.setDocumento(rs.getInt("documento"));
             u.setNombres(rs.getString("nombres"));
             u.setApellidos(rs.getString("apellidos"));
@@ -257,7 +256,7 @@ public boolean agregar(usuarios u) {
 
             if (rs.next()) {
                 usu = new usuarios();
-                usu.setId_usu(rs.getInt("id_usu"));
+                usu.setIdUsu(rs.getInt("id_usu"));
                 usu.setDocumento(rs.getInt("documento"));
                 usu.setNombres(rs.getString("nombres"));
                 usu.setApellidos(rs.getString("apellidos"));
@@ -307,7 +306,7 @@ public boolean agregar(usuarios u) {
 
             if (BCrypt.checkpw(pass, storedHash)) {
                 obj_usu = new usuarios();
-                obj_usu.setId_usu(rs.getInt("id_usu"));
+                obj_usu.setIdUsu(rs.getInt("id_usu"));
                 obj_usu.setDocumento(rs.getInt("documento"));
                 obj_usu.setNombres(rs.getString("nombres"));
                 obj_usu.setApellidos(rs.getString("apellidos"));

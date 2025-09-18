@@ -2,7 +2,7 @@ package models;
 
 public class usuarios {
 
-    public int id_usu;
+    public int idUsu;
     public int documento;
     public String nombres;
     public String apellidos;
@@ -17,8 +17,8 @@ public class usuarios {
 
     }
 
-    public usuarios(int id_usu, int documento, String nombres, String apellidos, long telefono, String direccion, String correo, String rol, String password, String estado) {
-        this.id_usu = id_usu;
+    public usuarios(int idUsu, int documento, String nombres, String apellidos, long telefono, String direccion, String correo, String rol, String password, String estado) {
+        this.idUsu = idUsu;
         this.documento = documento;
         this.nombres = nombres;
         this.apellidos = apellidos;
@@ -30,12 +30,12 @@ public class usuarios {
         this.estado = estado;
     }
 
-    public int getId_usu() {
-        return id_usu;
+    public int getIdUsu() {
+        return idUsu;
     }
 
-    public void setId_usu(int id_usu) {
-        this.id_usu = id_usu;
+    public void setIdUsu(int idUsu) {
+        this.idUsu = idUsu;
     }
 
     public int getDocumento() {

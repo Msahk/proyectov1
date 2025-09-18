@@ -52,16 +52,26 @@ public class usuariosBean {
         ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
-            System.out.println(">>> Login correcto: " + rs.getString("correo"));
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-                .put("user", rs.getString("correo"));
+            usuario.setCorreo(rs.getString("correo"));
+            usuario.setNombres(rs.getString("nombres"));
+            usuario.setApellidos(rs.getString("apellidos"));
+            usuario.setRol(rs.getString("rol"));
 
-            switch (rs.getString("rol")) {
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                .put("usuario", usuario);
+
+            switch (usuario.getRol()) {
                 case "A":
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("dashboard.xhtml");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("Dashboard.xhtml");
+                    break;
+                case "EP":
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("Dashboard.xhtml");
+                    break;
+                case "EV":
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("Dashboard.xhtml");
                     break;
                 default:
-                    System.out.println(">>> Rol desconocido: " + rs.getString("rol"));
+                    System.out.println(">>> Rol desconocido");
                     break;
             }
         } else {
@@ -113,7 +123,9 @@ public class usuariosBean {
         usuDAO.eliminar(usu);
     }
 
-    
+    public void limpiar(){
+        usuario = new usuarios();
+    }
     
     public List<usuarios> getLstUsu() {
         return lstUsu;

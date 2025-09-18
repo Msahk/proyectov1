@@ -12,14 +12,6 @@
     String vistaActual = (String) request.getAttribute("vistaActual"); // atributo opcional
 %>
 
-<style>
-.usuario-header-info { display: flex; align-items: center; gap: 10px; color: black; }
-.usuario-icono { font-size: 2rem; }
-.usuario-datos { line-height: 1.2; }
-.usuario-nombre { font-weight: bold; margin: 0; color: black; }
-.usuario-rol { margin: 0; font-size: 0.85rem; color: black; }
-</style>
-
 <header class="header">
   <div class="logo">Péguele a la Empanada 🥟</div>
   <nav class="navbar">

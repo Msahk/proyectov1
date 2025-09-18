@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Editar Usuario</title>
+    </h:head>
+    <h:body>
+        <f:event type="preRenderView" listener="#{usuariosBean.listar()}" />
+        <div align="center">
+            <h1>Editar Usuario</h1>
+            <h:form enctype="multipart/form-data">
+                <h:inputHidden value="#{usuariosBean.usuario.idUsu}" />
+                <h:panelGrid columns="3">
+                    <p:outputLabel for="documento" value="documento" />
+                    <p:inputText id="documento" value="#{usuariosBean.usuario.documento}" required="true"
+                                 requiredMessage="Debe especificar el Documento" />
+                    <p:message for="documento" style="color: red;" />
+
+                    <p:outputLabel for="nombres" value="Nombres" />
+                    <p:inputText id="nombres" value="#{usuariosBean.usuario.nombres}" required="true"
+                                 requiredMessage="Debe especificar el Nombre" />
+                    <p:message for="nombres" style="color: red;" />
+
+                    <p:outputLabel for="apellidos" value="apellidos" />
+                    <p:inputText id="apellidos" value="#{usuariosBean.usuario.apellidos}" required="true"
+                                 requiredMessage="Debe especificar el Apellido" />
+                    <p:message for="apellidos" style="color: red;" />
+
+                    <p:outputLabel for="telefono" value="telefono" />
+                    <p:inputNumber id="telefono" value="#{usuariosBean.usuario.telefono}" required="true"
+                                   requiredMessage="Debe especificar el telefono" />
+                    <p:message for="telefono" style="color: red;" />
+
+                    <p:outputLabel for="direccion" value="direccion" />
+                    <p:inputText id="direccion" value="#{usuariosBean.usuario.direccion}" required="true"
+                                 requiredMessage="Debe especificar la direccion" />
+                    <p:message for="direccion" style="color: red;" />
+
+                    <p:outputLabel for="correo" value="correo" />
+                    <p:inputText id="correo" value="#{usuariosBean.usuario.correo}" required="true"
+                                 requiredMessage="Debe especificar el correo" />
+                    <p:message for="correo" style="color: red;" />
+
+                    <p:outputLabel for="rol" value="Rol" />
+                    <p:selectOneMenu id="rol" value="#{usuariosBean.usuario.rol}" required="true"
+                                     requiredMessage="Debe especificar el rol">
+                        <f:selectItem itemLabel="Administrador" itemValue="A" />
+                        <f:selectItem itemLabel="Empleado Producción" itemValue="EP" />
+                        <f:selectItem itemLabel="Empleado Ventas" itemValue="EV" />
+                    </p:selectOneMenu>
+                    <p:message for="rol" style="color: red;" />
+
+                    <p:outputLabel for="password" value="Contraseña" />
+                    <p:password id="password" value="#{usuariosBean.usuario.password}" required="true"
+                                requiredMessage="Debe especificar la contraseña" />
+                    <p:message for="password" style="color: red;" />
+
+                </h:panelGrid>
+                <br/>
+                <p:commandButton value="Guardar" ajax="false" actionListener="#{usuariosBean.actualizar()}" action="Index" />
+                <p:commandButton value="Cancelar" ajax="false" immediate="true" action="Index" />
+            </h:form>
+        </div>
+    </h:body>
+</html>
