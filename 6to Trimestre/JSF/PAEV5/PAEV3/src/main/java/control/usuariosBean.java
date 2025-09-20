@@ -20,7 +20,10 @@ import java.util.ArrayList;
 
 @ManagedBean
 @SessionScoped
-public class usuariosBean {
+public class usuariosBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    
 
     private final usuariosDao usuDAO = new usuariosDao();
     private usuarios usuario = new usuarios();

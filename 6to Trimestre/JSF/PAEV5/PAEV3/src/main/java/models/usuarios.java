@@ -1,6 +1,9 @@
 package models;
+import java.io.Serializable;
 
-public class usuarios {
+
+public class usuarios implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     public int idUsu;
     public int documento;
