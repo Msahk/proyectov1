@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import org.primefaces.PrimeFaces;
 
 @ManagedBean
 @SessionScoped
@@ -38,58 +39,49 @@ public class usuariosBean implements Serializable {
     }
 
     public void autenticar() {
-    
-    try {
-        Connection con = ConDB.conectar();
+    boolean logged = false;
+    String message = null;
+    String redirectTo = null;
 
-        
-        String sql = "SELECT * FROM usuarios WHERE correo = ? OR documento = ? AND password = ?";
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setString(1, usuario.getCorreo());     
-        ps.setString(2, usuario.getCorreo());     
+    String sql = "SELECT * FROM usuarios WHERE (correo = ? OR documento = ?) AND password = ?";
+
+    try (
+        Connection con = ConDB.conectar();
+        PreparedStatement ps = con.prepareStatement(sql)
+    ) {
+        ps.setString(1, usuario.getCorreo());
+        ps.setString(2, usuario.getCorreo());
         String pw = Utilidades.encriptar(usuario.getPassword());
         ps.setString(3, pw);
-        
-        System.out.println(pw);
 
-        ResultSet rs = ps.executeQuery();
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                usuario.setCorreo(rs.getString("correo"));
+                usuario.setNombres(rs.getString("nombres"));
+                usuario.setApellidos(rs.getString("apellidos"));
+                usuario.setRol(rs.getString("rol"));
 
-        if (rs.next()) {
-            usuario.setCorreo(rs.getString("correo"));
-            usuario.setNombres(rs.getString("nombres"));
-            usuario.setApellidos(rs.getString("apellidos"));
-            usuario.setRol(rs.getString("rol"));
+                FacesContext.getCurrentInstance().getExternalContext()
+                            .getSessionMap().put("usuario", usuario);
 
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-                .put("usuario", usuario);
-
-            switch (usuario.getRol()) {
-                case "A":
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("Dashboard.xhtml");
-                    break;
-                case "EP":
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("Dashboard.xhtml");
-                    break;
-                case "EV":
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("Dashboard.xhtml");
-                    break;
-                default:
-                    System.out.println(">>> Rol desconocido");
-                    break;
+                logged = true;
+                message = "Bienvenido " + usuario.getNombres() + " " + usuario.getApellidos();
+                redirectTo = "views/Dashboard.xhtml"; 
+            } else {
+                message = "Correo/Documento o contraseña inválidos";
             }
-        } else {
-            System.out.println(">>> Credenciales incorrectas");
-            FacesContext.getCurrentInstance().addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_WARN, 
-                                 "Correo/Documento o contraseña no válidos", "Aviso"));
         }
     } catch (Exception e) {
         e.printStackTrace();
-        FacesContext.getCurrentInstance().addMessage(null, 
-            new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-                             "Error en la autenticación", "Error"));
+        message = "Error interno. Intenta de nuevo.";
     }
+
+    PrimeFaces.current().ajax().addCallbackParam("loggedIn", logged);
+    PrimeFaces.current().ajax().addCallbackParam("msg", message);
+    PrimeFaces.current().ajax().addCallbackParam("redirect", redirectTo);
+    PrimeFaces.current().ajax().addCallbackParam("correoPreserve", usuario.getCorreo());
 }
+
 
             public void logout() {
             try {

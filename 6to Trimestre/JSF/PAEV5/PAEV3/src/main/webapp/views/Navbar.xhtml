@@ -7,9 +7,11 @@
     <title>Dashboard</title>
 </h:head>
 <h:body>
-
+    <header class="header">
+        <div class="logo">Peguele a la empanada</div>
+    
     <h:form>
-        <p:menubar>
+        <p:menubar class="navbar">
             <p:submenu label="Administración" rendered="#{usuariosBean.usuario.rol eq 'A'}">
                 <p:menuitem value="Usuarios" outcome="/views/Usuarios/Index.xhtml"/>
                 <p:menuitem value="Ventas" outcome="/views/Ventas/index.xhtml"/>
@@ -31,5 +33,6 @@
             <p:menuitem value="Cerrar Sesión" action="#{usuariosBean.logout}" ajax="false" icon="pi pi-sign-out"/>
         </p:menubar>
     </h:form>
+        </header>
 </h:body>
 </html>
