@@ -5,21 +5,17 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
-    <title>Gestión de Ventas</title>
-    
+    <title>Gestión de Pedidos</title>
     <link rel="stylesheet" 
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
 </h:head>
 <h:body class="bg-light">
 
-    
-     <ui:include src="/views/Navbar.xhtml" />
+    <ui:include src="/views/Navbar.xhtml" />
 
     <div class="container mt-5">
         <div class="card shadow p-4">
-            <h2 class="text-center">Gestión de Ventas</h2>
-            <hr/>
-            
+            <h2 class="text-center">Gestión de Pedidos</h2>
             <h4>
                 Hola, 
                 <strong>#{usuariosBean.usuario.nombres} #{usuariosBean.usuario.apellidos}</strong>
@@ -38,57 +34,44 @@
 
             <hr/>
 
-            
             <h:form>
-                <h:dataTable value="#{ventasBean.listaVentas}" var="venta" border="1" cellpadding="5" class="table table-bordered">
+                <h:dataTable value="#{pedidosBean.listaPedidos}" var="pedido" border="1" cellpadding="5" class="table table-bordered">
                     <h:column>
-                        <f:facet name="header">ID</f:facet>
-                        #{venta.idVen}
+                        <f:facet name="header">ID Pedido</f:facet>
+                        #{pedido.idPed}
                     </h:column>
-
                     <h:column>
-                        <f:facet name="header">Tipo</f:facet>
-                        #{venta.tipo}
+                        <f:facet name="header">ID Venta</f:facet>
+                        #{pedido.idVen}
                     </h:column>
-
                     <h:column>
-                        <f:facet name="header">Cliente</f:facet>
-                        #{venta.idCliente}
+                        <f:facet name="header">Fecha Entrega</f:facet>
+                        #{pedido.fechaEntrega}
                     </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Usuario</f:facet>
-                        #{venta.idUsuario}
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Total</f:facet>
-                        #{venta.total}
-                    </h:column>
-
                     <h:column>
                         <f:facet name="header">Estado</f:facet>
-                        #{venta.estado}
+                        #{pedido.estado}
                     </h:column>
-
                     <h:column>
                         <f:facet name="header">Observaciones</f:facet>
-                        #{venta.observaciones}
+                        #{pedido.observacionesPedido}
                     </h:column>
-
                     <h:column>
-                        <h:commandButton value="Editar" action="#{ventasBean.prepararEdicion(venta)}" />
+                        <h:commandButton value="Editar" 
+                                        
+                                         action="#{pedidosBean.prepararEdicion(pedido)}" />
                     </h:column>
-
                     <h:column>
-                        <h:commandButton value="Eliminar" action="#{ventasBean.eliminarVenta(venta.idVen)}" />
+                        <h:commandButton value="Eliminar"
+                                        
+                                         action="#{pedidosBean.eliminarPedido(pedido.idPed)}"
+                                         onclick="return confirm('¿Está segur@ de ELIMINAR el pedido?')" />
                     </h:column>
                 </h:dataTable>
             </h:form>
 
-            
             <h:form>
-                <h:commandButton value="Nueva Venta" styleClass="btn btn-primary mt-3" action="nuevaVenta.xhtml?faces-redirect=true" />
+                <h:commandButton value="Nuevo Pedido" styleClass="btn btn-primary mt-3" action="nuevoPedido.xhtml?faces-redirect=true" />
             </h:form>
         </div>
     </div>

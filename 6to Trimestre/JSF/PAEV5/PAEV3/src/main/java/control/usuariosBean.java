@@ -21,7 +21,10 @@ import org.primefaces.PrimeFaces;
 
 @ManagedBean
 @SessionScoped
-public class usuariosBean {
+public class usuariosBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    
 
     private final usuariosDao usuDAO = new usuariosDao();
     private usuarios usuario = new usuarios();
