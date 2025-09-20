@@ -24,15 +24,19 @@
             <hr/>
 
             <h:form>
-                <h:dataTable value="#{pedidosBean.listaPedidos}" var="pedido" border="1" cellpadding="5" class="table table-bordered">
-                    <h:column>
-                        <f:facet name="header">ID Pedido</f:facet>
-                        #{pedido.idPed}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">ID Venta</f:facet>
-                        #{pedido.idVen}
-                    </h:column>
+               <h:dataTable value="#{pedidosBean.listaPedidos}" var="pedido" class="table">
+    <h:column>
+        <f:facet name="header">ID Pedido</f:facet>
+        #{pedido.idPed}
+    </h:column>
+    <h:column>
+        <f:facet name="header">Venta</f:facet>
+        #{pedido.idVen}
+    </h:column>
+    <h:column>
+        <f:facet name="header">Cliente</f:facet>
+        #{pedido.nombreCliente}
+    </h:column>
                     <h:column>
                         <f:facet name="header">Fecha Entrega</f:facet>
                         #{pedido.fechaEntrega}
@@ -60,7 +64,7 @@
             </h:form>
 
             <h:form>
-                <h:commandButton value="Nuevo Pedido" styleClass="btn btn-primary mt-3" action="nuevoPedido.xhtml?faces-redirect=true" />
+               
             </h:form>
         </div>
     </div>

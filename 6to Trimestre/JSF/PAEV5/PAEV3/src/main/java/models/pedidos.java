@@ -8,6 +8,8 @@ public class pedidos implements Serializable {
 
     private int idPed;
     private int idVen;
+    private int idCliente;
+    private String nombreCliente;
     private Date fechaEntrega;
     private String estado;
     private String observacionesPedido;
@@ -17,6 +19,12 @@ public class pedidos implements Serializable {
 
     public int getIdVen() { return idVen; }
     public void setIdVen(int idVen) { this.idVen = idVen; }
+
+    public int getIdCliente() { return idCliente; }
+    public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
+
+    public String getNombreCliente() { return nombreCliente; }
+    public void setNombreCliente(String nombreCliente) { this.nombreCliente = nombreCliente; }
 
     public Date getFechaEntrega() { return fechaEntrega; }
     public void setFechaEntrega(Date fechaEntrega) { this.fechaEntrega = fechaEntrega; }

@@ -25,14 +25,14 @@ public class pedidosBean implements Serializable {
     private List<ventas> listaVentas;
 
     private pedidosDao pedidosDao = new pedidosDao();
-    private ventasDao ventasDao = new ventasDao(); 
+    private ventasDao ventasDao = new ventasDao();
 
     @PostConstruct
     public void init() {
         pedidoNuevo = new pedidos();
         pedidoNuevo.setFechaEntrega(new Date());
         cargarPedidos();
-        cargarVentas(); 
+        cargarVentas();
     }
 
     public void cargarPedidos() {
@@ -40,7 +40,7 @@ public class pedidosBean implements Serializable {
     }
 
     public void cargarVentas() {
-        listaVentas = ventasDao.listar(); 
+        listaVentas = ventasDao.listarProcesando(); 
     }
 
     public String guardarPedido() {
@@ -50,25 +50,30 @@ public class pedidosBean implements Serializable {
             pedidoNuevo = new pedidos();
             pedidoNuevo.setFechaEntrega(new Date());
             cargarPedidos();
-            return "/views/Pedidos/Index.xhtml?faces-redirect=true"; 
+            cargarVentas();
+            return "/views/Pedidos/Index.xhtml?faces-redirect=true";
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al registrar el pedido: " + pedidosDao.ultimoError, null));
-            return null; 
+            return null;
         }
     }
 
     public String actualizarPedido() {
-        System.out.println("¡Método actualizarPedido llamado!");
         if (pedidosDao.actualizar(pedidoSeleccionado)) {
+            
+            if ("Tomado".equalsIgnoreCase(pedidoSeleccionado.getEstado()) || "Completado".equalsIgnoreCase(pedidoSeleccionado.getEstado())) {
+                ventasDao.actualizarEstado(pedidoSeleccionado.getIdVen(), "Completada");
+            }
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Pedido actualizado correctamente"));
             cargarPedidos();
-            return "/views/Pedidos/index.xhtml?faces-redirect=true"; 
+            cargarVentas();
+            return "/views/Pedidos/Index.xhtml?faces-redirect=true";
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al actualizar el pedido: " + pedidosDao.ultimoError, null));
-            return null; 
+            return null;
         }
     }
 
@@ -77,20 +82,20 @@ public class pedidosBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Pedido eliminado correctamente"));
             cargarPedidos();
+            cargarVentas();
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al eliminar el pedido: " + pedidosDao.ultimoError, null));
         }
     }
 
-   public String prepararEdicion(pedidos p) {
-    System.out.println("Pedido seleccionado: " + p.getIdPed());
-    this.pedidoSeleccionado = p;
-    return "/views/Pedidos/editarPedido.xhtml?faces-redirect=true";
-}
+    public String prepararEdicion(pedidos p) {
+        this.pedidoSeleccionado = p;
+        return "/views/Pedidos/editarPedido.xhtml?faces-redirect=true";
+    }
 
     public String volverALaLista() {
-        return "/views/Pedidos/index.xhtml?faces-redirect=true";
+        return "/views/Pedidos/Index.xhtml?faces-redirect=true";
     }
 
     public List<pedidos> getListaPedidos() { return listaPedidos; }

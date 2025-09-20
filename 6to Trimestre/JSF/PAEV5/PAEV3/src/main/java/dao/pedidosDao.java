@@ -16,15 +16,12 @@ public class pedidosDao {
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
     }
-
-    public List<pedidos> listar() {
+ public List<pedidos> listar() {
         List<pedidos> lista = new ArrayList<>();
-        String sql = "SELECT * FROM pedidos ORDER BY id_ped DESC";
-
+        String sql = "SELECT p.*, v.id_Cliente, c.nombre AS nombreCliente FROM pedidos p JOIN ventas v ON p.id_ven = v.id_ven JOIN clientes c ON v.id_Cliente = c.id_Cliente ORDER BY p.id_ped DESC";
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
             while (rs.next()) {
                 pedidos p = new pedidos();
                 p.setIdPed(rs.getInt("id_ped"));
@@ -32,16 +29,30 @@ public class pedidosDao {
                 p.setFechaEntrega(rs.getTimestamp("fecha_entrega"));
                 p.setEstado(rs.getString("estado"));
                 p.setObservacionesPedido(rs.getString("observaciones_pedido"));
+                 p.setIdCliente(rs.getInt("id_Cliente"));
+    p.setNombreCliente(rs.getString("nombreCliente"));
                 lista.add(p);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return lista;
     }
-
+    public boolean existePedidoParaVenta(int idVen) {
+        String sql = "SELECT COUNT(*) FROM pedidos WHERE id_ven=?";
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idVen);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     public boolean agregar(pedidos p) {
         String sql = "INSERT INTO pedidos (id_ven, fecha_entrega, estado, observaciones_pedido) VALUES (?, ?, ?, ?)";
 

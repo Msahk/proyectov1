@@ -25,7 +25,7 @@ public class ventasBean implements Serializable {
     private ventasDao ventasDao = new ventasDao();
     private usuariosDao usuariosDao = new usuariosDao();
     private clientesDao clienteDao = new clientesDao();
-private List<clientes> listaClientes = new ArrayList<>();
+    private List<clientes> listaClientes = new ArrayList<>();
     private List<ventas> listaVentas = new ArrayList<>();
     private ventas ventaNueva = new ventas();
     private ventas ventaSeleccionada;
@@ -47,27 +47,26 @@ private List<clientes> listaClientes = new ArrayList<>();
         listaVentas = ventasDao.listar();
     }
     public boolean isNuevoCliente() {
-    return nuevoCliente;
-}
-
-public void setNuevoCliente(boolean nuevoCliente) {
-    this.nuevoCliente = nuevoCliente;
-}
-    
-    public List<clientes> getListaClientes() {
-    if (listaClientes == null || listaClientes.isEmpty()) {
-        listaClientes = clienteDao.listar(); 
+        return nuevoCliente;
     }
-    return listaClientes;
-}
-public void setListaClientes(List<clientes> listaClientes) {
-    this.listaClientes = listaClientes;
-}
+
+    public void setNuevoCliente(boolean nuevoCliente) {
+        this.nuevoCliente = nuevoCliente;
+    }
+        
+    public List<clientes> getListaClientes() {
+        if (listaClientes == null || listaClientes.isEmpty()) {
+            listaClientes = clienteDao.listar(); 
+        }
+        return listaClientes;
+    }
+    public void setListaClientes(List<clientes> listaClientes) {
+        this.listaClientes = listaClientes;
+    }
     public void cargarUsuarios() {
         listaUsuarios = usuariosDao.listar();
     }
 
-    
     public List<usuarios> getListaUsuarios() {
         return listaUsuarios;
     }
@@ -75,7 +74,6 @@ public void setListaClientes(List<clientes> listaClientes) {
         this.listaUsuarios = listaUsuarios;
     }
 
-   
     public clientes getClienteNuevo() {
         return clienteNuevo;
     }
@@ -83,7 +81,6 @@ public void setListaClientes(List<clientes> listaClientes) {
         this.clienteNuevo = clienteNuevo;
     }
 
-    
     public ventas getVentaNueva() {
         return ventaNueva;
     }
@@ -104,41 +101,74 @@ public void setListaClientes(List<clientes> listaClientes) {
         this.listaVentas = listaVentas;
     }
 
-   
-    public String guardarVenta() {
-        
-        if (clienteNuevo.getNombre() != null && !clienteNuevo.getNombre().isEmpty()) {
-            clienteDao.agregar(clienteNuevo); 
-            int idClienteNuevo = clienteDao.obtenerUltimoId(); 
-            ventaNueva.setIdCliente(idClienteNuevo); 
-        }
-       
+   public String guardarVenta() {
+    
+    int idGenerado = ventasDao.agregar(ventaNueva);
+    if (idGenerado > 0) {
+        if ("pedido".equalsIgnoreCase(ventaNueva.getTipo())) {
+            
+            ventas v = ventasDao.obtenerPorId(idGenerado);
+            if (v != null) {
+               
+                dao.pedidosDao pedidosDao = new dao.pedidosDao();
+                if (!pedidosDao.existePedidoParaVenta(v.getIdVen())) {
+                    models.pedidos nuevoPedido = new models.pedidos();
+                    nuevoPedido.setIdVen(v.getIdVen());
+                    nuevoPedido.setIdCliente(v.getIdCliente());
+                    nuevoPedido.setNombreCliente(v.getNombreCliente());
+                    nuevoPedido.setEstado("Pendiente");
+                    nuevoPedido.setFechaEntrega(new java.util.Date());
+                    nuevoPedido.setObservacionesPedido(v.getObservaciones());
+                    pedidosDao.agregar(nuevoPedido);
+                    control.pedidosBean pedidosBean = (control.pedidosBean) FacesContext.getCurrentInstance()
+    .getExternalContext().getSessionMap().get("pedidosBean");
+if (pedidosBean != null) {
+    pedidosBean.cargarPedidos();
+}
 
-        if (ventasDao.agregar(ventaNueva)) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage("Venta registrada correctamente"));
-            ventaNueva = new ventas();
-            ventaNueva.setFecha(new Date());
-            cargarVentas();
-            return "/views/Ventas/index.xhtml?faces-redirect=true";
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al registrar la venta", null));
-            return null;
+                }
+            }
         }
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage("Venta registrada correctamente"));
+        ventaNueva = new ventas();
+        ventaNueva.setFecha(new Date());
+        cargarVentas();
+        return "/views/Ventas/index.xhtml?faces-redirect=true";
+    } else {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al registrar la venta", null));
+        return null;
     }
+}
 
     public String actualizarVenta() {
-        if (ventasDao.actualizar(ventaSeleccionada)) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage("Venta actualizada correctamente"));
-            cargarVentas();
-            return "/views/Ventas/index.xhtml?faces-redirect=true";
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al actualizar la venta", null));
-            return null;
+        if (ventaSeleccionada != null) {
+            if ("pedido".equalsIgnoreCase(ventaSeleccionada.getTipo())) {
+                if (ventasDao.actualizarTipoVenta(ventaSeleccionada)) {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage("Venta actualizada correctamente y reflejada en pedidos."));
+                    cargarVentas();
+                    return "/views/Ventas/index.xhtml?faces-redirect=true";
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al actualizar la venta", null));
+                    return null;
+                }
+            } else {
+                if (ventasDao.actualizar(ventaSeleccionada)) {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage("Venta actualizada correctamente"));
+                    cargarVentas();
+                    return "/views/Ventas/index.xhtml?faces-redirect=true";
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al actualizar la venta", null));
+                    return null;
+                }
+            }
         }
+        return null;
     }
 
     public void eliminarVenta(int id) {

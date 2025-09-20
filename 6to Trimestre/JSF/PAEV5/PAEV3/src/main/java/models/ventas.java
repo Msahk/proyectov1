@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class ventas implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     private int idVen;
@@ -17,8 +16,6 @@ public class ventas implements Serializable {
     private String estado;
     private Date fecha;
     private String observaciones;
-    
-    
 
     public int getIdVen() { return idVen; }
     public void setIdVen(int idVen) { this.idVen = idVen; }
@@ -49,5 +46,4 @@ public class ventas implements Serializable {
 
     public String getObservaciones() { return observaciones; }
     public void setObservaciones(String observaciones) { this.observaciones = observaciones; }
-    
 }
