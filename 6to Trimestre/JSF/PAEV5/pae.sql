@@ -568,3 +568,11 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+describe usuarios;
+select * from usuarios;
+
+use pae;
+SELECT * FROM usuarios WHERE (correo = "avilamarlon31@gmail.com" OR documento = "123123") AND password = "81dc9bdb52d04dc20036dbd8313ed055";
+update usuarios set password = "81dc9bdb52d04dc20036dbd8313ed055" where id_usu=1;
