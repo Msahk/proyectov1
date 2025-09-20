@@ -1,92 +1,63 @@
 package models;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class ventas {
-    
-    public int id_ven;
-    public String Tipo;
-    public String fecha;
-    public int id_usu;
-    public int id_Cliente;
-    public BigDecimal total;
-    public String estado;
-    public String observaciones;
-    public String vendedorNombre;
-    public String clienteNombre;
+    private int idVen;
+    private String tipo; // ENUM
+    private Date fecha;
+    private int idUsuario;
+    private int idCliente;
+    private double total;
+    private String estado; // ENUM
+    private String observaciones;
 
-    public ventas(int id_ven, String Tipo, String fecha, int id_usu, int id_Cliente, BigDecimal total, String estado, String observaciones, String vendedorNombre, String clienteNombre) {
-        this.id_ven = id_ven;
-        this.Tipo = Tipo;
-        this.fecha = fecha;
-        this.id_usu = id_usu;
-        this.id_Cliente = id_Cliente;
-        this.total = total;
-        this.estado = estado;
-        this.observaciones = observaciones;
-        this.vendedorNombre = vendedorNombre;
-        this.clienteNombre = clienteNombre;
+    // Getters y Setters
+    public int getIdVen() {
+        return idVen;
     }
-
-    
-
-    public ventas() {
-        
-    }
-
-    public int getId_ven() {
-        return id_ven;
-    }
-
-    public void setId_ven(int id_ven) {
-        this.id_ven = id_ven;
+    public void setIdVen(int idVen) {
+        this.idVen = idVen;
     }
 
     public String getTipo() {
-        return Tipo;
+        return tipo;
+    }
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
-    public void setTipo(String Tipo) {
-        this.Tipo = Tipo;
-    }
-
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
-
-    public void setFecha(String fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
-    public int getId_usu() {
-        return id_usu;
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
-    public void setId_usu(int id_usu) {
-        this.id_usu = id_usu;
+    public int getIdCliente() {
+        return idCliente;
+    }
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
-    public int getId_Cliente() {
-        return id_Cliente;
-    }
-
-    public void setId_Cliente(int id_Cliente) {
-        this.id_Cliente = id_Cliente;
-    }
-
-    public BigDecimal getTotal() {
+    public double getTotal() {
         return total;
     }
-
-    public void setTotal(BigDecimal total) {
+    public void setTotal(double total) {
         this.total = total;
     }
 
     public String getEstado() {
         return estado;
     }
-
     public void setEstado(String estado) {
         this.estado = estado;
     }
@@ -94,27 +65,7 @@ public class ventas {
     public String getObservaciones() {
         return observaciones;
     }
-
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
     }
-
-    public String getVendedorNombre() {
-        return vendedorNombre;
-    }
-
-    public void setVendedorNombre(String vendedorNombre) {
-        this.vendedorNombre = vendedorNombre;
-    }
-
-    public String getClienteNombre() {
-        return clienteNombre;
-    }
-
-    public void setClienteNombre(String ClienteNombre) {
-        this.clienteNombre = ClienteNombre;
-    }
-        
-    
-    
 }

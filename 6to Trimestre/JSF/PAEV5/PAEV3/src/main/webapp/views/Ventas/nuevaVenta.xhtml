@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Nueva Venta</title>
+</h:head>
+<h:body>
+
+    <h1>Registrar Nueva Venta</h1>
+
+    <h:form>
+        <h:panelGrid columns="2" cellpadding="5">
+
+            <h:outputLabel value="Tipo:" />
+            <h:selectOneMenu value="#{ventasBean.ventaNueva.tipo}">
+                <f:selectItem itemValue="directa" itemLabel="Directa" />
+                <f:selectItem itemValue="pedido" itemLabel="Pedido" />
+            </h:selectOneMenu>
+
+            <h:outputLabel value="Cliente (ID):" />
+            <h:inputText value="#{ventasBean.ventaNueva.idCliente}" />
+
+            <h:outputLabel value="Usuario (ID):" />
+            <h:inputText value="#{ventasBean.ventaNueva.idUsuario}" />
+
+            <h:outputLabel value="Total:" />
+            <h:inputText value="#{ventasBean.ventaNueva.total}" />
+
+            <h:outputLabel value="Estado:" />
+            <h:selectOneMenu value="#{ventasBean.ventaNueva.estado}">
+                <f:selectItem itemValue="Procesando" itemLabel="Procesando" />
+                <f:selectItem itemValue="Completada" itemLabel="Completada" />
+            </h:selectOneMenu>
+
+            <h:outputLabel value="Observaciones:" />
+            <h:inputTextarea value="#{ventasBean.ventaNueva.observaciones}" rows="3" cols="30"/>
+        </h:panelGrid>
+
+        <h:commandButton value="Guardar" action="#{ventasBean.guardarVenta}" />
+        <h:commandButton value="Volver" action="ventas.xhtml?faces-redirect=true" />
+    </h:form>
+
+</h:body>
+</html>
