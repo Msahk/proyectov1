@@ -1,28 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package models;
 
-/**
- *
- * @author USER
- */
-public class clientes {
-    
-    public int id_Cliente;
-    public String nombre;
-    public String telefono;
-    public String correo;
+import java.io.Serializable;
+
+public class clientes implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private int id_Cliente;
+    private String nombre;
+    private String telefono;
+    private String correo;
+
+    public clientes() {}
 
     public clientes(int id_Cliente, String nombre, String telefono, String correo) {
         this.id_Cliente = id_Cliente;
         this.nombre = nombre;
         this.telefono = telefono;
         this.correo = correo;
-    }
-
-    public clientes() {
     }
 
     public int getId_Cliente() {
@@ -56,8 +50,4 @@ public class clientes {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-    
-    
-    
-    
 }

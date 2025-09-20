@@ -17,34 +17,37 @@ public class ventasDao {
     }
 
     
-    public List<ventas> listar() {
-        List<ventas> lista = new ArrayList<>();
-        String sql = "SELECT * FROM ventas ORDER BY id_ven DESC";
+public List<ventas> listar() {
+    List<ventas> lista = new ArrayList<>();
+    String sql = "SELECT v.*, c.nombre AS nombreCliente, u.nombres AS nombreUsuario " +
+                 "FROM ventas v " +
+                 "LEFT JOIN clientes c ON v.id_Cliente = c.id_Cliente " +
+                 "LEFT JOIN usuarios u ON v.id_usu = u.id_usu " +
+                 "ORDER BY v.id_ven DESC";
 
-        try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+    try (Connection con = getConnection();
+         PreparedStatement ps = con.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                ventas v = new ventas();
-                v.setIdVen(rs.getInt("id_ven"));
-                v.setTipo(rs.getString("Tipo"));
-                v.setFecha(rs.getTimestamp("fecha"));
-                v.setIdUsuario(rs.getInt("id_usu"));
-                v.setIdCliente(rs.getInt("id_Cliente"));
-                v.setTotal(rs.getDouble("total"));
-                v.setEstado(rs.getString("estado"));
-                v.setObservaciones(rs.getString("observaciones"));
-                lista.add(v);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (rs.next()) {
+            ventas v = new ventas();
+            v.setIdVen(rs.getInt("id_ven"));
+            v.setTipo(rs.getString("Tipo"));
+            v.setFecha(rs.getTimestamp("fecha"));
+            v.setIdUsuario(rs.getInt("id_usu"));
+            v.setIdCliente(rs.getInt("id_Cliente"));
+            v.setTotal(rs.getDouble("total"));
+            v.setEstado(rs.getString("estado"));
+            v.setObservaciones(rs.getString("observaciones"));
+            v.setNombreCliente(rs.getString("nombreCliente"));
+            v.setNombreUsuario(rs.getString("nombreUsuario"));
+            lista.add(v);
         }
-
-        return lista;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
-
+    return lista;
+}
    
     public boolean agregar(ventas v) {
         String sql = "INSERT INTO ventas (Tipo, fecha, id_usu, id_Cliente, total, estado, observaciones) "
