@@ -103,7 +103,10 @@
 
                 <div class="mt-4 text-center">
                     <h:commandButton value="Registrar" styleClass="btn btn-success" action="#{ventasBean.guardarVenta}" />
-                    <h:commandButton value="Volver" styleClass="btn btn-secondary ms-3" action="#{ventasBean.volverALaLista}" />
+                    <h:commandButton value="Volver"
+                 styleClass="btn btn-secondary ms-3"
+                 action="#{ventasBean.volverALaLista}"
+                 immediate="true" />
                 </div>
             </h:form>
         </div>

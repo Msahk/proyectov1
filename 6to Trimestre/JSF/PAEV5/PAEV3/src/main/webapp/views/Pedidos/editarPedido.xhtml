@@ -41,7 +41,10 @@
 
                 <div class="mt-4 text-center">
                       <h:commandButton value="Guardar cambios" action="#{pedidosBean.actualizarPedido}" />
-                    <h:commandButton value="Volver" styleClass="btn btn-secondary ms-3" action="Index.xhtml?faces-redirect=true" immediate="true" />
+                    <h:commandButton value="Volver"
+                 styleClass="btn btn-secondary ms-3"
+                 action="#{pedidosBean.volverALaLista}"
+                 immediate="true" />
                 </div>
             </h:form>
         </div>
