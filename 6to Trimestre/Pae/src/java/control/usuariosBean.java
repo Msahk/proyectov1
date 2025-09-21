@@ -1,6 +1,5 @@
 package control;
 
-import beans.*;
 import com.sun.net.httpserver.HttpServer;
 import java.io.Serializable;
 import java.util.List;
@@ -10,7 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
-import models.usuarios;
+import modelo.usuarios;
 import dao.usuariosDao;
 import java.io.File;
 import java.io.IOException;
@@ -92,8 +91,13 @@ public class usuariosBean implements Serializable {
                 sesUsuario.setApellidos(rs.getString("apellidos"));
                 sesUsuario.setRol(rs.getString("rol"));
 
-                FacesContext.getCurrentInstance().getExternalContext()
-                            .getSessionMap().put("sessionUser", sesUsuario);
+                SessionUserBean bean = FacesContext.getCurrentInstance()
+    .getApplication()
+    .evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{sessionUser}", SessionUserBean.class);
+bean.setUsuario(sesUsuario);
+
+
+System.out.println("DEBUG: usuario guardado en bean: " + bean.getUsuario() + " nombres=" + bean.getNombres());
 
 
                 logged = true;
@@ -119,7 +123,7 @@ public class usuariosBean implements Serializable {
             try {
                 FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/PAEV3");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/Pae/index.xhtml");
                 
 
                 System.out.println("Sesión cerrada y redirigido a index");

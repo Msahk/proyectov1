@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Nuevo Usuario</title>
+    </h:head>
+    <h:body>
+        <ui:include src="/views/Navbar.xhtml" />
+        <f:event type="preRenderView" listener="#{usuariosBean.listar()}" />
+        <f:event type="preRenderView" listener="#{usuariosBean.limpiar()}" />
+        <div class="registro-section">
+            <h2>Nuevo Usuario</h2>
+            <h:form enctype="multipart/form-data" styleClass="">
+                <div class="form-group">
+                    <label for="documento">Documento:</label>
+                    <p:inputText id="documento" value="#{usuariosBean.usuario.documento}" required="true"
+                                 requiredMessage="Debe especificar el Documento" styleClass="input"/>
+                    <p:message for="documento" style="color: red;" />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombres">Nombres:</label>
+                        <p:inputText id="nombres" value="#{usuariosBean.usuario.nombres}" required="true"
+                                     requiredMessage="Debe especificar el Nombre" styleClass="input" />
+                        <p:message for="nombres" style="color: red;" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apellidos">Apellidos:</label>
+                        <p:inputText id="apellidos" value="#{usuariosBean.usuario.apellidos}" required="true"
+                                     requiredMessage="Debe especificar el Apellido" styleClass="input"/>
+                        <p:message for="apellidos" style="color: red;" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="telefono">Teléfono:</label>
+                        <p:inputText id="telefono" value="#{usuariosBean.usuario.telefono}" required="true"
+                                     requiredMessage="Debe especificar el telefono"  styleClass="input"/>
+                        <p:message for="telefono" style="color: red;"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="usuario">Direccion:</label>
+                        <p:inputText id="direccion" value="#{usuariosBean.usuario.direccion}" required="true"
+                                     requiredMessage="Debe especificar la direccion" styleClass="input"/>
+                        <p:message for="direccion" style="color: red;" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="correo">Correo Electrónico:</label>
+                        <p:inputText id="correo" value="#{usuariosBean.usuario.correo}" required="true"
+                                     requiredMessage="Debe especificar el correo" styleClass="input"/>
+                        <p:message for="correo" style="color: red;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña:</label>
+                        <p:password id="password" value="#{usuariosBean.usuario.password}" required="true"
+                                    requiredMessage="Debe especificar la contraseña" styleClass="input"/>
+                        <p:message for="password" style="color: red;" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="rol">Rol:</label>
+                    <h:selectOneMenu id="rol" value="#{usuariosBean.usuario.rol}" required="true"
+                                     requiredMessage="Debe especificar el rol" styleClass="select">
+                        <f:selectItem itemLabel="Administrador" itemValue="A" />
+                        <f:selectItem itemLabel="Empleado Producción" itemValue="EP" />
+                        <f:selectItem itemLabel="Empleado Ventas" itemValue="EV" />
+                    </h:selectOneMenu>
+                    <p:message for="rol" style="color: red;" />
+
+                </div>    
+
+                <br/>
+                <div class="form-row">
+                <div class="form-group">
+                <p:commandButton value="Guardar" ajax="false" actionListener="#{usuariosBean.agregar()}" action="Index" />
+                </div>    
+                <div class="form-group">
+                <p:commandButton value="Cancelar" ajax="false" immediate="true" action="Index" />
+                </div>    
+                </div>    
+            </h:form>
+        </div>
+    </h:body>
+</html>
