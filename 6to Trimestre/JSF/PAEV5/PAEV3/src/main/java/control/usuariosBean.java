@@ -1,6 +1,7 @@
 package control;
 
 import beans.*;
+import com.sun.net.httpserver.HttpServer;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -11,24 +12,53 @@ import javax.faces.context.FacesContext;
 
 import models.usuarios;
 import dao.usuariosDao;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.primefaces.PrimeFaces;
 
 @ManagedBean
 @SessionScoped
 public class usuariosBean implements Serializable {
     private static final long serialVersionUID = 1L;
-    
-    
-
     private final usuariosDao usuDAO = new usuariosDao();
     private usuarios usuario = new usuarios();
     private List<usuarios> lstUsu = new ArrayList<>();
+    
+    public void exportarPDF() {
+        try {
+            String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/PAEV3/reporte.jasper");
+            File jasper = new File(path);
+            usuariosDataSource uds = new usuariosDataSource();
+            
+            JasperPrint jprint = JasperFillManager.fillReport(jasper.getPath(), null, uds);
+            
+            HttpServletResponse resp = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        
+            resp.addHeader("Content-disposition", "attachment; filename=Usuarios.pdf");
+            
+            try (ServletOutputStream stream = resp.getOutputStream()){
+                JasperExportManager.exportReportToPdfStream(jprint, stream);
+                
+                stream.flush();
+                stream.close();
+            }
+        } catch (JRException | IOException e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error creando reporte"));
+        }
+    }
+    
+    
     
     public usuarios getUsuario() {
         return usuario;
