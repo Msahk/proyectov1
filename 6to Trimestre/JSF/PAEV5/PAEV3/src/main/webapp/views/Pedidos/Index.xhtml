@@ -16,18 +16,7 @@
     <div class="container mt-5">
         <div class="card shadow p-4">
             <h2 class="text-center">Gestión de Pedidos</h2>
-            <h4>
-                Hola, 
-                <strong>#{usuariosBean.usuario.nombres} #{usuariosBean.usuario.apellidos}</strong>
-            </h4>
-            <p>
-                Rol: 
-                <strong>
-                    <h:outputText value="#{usuariosBean.usuario.rol eq 'A' ? 'Administrador' : 
-                                            (usuariosBean.usuario.rol eq 'EP' ? 'Empleado Producción' : 
-                                            (usuariosBean.usuario.rol eq 'EV' ? 'Empleado Ventas' : 'Desconocido'))}" />
-                </strong>
-            </p>
+            
 
            
           
@@ -35,15 +24,19 @@
             <hr/>
 
             <h:form>
-                <h:dataTable value="#{pedidosBean.listaPedidos}" var="pedido" border="1" cellpadding="5" class="table table-bordered">
-                    <h:column>
-                        <f:facet name="header">ID Pedido</f:facet>
-                        #{pedido.idPed}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">ID Venta</f:facet>
-                        #{pedido.idVen}
-                    </h:column>
+               <h:dataTable value="#{pedidosBean.listaPedidos}" var="pedido" class="table">
+    <h:column>
+        <f:facet name="header">ID Pedido</f:facet>
+        #{pedido.idPed}
+    </h:column>
+    <h:column>
+        <f:facet name="header">Venta</f:facet>
+        #{pedido.idVen}
+    </h:column>
+    <h:column>
+        <f:facet name="header">Cliente</f:facet>
+        #{pedido.nombreCliente}
+    </h:column>
                     <h:column>
                         <f:facet name="header">Fecha Entrega</f:facet>
                         #{pedido.fechaEntrega}
@@ -71,7 +64,7 @@
             </h:form>
 
             <h:form>
-                <h:commandButton value="Nuevo Pedido" styleClass="btn btn-primary mt-3" action="nuevoPedido.xhtml?faces-redirect=true" />
+               
             </h:form>
         </div>
     </div>

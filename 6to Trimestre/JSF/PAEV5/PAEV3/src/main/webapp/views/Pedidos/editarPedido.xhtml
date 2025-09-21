@@ -23,25 +23,31 @@
                 <h:messages globalOnly="true" layout="table" styleClass="alert alert-warning"/>
 
                 <h:panelGrid columns="2" cellpadding="5" class="table table-borderless">
-                  <h:outputLabel value="Venta (ID):" styleClass="form-label" />
-                   <h:inputText value="#{pedidosBean.pedidoSeleccionado.idVen}" styleClass="form-control" />
+    <h:outputLabel value="Venta:" styleClass="form-label" />
+    <h:outputText value="Venta ##{pedidosBean.pedidoSeleccionado.idVen} - Cliente ##{pedidosBean.pedidoSeleccionado.idCliente} (#{pedidosBean.pedidoSeleccionado.nombreCliente})" styleClass="form-control" />
 
-                    <h:outputLabel value="Fecha Entrega:" styleClass="form-label" />
-                    <h:inputText value="#{pedidosBean.pedidoSeleccionado.fechaEntrega}" styleClass="form-control" />
+    <h:outputLabel value="Fecha Entrega:" styleClass="form-label" />
+    <h:inputText value="#{pedidosBean.pedidoSeleccionado.fechaEntrega}" styleClass="form-control">
+        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+    </h:inputText>
 
-                    <h:outputLabel value="Estado:" styleClass="form-label" />
-                   <h:selectOneMenu value="#{pedidosBean.pedidoSeleccionado.estado}" styleClass="form-select" required="true">
-    <f:selectItem itemValue="Pendiente" itemLabel="Pendiente" />
-    <f:selectItem itemValue="Tomado" itemLabel="Tomado" />
-</h:selectOneMenu>
+    <h:outputLabel value="Estado:" styleClass="form-label" />
+    <h:selectOneMenu value="#{pedidosBean.pedidoSeleccionado.estado}" styleClass="form-select" required="true">
+        <f:selectItem itemValue="Pendiente" itemLabel="Pendiente" />
+        <f:selectItem itemValue="Tomado" itemLabel="Tomado" />
+        <f:selectItem itemValue="Completado" itemLabel="Completado" />
+    </h:selectOneMenu>
 
-                    <h:outputLabel value="Observaciones:" styleClass="form-label" />
-                    <h:inputTextarea value="#{pedidosBean.pedidoSeleccionado.observacionesPedido}" rows="3" cols="30" styleClass="form-control"/>
-                </h:panelGrid>
+    <h:outputLabel value="Observaciones:" styleClass="form-label" />
+    <h:inputTextarea value="#{pedidosBean.pedidoSeleccionado.observacionesPedido}" rows="3" cols="30" styleClass="form-control"/>
+</h:panelGrid>
 
                 <div class="mt-4 text-center">
                       <h:commandButton value="Guardar cambios" action="#{pedidosBean.actualizarPedido}" />
-                    <h:commandButton value="Volver" styleClass="btn btn-secondary ms-3" action="Index.xhtml?faces-redirect=true" immediate="true" />
+                    <h:commandButton value="Volver"
+                 styleClass="btn btn-secondary ms-3"
+                 action="#{pedidosBean.volverALaLista}"
+                 immediate="true" />
                 </div>
             </h:form>
         </div>
