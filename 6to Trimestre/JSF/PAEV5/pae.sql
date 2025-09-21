@@ -576,3 +576,5 @@ select * from usuarios;
 use pae;
 SELECT * FROM usuarios WHERE (correo = "avilamarlon31@gmail.com" OR documento = "123123") AND password = "81dc9bdb52d04dc20036dbd8313ed055";
 update usuarios set password = "81dc9bdb52d04dc20036dbd8313ed055" where id_usu=1;
+
+ALTER TABLE pedidos MODIFY estado ENUM('Pendiente','Tomado','Completado');

@@ -5,26 +5,26 @@
        xmlns:p="http://primefaces.org/ui">
     <h:head>
         <meta charset="UTF-8"/>
-        <title>Péguele a la Empanada</title>
+        <title>#{etq.msj_title}</title>
         <link rel="stylesheet" type="text/css" href="assets/css/index.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
               rel="stylesheet"/>
     </h:head>
     <h:body>
         <header class="header">
-            <div class="logo">Péguele a la Empanada 🥟</div>
+            <div class="logo">#{etq.msj_title} 🥟</div>
             <nav class="navbar">
-                <a href="#inicio">Inicio</a>
-                <a class="boton" onclick="login()">Ingresar</a>
+                <a href="#inicio">#{etq.msj_inicio}</a>
+                <a class="boton" onclick="login()">#{etq.msj_ingresar}</a>
             </nav>
         </header>
 
         <main>
             <section class="inicio" id="inicio">
                 <div class="contenido">
-                    <h1>¡Bienvenido al sistema!</h1>
-                    <p>Optimiza tus procesos, organiza tu inventario y controla tus operaciones.</p>
-                    <a onclick="login()" class="boton">Ingresar al sistema</a>
+                    <h1>¡#{etq.msj_titulo}!</h1>
+                    <p>#{etq.msj_info}</p>
+                    <a onclick="login()" class="boton">#{etq.msj_ingresarSistema}</a>
                 </div>
                 <div class="imagenes">
                     <img src="#{request.contextPath}/assets/img/1.png" alt="Empanada tradicional"/>
@@ -36,7 +36,7 @@
 
 
         <footer class="footer">
-            <p> 2025 Péguelo a la Empanada. Todos los derechos reservados.</p>
+            <p> 2025 #{etq.msj_title}. #{etq.msj_derechos}.</p>
         </footer>
         
         
@@ -44,14 +44,14 @@
     <h:form id="formLogin" prependId="false" styleClass="p-3">
       <p:messages id="msj" />
       <div class="mb-3 swal-row">
-        <label for="correoDoc" class="swal-label form-label">Correo o Documento:</label>
+        <label for="correoDoc" class="swal-label form-label">#{etq.msj_correo}:</label>
         <div class="swal-input-wrap">
           <p:inputText id="correoDoc" value="#{usuariosBean.usuario.correo}" styleClass="form-control" />
         </div>
       </div>
 
       <div class="mb-3 swal-row">
-        <label for="PwUsr" class="swal-label form-label">Contraseña:</label>
+        <label for="PwUsr" class="swal-label form-label">#{etq.msj_pass}:</label>
         <div class="swal-input-wrap">
           <p:password id="PwUsr" value="#{usuariosBean.usuario.password}" styleClass="form-control" feedback="false" />
         </div>
@@ -80,7 +80,7 @@
 
     Swal.fire({
       html: '<div id="swal-login-container"></div>',
-      title: 'Iniciar Sesión',
+      title: '#{etq.msj_iniciarSesion}',
       showConfirmButton: false,
       showCloseButton: true,
       didOpen: function () {
@@ -95,7 +95,7 @@
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'swal2-confirm swal2-styled btn btn-primary';
-        btn.innerText = 'Aceptar';
+        btn.innerText = '#{etq.msj_aceptar}';
         btn.onclick = function () {
           var cCorreo = clone.querySelector('input[id*="correoDoc"], input[name*="correo"]');
           var cPw = clone.querySelector('input[type="password"]');
@@ -113,9 +113,9 @@
 
   function handleLoginComplete(xhr, status, args){
     var logged = args && args.loggedIn;
-    var msg = args && args.msg ? args.msg : 'Credenciales inválidas';
+    var msg = args && args.msg ? args.msg : '#{etq.msj_credenciales}';
     if (logged){
-      Swal.fire({icon:'success',title:'Bienvenido',text:msg,timer:1000,showConfirmButton:false})
+      Swal.fire({icon:'success',title:'#{etq.msj_bienvenido}',text:'#{etq.msj_bienvenido} '+msg,timer:1000,showConfirmButton:false})
         .then(function(){ window.location = args.redirect || 'views/Dashboard.xhtml'; });
     } else {
       Swal.fire({icon:'error',title:'Error',text:msg});

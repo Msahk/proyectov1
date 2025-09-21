@@ -101,7 +101,7 @@ System.out.println("DEBUG: usuario guardado en bean: " + bean.getUsuario() + " n
 
 
                 logged = true;
-                message = "Bienvenido " + sesUsuario.getNombres() + " " + sesUsuario.getApellidos();
+                message = sesUsuario.getNombres() + " " + sesUsuario.getApellidos();
                 redirectTo = "views/Dashboard.xhtml"; 
             } else {
                 message = "Correo/Documento o contraseña inválidos";
