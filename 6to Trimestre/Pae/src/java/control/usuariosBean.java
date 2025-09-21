@@ -36,7 +36,7 @@ public class usuariosBean implements Serializable {
     
     public void exportarPDF() {
         try {
-            String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reporte.jasper");
+            String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/usuarios.jasper");
             File jasper = new File(path);
             usuariosDataSource uds = new usuariosDataSource();
             
