@@ -5,14 +5,24 @@
       xmlns:p="http://primefaces.org/ui">
 <h:head>
     <title>Dashboard</title>
+    <h:outputStylesheet library="primefaces" name="primefaces.css"/>
+    <h:outputStylesheet library="css" name="tablas.css"/>
+    <h:outputStylesheet library="css" name="navbar.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" 
+          rel="stylesheet" />
+    
 </h:head>
-<h:body>
+    <h:body>
     <header class="header">
         <div class="logo">Peguele a la empanada</div>
     
-    <h:form>
-        <p:menubar class="navbar">
-            <p:submenu label="Administración" rendered="#{usuariosBean.usuario.rol eq 'A'}">
+        <h:form>
+        <p:menubar styleClass="navbar">
+           <p:submenu label="Administración" rendered="#{not empty sessionScope.sessionUser and sessionScope.sessionUser.rol == 'A'}">
+
+
                 <p:menuitem value="Usuarios" outcome="/views/Usuarios/Index.xhtml"/>
                 <p:menuitem value="Ventas" outcome="/views/Ventas/index.xhtml"/>
                 <p:menuitem value="Pedidos" outcome="/views/Pedidos/Index.xhtml"/>
@@ -20,17 +30,23 @@
                 <p:menuitem value="Producción"/>
             </p:submenu>
 
-            <p:submenu label="Producción" rendered="#{usuariosBean.usuario.rol eq 'EP'}">
+            <p:submenu label="Administración" rendered="#{not empty sessionScope.sessionUser and sessionScope.sessionUser.rol == 'EP'}">
+
+
                 <p:menuitem value="Inventario"/>
                 <p:menuitem value="Producción"/>
             </p:submenu>
 
-            <p:submenu label="Ventas" rendered="#{usuariosBean.usuario.rol eq 'EV'}">
+            <p:submenu label="Administración" rendered="#{not empty sessionScope.sessionUser and sessionScope.sessionUser.rol == 'EV'}">
+
+
                 <p:menuitem value="Ventas"/>
                 <p:menuitem value="Pedidos"/>
             </p:submenu>
 
             <p:menuitem value="Cerrar Sesión" action="#{usuariosBean.logout}" ajax="false" icon="pi pi-sign-out"/>
+
+
         </p:menubar>
     </h:form>
         </header>

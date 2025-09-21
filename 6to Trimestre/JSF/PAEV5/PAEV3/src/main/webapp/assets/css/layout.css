@@ -20,8 +20,6 @@ body {
 /* HEADER */
 .header {
     width: 100%;
-    background-color: #000;
-    color: #fff;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
@@ -37,7 +35,6 @@ body {
 /* NAVBAR */
 .navbar {
     width: 100%;
-    background-color: #212121;
     padding: 1rem 2rem;
     display: flex;
     justify-content: center;

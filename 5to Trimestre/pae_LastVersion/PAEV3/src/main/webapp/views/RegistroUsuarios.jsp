@@ -4,17 +4,6 @@
 
 
 
-<%
-    usuarios usu = (usuarios) session.getAttribute("usuarios");
-    if (usu == null || ("EP".equals(usu.getRol())) || ("EV".equals(usu.getRol()))) {
-        response.sendRedirect(request.getContextPath() + "/index.jsp");
-        return;
-    }
-%>
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

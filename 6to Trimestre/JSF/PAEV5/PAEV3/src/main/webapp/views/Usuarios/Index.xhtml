@@ -7,73 +7,97 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Gestión de Usuarios</title>
+        <link rel="stylesheet" 
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
     </h:head>
     <h:body>
         <ui:include src="/views/Navbar.xhtml" />
         <f:event type="preRenderView" listener="#{usuariosBean.listar()}" />
-        <h1>Gestión de Usuarios</h1>
         <center>
-            <h:form>
-                <p:commandButton value="Nuevo Usuario" action="nuevousu" />
-                
-                <br/><br/>
-                <h:dataTable value="#{usuariosBean.lstUsu}" var="usu" border="1">
-                    <p:column>
-                        <f:facet name="header">Id</f:facet>
-                        <p:outputLabel value="#{usu.idUsu}" />
-                    </p:column>
+            <div class="container mt-5">
+                <div class="card shadow p-1">
+                    <h1>Gestión de Usuarios</h1>
 
-                    <p:column>
-                        <f:facet name="header">DOCUMENTO</f:facet>
-                        <p:outputLabel value="#{usu.documento}" />
-                    </p:column>
+                    <h:form>
+                        <h:commandButton value="Nuevo Usuario" action="nuevousu" styleClass="btn btn-primary"/>
 
-                    <p:column>
-                        <f:facet name="header">Nombres</f:facet>
-                        <p:outputLabel value="#{usu.nombres}" />
-                    </p:column>
+                        <br/><br/>
+                        <h:dataTable value="#{usuariosBean.lstUsu}" var="usu"  border="1" cellpadding="8" class="table table-bordered">
+                            <p:column>
+                                <f:facet name="header">Id</f:facet>
+                                <p:outputLabel value="#{usu.idUsu}" />
+                            </p:column>
 
-                    <p:column>
-                        <f:facet name="header">Apellidos</f:facet>
-                        <p:outputLabel value="#{usu.apellidos}" />
-                    </p:column>
+                            <p:column>
+                                <f:facet name="header">DOCUMENTO</f:facet>
+                                <p:outputLabel value="#{usu.documento}" />
+                            </p:column>
 
-                    <p:column>
-                        <f:facet name="header">Teléfono</f:facet>
-                        <p:outputLabel value="#{usu.telefono}" />
-                    </p:column>
+                            <p:column>
+                                <f:facet name="header">Nombres</f:facet>
+                                <p:outputLabel value="#{usu.nombres}" />
+                            </p:column>
 
-                    <p:column>
-                        <f:facet name="header">Dirección</f:facet>
-                        <p:outputLabel value="#{usu.direccion}" />
-                    </p:column>
+                            <p:column>
+                                <f:facet name="header">Apellidos</f:facet>
+                                <p:outputLabel value="#{usu.apellidos}" />
+                            </p:column>
 
-                    <p:column>
-                        <f:facet name="header">Correo</f:facet>
-                        <p:outputLabel value="#{usu.correo}" />
-                    </p:column>
+                            <p:column>
+                                <f:facet name="header">Teléfono</f:facet>
+                                <p:outputLabel value="#{usu.telefono}" />
+                            </p:column>
 
-                    <p:column>
-                        <f:facet name="header">Rol</f:facet>
-                        <p:outputLabel value="#{usu.rol}" />
-                    </p:column>
+                            <p:column>
+                                <f:facet name="header">Dirección</f:facet>
+                                <p:outputLabel value="#{usu.direccion}" />
+                            </p:column>
 
-                    <p:column>
-                        <f:facet name="header">estado</f:facet>
-                        <p:outputLabel value="#{usu.estado}" />
-                    </p:column>
+                            <p:column>
+                                <f:facet name="header">Correo</f:facet>
+                                <p:outputLabel value="#{usu.correo}" />
+                            </p:column>
 
-                    <p:column>
-                        <f:facet name="header">Opciones</f:facet>
-                        <p:commandButton ajax="false" value="Editar" actionListener="#{usuariosBean.editar(usu)}" action="editarusu" />
-                        <p:commandButton ajax="false" value="Eliminar" actionListener="#{usuariosBean.eliminar(usu)}" 
-                                         onclick="return(confirm('Está segur@ de ELIMINAR el usueedor??!!'))" />
-                    </p:column>
-                </h:dataTable>
-                <br/>
-                <p:commandButton 
-                    value="Menu anterior" icon="pi pi-home" action="/views/Dashboard.xhtml?faces-redirect=true" />
-            </h:form>
+                            <p:column>
+                                <f:facet name="header">Rol</f:facet>
+                                <p:outputLabel value="#{usu.rol}" />
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">estado</f:facet>
+                                <p:outputLabel value="#{usu.estado eq 'A' ? 'Activo' : (usu.estado eq 'I' ? 'Inactivo' : Desconocido)}" />
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">Opciones</f:facet>
+                                <h:commandLink actionListener="#{usuariosBean.editar(usu)}" action="editarusu"
+                                               styleClass="btn btn-outline-success d-inline-flex align-items-center">
+                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                </h:commandLink>
+                                <h:commandLink actionListener="#{usuariosBean.cambiar(usu.idUsu)}"
+               onclick="return confirm('¿Está seguro de cambiar el estado del usuario?!!')"
+               styleClass="btn btn-outline-warning d-inline-flex align-items-center">
+  <i class="#{usu.estado == 'A' ? 'bi bi-person-dash' : (usu.estado == 'I' ? 'bi bi-person-plus' : 'bi bi-person')}" aria-hidden="true"></i>
+  <f:ajax execute="@this" render=":formUsuarios:tablaUsuarios :formUsuarios:growl"  />
+
+</h:commandLink>
+
+                                <h:commandLink actionListener="#{usuariosBean.eliminar(usu)}"
+                                               onclick="return confirm('¿Está seguro de ELIMINAR el usuario?!!')"
+                                               styleClass="btn btn-outline-danger d-inline-flex align-items-center">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                </h:commandLink>
+
+                            </p:column>
+                        </h:dataTable>
+                        <br/>
+                        <p:commandButton 
+                            value="Menu anterior" icon="pi pi-home" action="/views/Dashboard.xhtml?faces-redirect=true" />
+                    </h:form>
+                </div>
+            </div>
         </center>
     </h:body>
+
 </html>

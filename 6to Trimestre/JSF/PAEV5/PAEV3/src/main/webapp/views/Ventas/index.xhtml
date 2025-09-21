@@ -15,30 +15,9 @@
     
      <ui:include src="/views/Navbar.xhtml" />
 
-    <div class="container mt-5">
+    <div class="container  mt-5">
         <div class="card shadow p-4">
-            <h2 class="text-center">Gestión de Ventas</h2>
-            <hr/>
-            
-            <h4>
-                Hola, 
-                <strong>#{usuariosBean.usuario.nombres} #{usuariosBean.usuario.apellidos}</strong>
-            </h4>
-            <p>
-                Rol: 
-                <strong>
-                    <h:outputText value="#{usuariosBean.usuario.rol eq 'A' ? 'Administrador' : 
-                                            (usuariosBean.usuario.rol eq 'EP' ? 'Empleado Producción' : 
-                                            (usuariosBean.usuario.rol eq 'EV' ? 'Empleado Ventas' : 'Desconocido'))}" />
-                </strong>
-            </p>
-
-           
-          
-
-            <hr/>
-
-            
+     
             <h:form>
                 <h:dataTable value="#{ventasBean.listaVentas}" var="venta" border="1" cellpadding="5" class="table table-bordered">
                     <h:column>

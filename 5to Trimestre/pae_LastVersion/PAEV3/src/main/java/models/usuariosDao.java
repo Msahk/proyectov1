@@ -30,6 +30,7 @@ public class usuariosDao {
 
         if (rs.next()) {
             String storedHash = rs.getString("password");
+            System.out.println(storedHash);
 
             if (BCrypt.checkpw(pass, storedHash)) {
                 obj_usu = new usuarios();

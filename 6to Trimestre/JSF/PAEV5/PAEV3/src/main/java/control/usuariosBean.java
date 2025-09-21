@@ -56,16 +56,18 @@ public class usuariosBean implements Serializable {
 
         try (ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                usuario.setCorreo(rs.getString("correo"));
-                usuario.setNombres(rs.getString("nombres"));
-                usuario.setApellidos(rs.getString("apellidos"));
-                usuario.setRol(rs.getString("rol"));
+                usuarios sesUsuario = new usuarios();
+                sesUsuario.setCorreo(rs.getString("correo"));
+                sesUsuario.setNombres(rs.getString("nombres"));
+                sesUsuario.setApellidos(rs.getString("apellidos"));
+                sesUsuario.setRol(rs.getString("rol"));
 
                 FacesContext.getCurrentInstance().getExternalContext()
-                            .getSessionMap().put("usuario", usuario);
+                            .getSessionMap().put("sessionUser", sesUsuario);
+
 
                 logged = true;
-                message = "Bienvenido " + usuario.getNombres() + " " + usuario.getApellidos();
+                message = "Bienvenido " + sesUsuario.getNombres() + " " + sesUsuario.getApellidos();
                 redirectTo = "views/Dashboard.xhtml"; 
             } else {
                 message = "Correo/Documento o contraseña inválidos";
@@ -87,7 +89,8 @@ public class usuariosBean implements Serializable {
             try {
                 FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 
-                FacesContext.getCurrentInstance().getExternalContext().redirect("../index.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/PAEV3");
+                
 
                 System.out.println("Sesión cerrada y redirigido a index");
             } catch (IOException e) {
@@ -113,6 +116,22 @@ public class usuariosBean implements Serializable {
     public void actualizar() {
         usuDAO.actualizar(usuario);
     }
+    
+    public void cambiar(Integer id) {
+    usuarios u = new usuarios();
+    u.setIdUsu(id);
+    boolean ok = usuDAO.cambiarEstado(u);
+    if (ok) {
+        PrimeFaces.current().executeScript("window.location = '" +
+            FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() +
+            "/views/Usuarios/Index.xhtml';");
+        listar();
+    } else {
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo cambiar"));
+    }
+}
+
     
     public void eliminar(usuarios usu) {
         usuDAO.eliminar(usu);

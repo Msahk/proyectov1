@@ -1,0 +1,84 @@
+:root {
+    --color-principal: #8B0000;           
+    --color-principal-hover: #B22222;     
+    --fondo-principal: #121212;        
+    --fondo-secundario: #1E1E1E;       
+    --texto-principal: #EAEAEA;        
+    --texto-secundario: #A8A8A8;       
+    --color-borde: #2C2C2C;  
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins",'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.header {
+    background-color: var(--fondo-secundario);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #b71c1c;
+}
+
+
+.navbar .ui-menu,
+.navbar .ui-menu-child {
+  background: inherit !important;
+  background-image: none !important;
+  color: #fff !important;
+  border: none !important; 
+}
+
+.navbar .ui-menuitem-text {
+  color: #fff !important;
+  border: none !important; 
+}
+
+.ui-menu, 
+.ui-menu .ui-menu-child {
+  background: #000 !important;
+  background-image: none !important;
+  
+  border: none !important; 
+}
+
+.navbar .ui-widget-content {
+    border: none;
+}
+
+
+.navbar a:hover {
+    background-color: #dddbdb56;
+    border: none;
+}
+.ui-menubar, 
+.ui-menubar .ui-menu-child {
+  background: var(--fondo-principal) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.ui-menubar .ui-menuitem-link {
+  background: transparent !important;
+  color: var(--texto-principal) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.ui-menubar .ui-menuitem-link:hover,
+.ui-menubar .ui-menuitem-active > .ui-menuitem-link {
+  background: var(--color-acento) !important;
+  color: var(--texto-principal) !important;
+  border: none !important;
+  box-shadow: none !important;
+}

@@ -13,6 +13,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import models.usuarios;
 import org.mindrot.jbcrypt.BCrypt;
+import org.primefaces.PrimeFaces;
 
 public class usuariosDao {
     PreparedStatement ps;
@@ -178,20 +179,36 @@ public boolean agregar(usuarios u) {
     }
         
         
-   public boolean cambiarEstado(int id, String nuevoEstado) {
-        String sql = "UPDATE usuarios SET estado = ? WHERE id_usu = ?";
-        try {
-            ps = ConDB.conectar().prepareStatement(sql);
-            ps.setString(1, nuevoEstado);
-            ps.setInt(2, id);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.out.println("Error al cambiar estado: " + e.getMessage());
-            e.printStackTrace();
+public boolean cambiarEstado(usuarios u) {
+    String selectSql = "SELECT estado FROM usuarios WHERE id_usu = ?";
+    String updateSql = "UPDATE usuarios SET estado = ? WHERE id_usu = ?";
+
+    try (Connection conn = ConDB.conectar();
+         PreparedStatement psSelect = conn.prepareStatement(selectSql)) {
+
+        psSelect.setInt(1, u.getIdUsu());
+        try (ResultSet rs = psSelect.executeQuery()) {
+            if (rs.next()) {
+                String estadoActual = rs.getString("estado");
+                String nuevoEstado = "A".equalsIgnoreCase(estadoActual) ? "I" : "A";
+
+                try (PreparedStatement psUpdate = conn.prepareStatement(updateSql)) {
+                    psUpdate.setString(1, nuevoEstado);
+                    psUpdate.setInt(2, u.getIdUsu());
+                    return psUpdate.executeUpdate() > 0;
+                }
+            } else {
+                return false;
+            }
         }
-    return false;
+    } catch (SQLException e) {
+        System.err.println("Error al cambiar estado: " + e.getMessage());
+        e.printStackTrace();
+        return false;
+    }
 }
-   
+
+
    
    public boolean existeCorreoODocumento(String correo, int documento) {
     boolean existe = false;

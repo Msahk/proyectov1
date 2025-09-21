@@ -1,4 +1,13 @@
-/* RESET GENERAL */
+:root {
+    --color-principal: #8B0000;           
+    --color-principal-hover: #B22222;     
+    --fondo-principal: #121212;        
+    --fondo-secundario: #1E1E1E;       
+    --texto-principal: #EAEAEA;        
+    --texto-secundario: #A8A8A8;       
+    --color-borde: #2C2C2C;  
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -41,8 +50,7 @@ body {
 
 /* HEADER */
 .header {
-    background-color: #000000;
-    color: #fff;
+    background-color: var(--fondo-secundario);
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
@@ -337,4 +345,28 @@ main {
         flex-direction: column;
     }
     
+}
+.swal-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* columna izquierda (label) */
+.swal-row .swal-label {
+  flex: 0 0 45%; 
+  text-align: left;
+  font-weight: 600;
+}
+
+.swal-row .swal-input-wrap {
+  flex: 1 1 55%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.swal-row .swal-input-wrap input,
+.swal-row .swal-input-wrap .form-control {
+  width: 100%;
+  box-sizing: border-box;
 }
