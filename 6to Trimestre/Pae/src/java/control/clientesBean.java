@@ -20,7 +20,9 @@ public class clientesBean implements Serializable {
     private List<clientes> listaClientes = new ArrayList<>();
     private clientes clienteNuevo = new clientes();
     private clientes clienteSeleccionado = null;
-    private String filtroNombre = "";
+    private String filtroNombre;
+    private String filtroTelefono;
+    private String filtroCorreo;
 
     @PostConstruct
     public void init() {
@@ -28,16 +30,16 @@ public class clientesBean implements Serializable {
     }
 
     public void cargarClientes() {
-        if (filtroNombre == null || filtroNombre.trim().isEmpty()) {
-            listaClientes = dao.listar();
-        } else {
-            listaClientes = dao.filtrarPorNombre(filtroNombre);
-        }
+        listaClientes = dao.filtrar(filtroNombre, filtroTelefono, filtroCorreo);
     }
 
-    public void filtrarClientes() {
-        cargarClientes();
-    }
+    
+    public String getFiltroNombre() { return filtroNombre; }
+    public void setFiltroNombre(String filtroNombre) { this.filtroNombre = filtroNombre; }
+    public String getFiltroTelefono() { return filtroTelefono; }
+    public void setFiltroTelefono(String filtroTelefono) { this.filtroTelefono = filtroTelefono; }
+    public String getFiltroCorreo() { return filtroCorreo; }
+    public void setFiltroCorreo(String filtroCorreo) { this.filtroCorreo = filtroCorreo; }
 
     public String prepararNuevoCliente() {
         clienteNuevo = new clientes();
@@ -64,7 +66,7 @@ public class clientesBean implements Serializable {
     }
 
     public String actualizarCliente() {
-        boolean ok = dao.actualizar(clienteSeleccionado);
+        boolean ok = dao.actualizarEnCascada(clienteSeleccionado);
         if (ok) {
             FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage("Cliente actualizado correctamente"));
@@ -78,7 +80,7 @@ public class clientesBean implements Serializable {
     }
 
     public void eliminarCliente(int id) {
-        boolean ok = dao.eliminar(id);
+        boolean ok = dao.eliminarEnCascada(id);
         if (ok) {
             FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage("Cliente eliminado correctamente"));
@@ -89,16 +91,10 @@ public class clientesBean implements Serializable {
         }
     }
 
-
     public List<clientes> getListaClientes() { return listaClientes; }
     public void setListaClientes(List<clientes> listaClientes) { this.listaClientes = listaClientes; }
-
     public clientes getClienteNuevo() { return clienteNuevo; }
     public void setClienteNuevo(clientes clienteNuevo) { this.clienteNuevo = clienteNuevo; }
-
     public clientes getClienteSeleccionado() { return clienteSeleccionado; }
     public void setClienteSeleccionado(clientes clienteSeleccionado) { this.clienteSeleccionado = clienteSeleccionado; }
-
-    public String getFiltroNombre() { return filtroNombre; }
-    public void setFiltroNombre(String filtroNombre) { this.filtroNombre = filtroNombre; }
 }

@@ -16,17 +16,27 @@
         <div class="card shadow p-4">
             <h2 class="text-center">Gestión de Clientes</h2>
             <hr/>
+            
             <h:form>
                 <div class="row mb-3">
-                    <div class="col-md-6">
-                        <h:outputLabel value="Buscar por nombre:" />
+                    <div class="col-md-4">
+                        <h:outputLabel value="Nombre:" />
                         <h:inputText value="#{clientesBean.filtroNombre}" styleClass="form-control" />
                     </div>
-                    <div class="col-md-6 d-flex align-items-end">
-                        <h:commandButton value="Filtrar" action="#{clientesBean.filtrarClientes}" styleClass="btn btn-primary ms-2" />
-                        <h:commandButton value="Nuevo Cliente" action="#{clientesBean.prepararNuevoCliente}" styleClass="btn btn-success ms-2" />
+                    <div class="col-md-4">
+                        <h:outputLabel value="Teléfono:" />
+                        <h:inputText value="#{clientesBean.filtroTelefono}" styleClass="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <h:outputLabel value="Correo:" />
+                        <h:inputText value="#{clientesBean.filtroCorreo}" styleClass="form-control" />
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <h:commandButton value="Filtrar" action="#{clientesBean.cargarClientes}" />
+                        <h:commandButton value="Nuevo Cliente" action="#{clientesBean.prepararNuevoCliente}"  />
                     </div>
                 </div>
+                
                 <h:dataTable value="#{clientesBean.listaClientes}" var="c" border="1" cellpadding="5" class="table table-bordered">
                     <h:column>
                         <f:facet name="header">ID</f:facet>
@@ -53,6 +63,7 @@
                     </h:column>
                 </h:dataTable>
             </h:form>
+            
         </div>
     </div>
 </h:body>
