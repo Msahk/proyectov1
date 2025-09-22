@@ -46,6 +46,8 @@ public class usuariosBean implements Serializable {
     private final usuariosDao usuDAO = new usuariosDao();
     private usuarios usuario = new usuarios();
     private List<usuarios> lstUsu = new ArrayList<>();
+    private List<usuarios> lstUsuFiltrados;
+
     Part excel;
     
     public void exportarPDF() throws IOException {
@@ -192,6 +194,16 @@ public class usuariosBean implements Serializable {
         this.usuario = usuario;
     }
 
+    public List<usuarios> getLstUsuFiltrados() {
+        return lstUsuFiltrados;
+    }
+
+    public void setLstUsuFiltrados(List<usuarios> lstUsuFiltrados) {
+        this.lstUsuFiltrados = lstUsuFiltrados;
+    }
+
+    
+    
     public void autenticar() {
     boolean logged = false;
     String message = null;
