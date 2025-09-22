@@ -12,12 +12,13 @@
         <p:growl id="msj" showDetail="true" showSummary="true" />
 
         <div class="container mt-5">
-            <div class="card shadow p-1">
-                <h1 align="center">Migración de Usuarios</h1>
+            <div class="card shadow p-4">
+                <div class="registro-section">
+                <h2>Migración de Usuarios</h2>
 
-                <!-- Formulario de subida -->
                 <h4>Carga de archivos desde Excel</h4>
                 <h:form id="formUpload" enctype="multipart/form-data">
+                    <div class="form-group">
                     <p:outputLabel value="Seleccione el archivo" />
                     <br/>
                     <h:inputFile value="#{usuariosBean.excel}" style="font-size: 20px"
@@ -27,16 +28,10 @@
 
                     <p:commandButton value="Cargar Usuarios" ajax="false"
                                      actionListener="#{usuariosBean.migrar}" />
+            </div>
                 </h:form>
 
                 <hr/>
-
-                <h4>Exportacion de la tabla a archivo Excel</h4>
-                <h:form id="formExport">
-                    <p:commandButton value="Exportar Excel" ajax="false"
-                                     action="#{usuariosBean.exportarUsuariosExcel}"
-                                     icon="pi pi-file-excel" />
-                </h:form>
                 <center>
                     
                 <h:form>
@@ -46,6 +41,7 @@
                     
 </h:form>
                 </center>
+            </div>
             </div>
         </div>
     </h:body>
