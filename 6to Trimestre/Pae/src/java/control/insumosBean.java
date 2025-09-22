@@ -14,11 +14,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
-
 import java.io.InputStream;
+import java.io.IOException;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
+import javax.faces.context.ExternalContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+
 
 @ManagedBean
 @ViewScoped
@@ -92,14 +103,8 @@ public class insumosBean implements Serializable {
         insumo = dao.obtenerPorId(id);
     }
 
-    public int contarStockBajo() {
-        return (int) listaInsumos.stream()
-                .filter(i -> i.getCantidad() < i.getStock_min())
-                .count();
-    }
-
     // ================== FILTROS ==================
-    public List<insumos> getInsumosFiltrados() {
+    public List<insumos> getListaFiltrada() {
         return listaInsumos.stream()
                 .filter(i -> (filtroNombre == null || filtroNombre.trim().isEmpty()
                         || i.getNombre().toLowerCase().contains(filtroNombre.toLowerCase())))
@@ -110,10 +115,10 @@ public class insumosBean implements Serializable {
                 .collect(Collectors.toList());
     }
 
-    // ================== IMPORTAR / EXPORTAR ==================
+    // ================== IMPORTAR EXCEL ==================
     public void importarExcel(FileUploadEvent event) {
-        UploadedFile archivoExcel = event.getFile();
-        try (InputStream input = archivoExcel.getInputStream()) {
+        UploadedFile archivo = event.getFile();
+        try (InputStream input = archivo.getInputStream()) {
             org.apache.poi.ss.usermodel.Workbook workbook = org.apache.poi.ss.usermodel.WorkbookFactory.create(input);
             org.apache.poi.ss.usermodel.Sheet sheet = workbook.getSheetAt(0);
 
@@ -142,18 +147,74 @@ public class insumosBean implements Serializable {
         }
     }
 
+    // ================== EXPORTAR PDF ==================
+    public void generarReportePDF() {
+    try {
+        String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/insumos.jasper");
+
+        // Lista filtrada si aplicas filtros, sino usa listaInsumos
+        List<insumos> lista = getInsumosFiltrados(); // O getListaInsumos()
+        if (lista == null || lista.isEmpty()) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_WARN, "Atención", "No hay insumos para generar el reporte."));
+            return;
+        }
+
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(lista);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(path, null, dataSource);
+
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+        HttpServletResponse response = (HttpServletResponse) ec.getResponse();
+        response.setContentType("application/pdf");
+        response.addHeader("Content-disposition", "attachment; filename=Insumos.pdf");
+
+        try (ServletOutputStream stream = response.getOutputStream()) {
+            JasperExportManager.exportReportToPdfStream(jasperPrint, stream);
+            stream.flush();
+        }
+        fc.responseComplete();
+
+    } catch (JRException | IOException e) {
+        FacesContext.getCurrentInstance().addMessage(null, 
+            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo generar el PDF"));
+        e.printStackTrace();
+    }
+}
+
+    
+    // ================== FILTROS ==================
+public List<insumos> getInsumosFiltrados() {
+    return listaInsumos.stream()
+            .filter(i -> (filtroNombre == null || filtroNombre.trim().isEmpty()
+                    || i.getNombre().toLowerCase().contains(filtroNombre.toLowerCase())))
+            .filter(i -> (filtroUnidad == null || filtroUnidad.trim().isEmpty()
+                    || i.getUnidad_medida().equalsIgnoreCase(filtroUnidad)))
+            .filter(i -> (filtroCantidadMin == null || i.getCantidad() >= filtroCantidadMin))
+            .filter(i -> (filtroCantidadMax == null || i.getCantidad() <= filtroCantidadMax))
+            .collect(Collectors.toList());
+}
+
+
     // ================== GETTERS / SETTERS ==================
     public List<insumos> getListaInsumos() { return listaInsumos; }
     public insumos getInsumo() { return insumo; }
     public void setInsumo(insumos insumo) { this.insumo = insumo; }
+
     public String getFiltroNombre() { return filtroNombre; }
     public void setFiltroNombre(String filtroNombre) { this.filtroNombre = filtroNombre; }
+
     public String getFiltroUnidad() { return filtroUnidad; }
     public void setFiltroUnidad(String filtroUnidad) { this.filtroUnidad = filtroUnidad; }
+
     public Double getFiltroCantidadMin() { return filtroCantidadMin; }
     public void setFiltroCantidadMin(Double filtroCantidadMin) { this.filtroCantidadMin = filtroCantidadMin; }
+
     public Double getFiltroCantidadMax() { return filtroCantidadMax; }
     public void setFiltroCantidadMax(Double filtroCantidadMax) { this.filtroCantidadMax = filtroCantidadMax; }
+
     public UploadedFile getArchivoExcel() { return archivoExcel; }
     public void setArchivoExcel(UploadedFile archivoExcel) { this.archivoExcel = archivoExcel; }
+   
+   
 }
