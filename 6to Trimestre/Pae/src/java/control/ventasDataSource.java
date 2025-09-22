@@ -1,4 +1,3 @@
-
 package control;
 
 import java.sql.PreparedStatement;
@@ -19,28 +18,31 @@ public class ventasDataSource implements JRDataSource{
         lstVen = new ArrayList<>();
         indice = -1;
         try {
-          String sql = "SELECT v.*, c.nombre AS nombreCliente, u.nombres AS nombreUsuario FROM ventas v LEFT JOIN clientes c ON v.id_Cliente = c.id_Cliente LEFT JOIN usuarios u ON v.id_usu = u.id_usu ORDER BY v.id_ven DESC";
+            String sql = "SELECT v.*, c.nombre AS nombreCliente, u.nombres AS nombreUsuario " +
+                         "FROM ventas v " +
+                         "LEFT JOIN clientes c ON v.id_Cliente = c.id_Cliente " +
+                         "LEFT JOIN usuarios u ON v.id_usu = u.id_usu " +
+                         "ORDER BY v.id_ven DESC";
             PreparedStatement ps = ConDB.conectar().prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-        
-            while(rs.next()) {
-                ventas usu = new ventas();
-                usu.setIdVen(rs.getInt("id_ven"));
-                usu.setTipo(rs.getString("Tipo"));
-                usu.setFecha(rs.getTimestamp("fecha"));
-                usu.setTotal(rs.getDouble("total"));
-                usu.setEstado(rs.getString("estado"));
-                usu.setObservaciones(rs.getString("observaciones"));
-                usu.setNombreCliente(rs.getString("nombreCliente"));
-                usu.setNombreUsuario(rs.getString("nombreUsuario"));
 
-                lstVen.add(usu);
-            }  
+            while(rs.next()) {
+                ventas ven = new ventas();
+                ven.setIdVen(rs.getInt("id_ven"));
+                ven.setTipo(rs.getString("Tipo"));
+                ven.setFecha(rs.getTimestamp("fecha"));
+                ven.setTotal(rs.getDouble("total"));
+                ven.setEstado(rs.getString("estado"));
+                ven.setObservaciones(rs.getString("observaciones"));
+                ven.setNombreCliente(rs.getString("nombreCliente"));
+                ven.setNombreUsuario(rs.getString("nombreUsuario"));
+
+                lstVen.add(ven);
+            }
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
-    
-    
 
     @Override
     public boolean next() throws JRException {
@@ -51,9 +53,8 @@ public class ventasDataSource implements JRDataSource{
     @Override
     public Object getFieldValue(JRField jrf) throws JRException {
         Object valor = null;
-        
         String nomcampo = jrf.getName();
-        
+
         switch (nomcampo) {
             case "id_ven":
                 valor = lstVen.get(indice).getIdVen();
@@ -62,25 +63,25 @@ public class ventasDataSource implements JRDataSource{
                 valor = lstVen.get(indice).getTipo();
                 break;
             case "fecha":
-               valor = lstVen.get(indice).getFecha();
+                valor = lstVen.get(indice).getFecha();
                 break;
             case "total":
                 valor = lstVen.get(indice).getTotal();
                 break;
             case "estado":
-              valor = lstVen.get(indice).getEstado();
+                valor = lstVen.get(indice).getEstado();
                 break;
             case "observaciones":
-                 valor = lstVen.get(indice).getObservaciones();
+                valor = lstVen.get(indice).getObservaciones();
                 break;
             case "nombreCliente":
-                 valor = lstVen.get(indice).getNombreCliente();
+                valor = lstVen.get(indice).getNombreCliente();
                 break;
             case "nombreUsuario":
-                 valor = lstVen.get(indice).getNombreUsuario();
+                valor = lstVen.get(indice).getNombreUsuario();
                 break;
         }
-        
+
         return valor;
     }
 }

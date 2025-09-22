@@ -14,16 +14,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
+
+import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import java.io.File;
 
 @ManagedBean(name = "ventasBean")
 @SessionScoped
@@ -53,28 +57,29 @@ public class ventasBean implements Serializable {
 
     private clientes clienteNuevo = new clientes(); 
     
-    public void exportarPDF() throws IOException {
-        try {
-            String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/ventas.jasper");
-            File jasper = new File(path);
-            ventasDataSource uds = new ventasDataSource();
-            
-            JasperPrint jprint = JasperFillManager.fillReport(jasper.getPath(), null, uds);
-            
-            HttpServletResponse resp = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
-        
-            resp.addHeader("Content-disposition", "attachment; filename=Ventas.pdf");
-            
-            try (ServletOutputStream stream = resp.getOutputStream()){
-                JasperExportManager.exportReportToPdfStream(jprint, stream);
-                
-                stream.flush();
-                stream.close();
-            }
-        } catch (JRException | IOException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error creando reporte"));
+   public void exportarPDF() {
+    try {
+        String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/ventas.jasper");
+        File jasper = new File(path);
+        ventasDataSource vds = new ventasDataSource();
+
+        JasperPrint jprint = JasperFillManager.fillReport(jasper.getPath(), null, vds);
+
+        HttpServletResponse resp = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        resp.addHeader("Content-disposition", "attachment; filename=Ventas.pdf");
+
+        try (ServletOutputStream stream = resp.getOutputStream()) {
+            JasperExportManager.exportReportToPdfStream(jprint, stream);
+            stream.flush();
         }
+
+        FacesContext.getCurrentInstance().responseComplete();
+    } catch (JRException | IOException e) {
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error creando reporte de ventas"));
+        e.printStackTrace();
     }
+}
 
     @PostConstruct
     public void init() {
@@ -301,6 +306,7 @@ public class ventasBean implements Serializable {
     }
     return null;
 }
+   
 
     public void eliminarVenta(int id) {
           pedidosDao pedidosDao = new pedidosDao();

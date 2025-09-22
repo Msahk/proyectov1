@@ -18,7 +18,7 @@
         <div class="card shadow p-4">
             <h2 class="text-center">Gestión de Ventas</h2>
             
-<h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{ventasBean.exportarPDF}"/>
+
                         
            
           
@@ -27,6 +27,7 @@
     <div class="container  mt-5">
         <div class="card shadow p-4">
      <h:form id="filtroVentasForm">
+         <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{ventasBean.exportarPDF}"/>
     <h:panelGrid columns="10" cellpadding="5" class="table table-borderless">
         <h:outputLabel value="ID Venta:" />
         <h:inputText value="#{ventasBean.filtroIdVenta}" styleClass="form-control" />

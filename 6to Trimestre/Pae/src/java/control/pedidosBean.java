@@ -3,6 +3,7 @@ package control;
 import dao.clientesDao;
 import dao.pedidosDao;
 import dao.ventasDao;
+
 import modelo.pedidos;
 import modelo.ventas;
 import java.io.Serializable;
@@ -10,11 +11,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
+
 import modelo.clientes;
+
+import java.io.IOException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import java.io.File;
 
 @ManagedBean(name = "pedidosBean")
 @SessionScoped
@@ -142,6 +154,31 @@ public String actualizarPedido() {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al eliminar el pedido: " + pedidosDao.ultimoError, null));
         }
     }
+    public void exportarPDF() {
+    try {
+        String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/pedidos.jasper");
+        File jasper = new File(path);
+        pedidosDataSource pds = new pedidosDataSource();
+        
+        System.out.println("Total pedidos para el reporte: " + pds.getSize());
+
+        JasperPrint jprint = JasperFillManager.fillReport(jasper.getPath(), null, pds);
+
+        HttpServletResponse resp = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        resp.addHeader("Content-disposition", "attachment; filename=Pedidos.pdf");
+
+        try (ServletOutputStream stream = resp.getOutputStream()) {
+            JasperExportManager.exportReportToPdfStream(jprint, stream);
+            stream.flush();
+        }
+
+        FacesContext.getCurrentInstance().responseComplete();
+    } catch (JRException | IOException e) {
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error creando reporte de pedidos"));
+        e.printStackTrace();
+    }
+}
 
     public String prepararEdicion(pedidos p) {
         this.pedidoSeleccionado = p;

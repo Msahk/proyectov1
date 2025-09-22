@@ -12,6 +12,7 @@
 <h:body class="bg-light">
 
     <ui:include src="/views/Navbar.xhtml" />
+   <f:event type="preRenderView" listener="#{pedidosBean.cargarPedidos()}"/>
 
     <div class="container mt-5">
         <div class="card shadow p-4">
@@ -23,6 +24,7 @@
 
             <hr/>
 <h:form id="filtroPedidosForm">
+     <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{pedidosBean.exportarPDF}"/>
     <h:panelGrid columns="8" cellpadding="8" style="margin-bottom: 20px;" class="table table-borderless">
         
         <h:outputLabel value="ID Pedido:" />
