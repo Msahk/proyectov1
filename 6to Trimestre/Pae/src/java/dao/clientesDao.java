@@ -35,19 +35,26 @@ public class clientesDao {
 }
 
     
-    public boolean agregar(clientes c) {
-        String sql = "INSERT INTO clientes (nombre, telefono, correo) VALUES (?, ?, ?)";
-        try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, c.getNombre());
-            ps.setString(2, c.getTelefono());
-            ps.setString(3, c.getCorreo());
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+   public int agregar(clientes c) {
+    String sql = "INSERT INTO clientes (nombre, telefono, correo) VALUES (?, ?, ?)";
+    try (Connection con = getConnection();
+         PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        ps.setString(1, c.getNombre());
+        ps.setString(2, c.getTelefono());
+        ps.setString(3, c.getCorreo());
+        ps.executeUpdate();
+
+        
+        try (ResultSet rs = ps.getGeneratedKeys()) {
+            if (rs.next()) {
+                return rs.getInt(1); 
+            }
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return -1; 
+}
 
     public int obtenerUltimoId() {
         String sql = "SELECT MAX(id_Cliente) as id FROM clientes";

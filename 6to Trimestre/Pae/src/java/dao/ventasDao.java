@@ -143,7 +143,88 @@ public List<ventas> listar() {
     }
     return lista;
 }
-   
+  public List<ventas> filtrarAvanzado(
+        Integer idVenta,
+        String tipo,
+        String cliente,
+        String usuario,
+        Double totalMin,
+        Double totalMax,
+        String estado,
+        java.sql.Date fechaDesde,
+        java.sql.Date fechaHasta
+) {
+    List<ventas> lista = new ArrayList<>();
+    StringBuilder sql = new StringBuilder("SELECT v.*, c.nombre AS nombreCliente, u.nombres AS nombreUsuario FROM ventas v LEFT JOIN clientes c ON v.id_Cliente = c.id_Cliente LEFT JOIN usuarios u ON v.id_usu = u.id_usu WHERE 1=1 ");
+    List<Object> params = new ArrayList<>();
+
+    if (idVenta != null) {
+        sql.append("AND v.id_ven = ? ");
+        params.add(idVenta);
+    }
+    if (tipo != null && !tipo.isEmpty()) {
+        sql.append("AND v.Tipo = ? ");
+        params.add(tipo);
+    }
+    if (cliente != null && !cliente.isEmpty()) {
+        sql.append("AND c.nombre LIKE ? ");
+        params.add("%" + cliente + "%");
+    }
+    if (usuario != null && !usuario.isEmpty()) {
+        sql.append("AND u.nombres LIKE ? ");
+        params.add("%" + usuario + "%");
+    }
+    if (totalMin != null) {
+        sql.append("AND v.total >= ? ");
+        params.add(totalMin);
+    }
+    if (totalMax != null) {
+        sql.append("AND v.total <= ? ");
+        params.add(totalMax);
+    }
+    if (estado != null && !estado.isEmpty()) {
+        sql.append("AND v.estado = ? ");
+        params.add(estado);
+    }
+    if (fechaDesde != null) {
+        sql.append("AND v.fecha >= ? ");
+        params.add(fechaDesde);
+    }
+    if (fechaHasta != null) {
+        sql.append("AND v.fecha <= ? ");
+        params.add(fechaHasta);
+    }
+    sql.append("ORDER BY v.id_ven DESC");
+
+    try (Connection con = getConnection();
+         PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+        for (int i = 0; i < params.size(); i++) {
+            ps.setObject(i + 1, params.get(i));
+        }
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                ventas v = new ventas();
+                v.setIdVen(rs.getInt("id_ven"));
+                v.setTipo(rs.getString("Tipo"));
+                v.setFecha(rs.getTimestamp("fecha"));
+                v.setIdUsuario(rs.getInt("id_usu"));
+                v.setIdCliente(rs.getInt("id_Cliente"));
+                v.setTotal(rs.getDouble("total"));
+                v.setEstado(rs.getString("estado"));
+                v.setObservaciones(rs.getString("observaciones"));
+                v.setNombreCliente(rs.getString("nombreCliente"));
+                v.setNombreUsuario(rs.getString("nombreUsuario"));
+                lista.add(v);
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return lista;
+}
+
      public int agregar(ventas v) {
     String sql = "INSERT INTO ventas (Tipo, fecha, id_usu, id_Cliente, total, estado, observaciones) "
                + "VALUES (?, ?, ?, ?, ?, ?, ?)";

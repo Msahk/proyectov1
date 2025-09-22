@@ -1,10 +1,12 @@
 package control;
 
+import dao.clientesDao;
 import dao.pedidosDao;
 import dao.ventasDao;
 import modelo.pedidos;
 import modelo.ventas;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -12,6 +14,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import modelo.clientes;
 
 @ManagedBean(name = "pedidosBean")
 @SessionScoped
@@ -23,6 +26,15 @@ public class pedidosBean implements Serializable {
     private pedidos pedidoNuevo;
     private pedidos pedidoSeleccionado;
     private List<ventas> listaVentas;
+    private clientesDao clienteDao = new clientesDao();
+    private List<clientes> listaClientes = new ArrayList<>();
+    private Integer filtroIdPedido;
+private Integer filtroIdVenta;
+private String filtroEstado;
+private String filtroCliente;
+private Date filtroFechaDesde;
+private Date filtroFechaHasta;
+
 
     private pedidosDao pedidosDao = new pedidosDao();
     private ventasDao ventasDao = new ventasDao();
@@ -33,6 +45,40 @@ public class pedidosBean implements Serializable {
         pedidoNuevo.setFechaEntrega(new Date());
         cargarPedidos();
         cargarVentas();
+    }
+ public Integer getFiltroIdPedido() { return filtroIdPedido; }
+    public void setFiltroIdPedido(Integer filtroIdPedido) { this.filtroIdPedido = filtroIdPedido; }
+
+    public Integer getFiltroIdVenta() { return filtroIdVenta; }
+    public void setFiltroIdVenta(Integer filtroIdVenta) { this.filtroIdVenta = filtroIdVenta; }
+
+    public String getFiltroEstado() { return filtroEstado; }
+    public void setFiltroEstado(String filtroEstado) { this.filtroEstado = filtroEstado; }
+
+    public String getFiltroCliente() { return filtroCliente; }
+    public void setFiltroCliente(String filtroCliente) { this.filtroCliente = filtroCliente; }
+
+    public Date getFiltroFechaDesde() { return filtroFechaDesde; }
+    public void setFiltroFechaDesde(Date filtroFechaDesde) { this.filtroFechaDesde = filtroFechaDesde; }
+
+    public Date getFiltroFechaHasta() { return filtroFechaHasta; }
+    public void setFiltroFechaHasta(Date filtroFechaHasta) { this.filtroFechaHasta = filtroFechaHasta; }
+   
+    public void setListaPedidos(List<pedidos> listaPedidos) { this.listaPedidos = listaPedidos; }
+
+    
+    public void filtrarPedidos() {
+        java.sql.Date sqlFechaDesde = filtroFechaDesde != null ? new java.sql.Date(filtroFechaDesde.getTime()) : null;
+        java.sql.Date sqlFechaHasta = filtroFechaHasta != null ? new java.sql.Date(filtroFechaHasta.getTime()) : null;
+
+        listaPedidos = pedidosDao.filtrarAvanzado(
+            filtroIdPedido,
+            filtroIdVenta,
+            filtroEstado,
+            filtroCliente,
+            sqlFechaDesde,
+            sqlFechaHasta
+        );
     }
 
     public void cargarPedidos() {
@@ -59,23 +105,31 @@ public class pedidosBean implements Serializable {
         }
     }
 
-    public String actualizarPedido() {
-        if (pedidosDao.actualizar(pedidoSeleccionado)) {
-            
-            if ("Tomado".equalsIgnoreCase(pedidoSeleccionado.getEstado()) || "Completado".equalsIgnoreCase(pedidoSeleccionado.getEstado())) {
-                ventasDao.actualizarEstado(pedidoSeleccionado.getIdVen(), "Completada");
-            }
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage("Pedido actualizado correctamente"));
-            cargarPedidos();
-            cargarVentas();
-            return "/views/Pedidos/Index.xhtml?faces-redirect=true";
+public String actualizarPedido() {
+    if (pedidosDao.actualizar(pedidoSeleccionado)) {
+        
+        ventas venta = ventasDao.obtenerPorId(pedidoSeleccionado.getIdVen());
+        if (venta != null) {
+            listaClientes = clienteDao.listar(); 
+            pedidoSeleccionado.setIdCliente(venta.getIdCliente());
+            pedidoSeleccionado.setNombreCliente(venta.getNombreCliente());
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al actualizar el pedido: " + pedidosDao.ultimoError, null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al obtener la venta asociada al pedido", null));
             return null;
         }
+
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage("Pedido actualizado correctamente"));
+        cargarPedidos(); 
+        cargarVentas();  
+        return "/views/Pedidos/Index.xhtml?faces-redirect=true";
+    } else {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al actualizar el pedido", null));
+        return null;
     }
+}
 
     public void eliminarPedido(int idPed) {
         if (pedidosDao.eliminar(idPed)) {

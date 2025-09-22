@@ -22,7 +22,52 @@
           
 
             <hr/>
+<h:form id="filtroPedidosForm">
+    <h:panelGrid columns="8" cellpadding="8" style="margin-bottom: 20px;" class="table table-borderless">
+        
+        <h:outputLabel value="ID Pedido:" />
+        <h:inputText value="#{pedidosBean.filtroIdPedido}" styleClass="form-control" />
 
+        
+        <h:outputLabel value="ID Venta:" />
+        <h:inputText value="#{pedidosBean.filtroIdVenta}" styleClass="form-control" />
+
+        
+        <h:outputLabel value="Estado:" />
+        <h:selectOneMenu value="#{pedidosBean.filtroEstado}" styleClass="form-select">
+            <f:selectItem itemValue="" itemLabel="Todos" />
+            <f:selectItem itemValue="Pendiente" itemLabel="Pendiente" />
+            <f:selectItem itemValue="Tomado" itemLabel="Tomado" />
+            <f:selectItem itemValue="Completado" itemLabel="Completado" />
+        </h:selectOneMenu>
+
+        
+        <h:outputLabel value="Cliente:" />
+        <h:inputText value="#{pedidosBean.filtroCliente}" styleClass="form-control" />
+
+        
+        <h:outputLabel value="Fecha desde:" />
+        <p:calendar value="#{pedidosBean.filtroFechaDesde}"
+                    pattern="yyyy-MM-dd"
+                    showButtonPanel="true"
+                    navigator="true"
+                    locale="es"
+                    styleClass="form-control" />
+
+       
+        <h:outputLabel value="Fecha hasta:" />
+        <p:calendar value="#{pedidosBean.filtroFechaHasta}"
+                    pattern="yyyy-MM-dd"
+                    showButtonPanel="true"
+                    navigator="true"
+                    locale="es"
+                    styleClass="form-control" />
+
+        
+        <h:outputLabel />
+        <h:commandButton value="Filtrar" action="#{pedidosBean.filtrarPedidos}" styleClass="btn btn-primary" />
+    </h:panelGrid>
+</h:form>
             <h:form>
                <h:dataTable value="#{pedidosBean.listaPedidos}" var="pedido" class="table">
     <h:column>

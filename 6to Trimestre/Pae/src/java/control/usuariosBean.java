@@ -1,36 +1,33 @@
 package control;
 
-import com.sun.net.httpserver.HttpServer;
-import java.io.Serializable;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-
-import modelo.usuarios;
 import dao.usuariosDao;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-<<<<<<< HEAD
-
-=======
 import java.util.Iterator;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
->>>>>>> 97d0752b03567335650b752e733f1f1726f83f3b
+import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import modelo.usuarios;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -51,7 +48,7 @@ public class usuariosBean implements Serializable {
     private List<usuarios> lstUsu = new ArrayList<>();
     Part excel;
     
-    public void exportarPDF() {
+    public void exportarPDF() throws IOException {
         try {
             String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/usuarios.jasper");
             File jasper = new File(path);

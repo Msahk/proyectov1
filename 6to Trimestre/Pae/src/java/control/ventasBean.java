@@ -31,6 +31,15 @@ public class ventasBean implements Serializable {
     private ventas ventaNueva = new ventas();
     private ventas ventaSeleccionada;
     private boolean nuevoCliente = false;
+ private Integer filtroIdVenta;
+    private String filtroTipo;
+    private String filtroCliente;
+    private String filtroUsuario;
+    private Double filtroTotalMin;
+    private Double filtroTotalMax;
+    private String filtroEstado;
+    private Date filtroFechaDesde;
+    private Date filtroFechaHasta;
 
     private List<usuarios> listaUsuarios = new ArrayList<>();
 
@@ -43,7 +52,53 @@ public class ventasBean implements Serializable {
         cargarVentas();
         cargarUsuarios();
     }
+ public Integer getFiltroIdVenta() { return filtroIdVenta; }
+    public void setFiltroIdVenta(Integer filtroIdVenta) { this.filtroIdVenta = filtroIdVenta; }
 
+    public String getFiltroTipo() { return filtroTipo; }
+    public void setFiltroTipo(String filtroTipo) { this.filtroTipo = filtroTipo; }
+
+    public String getFiltroCliente() { return filtroCliente; }
+    public void setFiltroCliente(String filtroCliente) { this.filtroCliente = filtroCliente; }
+
+    public String getFiltroUsuario() { return filtroUsuario; }
+    public void setFiltroUsuario(String filtroUsuario) { this.filtroUsuario = filtroUsuario; }
+
+    public Double getFiltroTotalMin() { return filtroTotalMin; }
+    public void setFiltroTotalMin(Double filtroTotalMin) { this.filtroTotalMin = filtroTotalMin; }
+
+    public Double getFiltroTotalMax() { return filtroTotalMax; }
+    public void setFiltroTotalMax(Double filtroTotalMax) { this.filtroTotalMax = filtroTotalMax; }
+
+    public String getFiltroEstado() { return filtroEstado; }
+    public void setFiltroEstado(String filtroEstado) { this.filtroEstado = filtroEstado; }
+
+    public Date getFiltroFechaDesde() { return filtroFechaDesde; }
+    public void setFiltroFechaDesde(Date filtroFechaDesde) { this.filtroFechaDesde = filtroFechaDesde; }
+
+    public Date getFiltroFechaHasta() { return filtroFechaHasta; }
+    public void setFiltroFechaHasta(Date filtroFechaHasta) { this.filtroFechaHasta = filtroFechaHasta; }
+
+    public List<ventas> getListaVentas() { return listaVentas; }
+    public void setListaVentas(List<ventas> listaVentas) { this.listaVentas = listaVentas; }
+
+    // Método de filtro avanzado
+    public void filtrarVentas() {
+        java.sql.Date sqlFechaDesde = filtroFechaDesde != null ? new java.sql.Date(filtroFechaDesde.getTime()) : null;
+        java.sql.Date sqlFechaHasta = filtroFechaHasta != null ? new java.sql.Date(filtroFechaHasta.getTime()) : null;
+
+        listaVentas = ventasDao.filtrarAvanzado(
+            filtroIdVenta,
+            filtroTipo,
+            filtroCliente,
+            filtroUsuario,
+            filtroTotalMin,
+            filtroTotalMax,
+            filtroEstado,
+            sqlFechaDesde,
+            sqlFechaHasta
+        );
+    }
     public void cargarVentas() {
         listaVentas = ventasDao.listar();
     }
@@ -95,22 +150,32 @@ public class ventasBean implements Serializable {
         this.ventaSeleccionada = ventaSeleccionada;
     }
 
-    public List<ventas> getListaVentas() {
-        return listaVentas;
-    }
-    public void setListaVentas(List<ventas> listaVentas) {
-        this.listaVentas = listaVentas;
+   
+
+  public String guardarVenta() {
+    if (nuevoCliente) {
+        
+        int idClienteGenerado = clienteDao.agregar(clienteNuevo);
+        if (idClienteGenerado > 0) {
+            
+            listaClientes = clienteDao.listar();
+
+           
+            ventaNueva.setIdCliente(idClienteGenerado);
+            ventaNueva.setNombreCliente(clienteNuevo.getNombre());
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al registrar el nuevo cliente", null));
+            return null;
+        }
     }
 
-   public String guardarVenta() {
-    
+   
     int idGenerado = ventasDao.agregar(ventaNueva);
     if (idGenerado > 0) {
         if ("pedido".equalsIgnoreCase(ventaNueva.getTipo())) {
-            
             ventas v = ventasDao.obtenerPorId(idGenerado);
             if (v != null) {
-               
                 dao.pedidosDao pedidosDao = new dao.pedidosDao();
                 if (!pedidosDao.existePedidoParaVenta(v.getIdVen())) {
                     modelo.pedidos nuevoPedido = new modelo.pedidos();
@@ -121,14 +186,18 @@ public class ventasBean implements Serializable {
                     nuevoPedido.setFechaEntrega(new java.util.Date());
                     nuevoPedido.setObservacionesPedido(v.getObservaciones());
                     pedidosDao.agregar(nuevoPedido);
+
+                    
                     control.pedidosBean pedidosBean = (control.pedidosBean) FacesContext.getCurrentInstance()
-                        .getExternalContext().getSessionMap().get("pedidosBean");
+                            .getExternalContext().getSessionMap().get("pedidosBean");
                     if (pedidosBean != null) {
                         pedidosBean.cargarPedidos();
                     }
                 }
             }
         }
+
+        
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage("Venta registrada correctamente"));
         ventaNueva = new ventas();
