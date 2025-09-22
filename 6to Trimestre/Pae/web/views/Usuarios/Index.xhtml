@@ -22,8 +22,16 @@
                     <h:form>
                         <h:commandButton value="Nuevo Usuario" action="nuevousu" styleClass="btn btn-primary"/>
                         
+<<<<<<< HEAD
                         <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{usuariosBean.exportarPDF}"/>
                         <h:commandButton value="Enviar Correos"  style="margin-left: 10px" styleClass="btn btn-primary" action="correo"/>
+=======
+                        <h:commandButton value="Reporte PDF" style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{usuariosBean.exportarPDF}"/>
+                        <h:commandButton value="Enviar Correos" style="margin-left: 10px" styleClass="btn btn-primary" action="correo"/>
+
+                        <h:commandButton value="Migrar" style="margin-left: 10px" styleClass="btn btn-primary" action="migrar"/>
+
+>>>>>>> 97d0752b03567335650b752e733f1f1726f83f3b
 
                         <br/><br/>
                         <h:dataTable value="#{usuariosBean.lstUsu}" var="usu"  border="1" cellpadding="8" class="table table-bordered">

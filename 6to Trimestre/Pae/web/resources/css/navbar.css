@@ -16,19 +16,6 @@
 }
 
 
-.header {
-    background-color: var(--fondo-secundario);
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #b71c1c;
-}
 
 
 .navbar .ui-menu,
@@ -46,7 +33,7 @@
 
 .ui-menu, 
 .ui-menu .ui-menu-child {
-  background: #000 !important;
+  background: var(--fondo-secundario) !important;
   background-image: none !important;
   
   border: none !important; 
@@ -63,7 +50,7 @@
 }
 .ui-menubar, 
 .ui-menubar .ui-menu-child {
-  background: var(--fondo-principal) !important;
+  background: var(--fondo-secundario) !important;
   border: none !important;
   box-shadow: none !important;
 }

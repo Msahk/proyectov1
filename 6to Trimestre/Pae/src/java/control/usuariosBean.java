@@ -18,13 +18,28 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+<<<<<<< HEAD
 
+=======
+import java.util.Iterator;
+import javax.faces.context.ExternalContext;
+>>>>>>> 97d0752b03567335650b752e733f1f1726f83f3b
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.PrimeFaces;
 
 @ManagedBean
@@ -34,6 +49,7 @@ public class usuariosBean implements Serializable {
     private final usuariosDao usuDAO = new usuariosDao();
     private usuarios usuario = new usuarios();
     private List<usuarios> lstUsu = new ArrayList<>();
+    Part excel;
     
     public void exportarPDF() {
         try {
@@ -58,7 +74,118 @@ public class usuariosBean implements Serializable {
         }
     }
     
+    public void migrar(){
+        try {
+            Workbook libro = WorkbookFactory.create(excel.getInputStream());
+            XSSFSheet hoja = (XSSFSheet)libro.getSheetAt(0);
+                        
+            Iterator<Row> itrFila = hoja.rowIterator();
+            itrFila.next();
+            
+            while(itrFila.hasNext()){
+                Row fila = itrFila.next();
+                Iterator<Cell> itrCelda = fila.cellIterator();
+                usuarios usu = new usuarios();
+                int campo = 1;
+                
+                while(itrCelda.hasNext()){
+                    Cell celda = itrCelda.next();
+                    
+                    switch(campo){
+                        case 1:  
+                            usu.setDocumento((int) celda.getNumericCellValue());
+                            break;
+                        case 2: 
+                            usu.setNombres(celda.getRichStringCellValue().toString());
+                            break;
+                        case 3: 
+                            usu.setApellidos(celda.getRichStringCellValue().toString());
+                            break;
+                        case 4: 
+                            usu.setTelefono((long) celda.getNumericCellValue());
+                            break;
+                        case 5: 
+                            usu.setDireccion(celda.getRichStringCellValue().toString());
+                            break;
+                        case 6: 
+                            usu.setCorreo(celda.getRichStringCellValue().toString());
+                            break;
+                        case 7: 
+                            usu.setRol(celda.getRichStringCellValue().toString());
+                            break;
+                        case 8: 
+                            usu.setPassword(celda.getRichStringCellValue().toString());
+                            break;
+                            
+                    }
+                    campo++;
+                }
+                
+                usuDAO.agregar(usu);
+            }
+            
+            FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito", "Usuarios migrados exitosamente"));
+        } catch (IOException | EncryptedDocumentException | InvalidFormatException e) {
+            FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "Error migrando Usuarios"));
+        }
+    }
     
+    public void exportarUsuariosExcel() {
+    Workbook wb = new XSSFWorkbook();
+    Sheet sheet = wb.createSheet("Usuarios");
+    int rownum = 0;
+
+    // cabecera
+    Row header = sheet.createRow(rownum++);
+    header.createCell(0).setCellValue("idUsu");
+    header.createCell(1).setCellValue("Documento");
+    header.createCell(2).setCellValue("Nombres");
+    header.createCell(3).setCellValue("Apellidos");
+    header.createCell(4).setCellValue("Telefono");
+    header.createCell(5).setCellValue("Direccion");
+    header.createCell(6).setCellValue("Correo");
+    header.createCell(7).setCellValue("Rol");
+    header.createCell(8).setCellValue("Estado");
+
+    // obtiene lista de usuarios desde tu DAO (ajusta el método)
+    java.util.List<usuarios> list = usuDAO.listar();
+
+    for (usuarios u : list) {
+        Row r = sheet.createRow(rownum++);
+        r.createCell(0).setCellValue(u.getIdUsu());
+        r.createCell(1).setCellValue(u.getDocumento());
+        r.createCell(2).setCellValue(u.getNombres() == null ? "" : u.getNombres());
+        r.createCell(3).setCellValue(u.getApellidos() == null ? "" : u.getApellidos());
+        r.createCell(4).setCellValue(u.getTelefono());
+        r.createCell(5).setCellValue(u.getDireccion() == null ? "" : u.getDireccion());
+        r.createCell(6).setCellValue(u.getCorreo() == null ? "" : u.getCorreo());
+        r.createCell(7).setCellValue(u.getRol() == null ? "" : u.getRol());
+        r.createCell(8).setCellValue(u.getEstado() == null ? "" : u.getEstado());
+    }
+
+    // Auto-ajustar columnas (opcional)
+    for (int i = 0; i <= 8; i++) sheet.autoSizeColumn(i);
+
+    // Enviar al navegador
+    FacesContext fc = FacesContext.getCurrentInstance();
+    ExternalContext ec = fc.getExternalContext();
+    try {
+        ec.responseReset();
+        ec.setResponseContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        ec.setResponseHeader("Content-Disposition", "attachment; filename=\"usuarios.xlsx\"");
+        try (java.io.OutputStream os = ec.getResponseOutputStream()) {
+            wb.write(os);
+            os.flush();
+        }
+        fc.responseComplete();
+    } catch (IOException ex) {
+        ex.printStackTrace();
+    } finally {
+        try { wb.close(); } catch (IOException ignored) {}
+    }
+}
     
     public usuarios getUsuario() {
         return usuario;
@@ -119,8 +246,7 @@ System.out.println("DEBUG: usuario guardado en bean: " + bean.getUsuario() + " n
     PrimeFaces.current().ajax().addCallbackParam("correoPreserve", usuario.getCorreo());
 }
 
-
-            public void logout() {
+    public void logout() {
             try {
                 FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 
@@ -133,9 +259,6 @@ System.out.println("DEBUG: usuario guardado en bean: " + bean.getUsuario() + " n
             }
         }
 
-
-    
-    
     public void listar() {
         lstUsu = usuDAO.listar();
     }
@@ -183,6 +306,15 @@ System.out.println("DEBUG: usuario guardado en bean: " + bean.getUsuario() + " n
     public void setLstUsu(List<usuarios> lstUsu) {
         this.lstUsu = lstUsu;
     }
+
+    public Part getExcel() {
+        return excel;
+    }
+
+    public void setExcel(Part excel) {
+        this.excel = excel;
+    }
+    
     
 }
     
