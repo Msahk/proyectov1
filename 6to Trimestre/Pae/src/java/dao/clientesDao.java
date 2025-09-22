@@ -67,4 +67,52 @@ public class clientesDao {
         }
         return -1;
     }
+    public List<clientes> filtrarPorNombre(String nombre) {
+    List<clientes> lista = new ArrayList<>();
+    String sql = "SELECT * FROM clientes WHERE nombre LIKE ?";
+    try (Connection con = getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, "%" + nombre + "%");
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                clientes c = new clientes();
+                c.setId_Cliente(rs.getInt("id_Cliente"));
+                c.setNombre(rs.getString("nombre"));
+                c.setTelefono(rs.getString("telefono"));
+                c.setCorreo(rs.getString("correo"));
+                lista.add(c);
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return lista;
+}
+
+public boolean actualizar(clientes c) {
+    String sql = "UPDATE clientes SET nombre=?, telefono=?, correo=? WHERE id_Cliente=?";
+    try (Connection con = getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, c.getNombre());
+        ps.setString(2, c.getTelefono());
+        ps.setString(3, c.getCorreo());
+        ps.setInt(4, c.getId_Cliente());
+        return ps.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+public boolean eliminar(int idCliente) {
+    String sql = "DELETE FROM clientes WHERE id_Cliente=?";
+    try (Connection con = getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, idCliente);
+        return ps.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 }
