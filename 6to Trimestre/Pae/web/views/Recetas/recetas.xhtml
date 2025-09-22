@@ -1,0 +1,183 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <meta charset="UTF-8" />
+    <title>Gestión de Recetas</title>
+    <link rel="stylesheet" href="#{request.contextPath}/assets/css/inventario.css" />
+</h:head>
+
+<h:body>
+      <ui:include src="/views/Navbar.xhtml" />
+    <div class="container">
+        
+
+        <div class="page-header">
+            <h1>Gestión de Recetas</h1>
+            <p>Agrega, edita o elimina recetas, y gestiona los insumos de cada una.</p>
+        </div>
+
+        <!-- Barra de acciones -->
+        <div class="actions-bar">
+            <p:commandButton value="➕ Nueva Receta" 
+                             onclick="PF('dlgNuevo').show()" 
+                             type="button" 
+                             styleClass="btn btn-success" />
+        </div>
+
+        <!-- Tabla de recetas -->
+        <h:form id="formTabla">
+            <p:dataTable id="tablaRecetas"
+                         value="#{recetasBean.listaRecetas}"
+                         var="r"
+                         paginator="true"
+                         rows="10"
+                         style="width:100%;">
+
+                <p:column headerText="ID" style="width:60px; text-align:center;">
+                    <h:outputText value="#{r.id_rec}" />
+                </p:column>
+
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{r.nombre}" />
+                </p:column>
+
+                <p:column headerText="Descripción">
+                    <h:outputText value="#{r.descripcion}" />
+                </p:column>
+
+                <p:column headerText="Acciones" style="text-align:center; width:250px;">
+                    <!-- Gestionar insumos -->
+                    <p:commandButton value="Insumos" icon="pi pi-list"
+                                     styleClass="btn btn-primary"
+                                     actionListener="#{recetaInsumosBean.setIdReceta(r.id_rec)}"
+                                     update=":dlgInsumosForm"
+                                     oncomplete="PF('dlgInsumos').show()" />
+
+                    <!-- Editar receta -->
+                    <p:commandButton value="✏️" title="Editar"
+                                     actionListener="#{recetasBean.prepararEdicion(r)}"
+                                     update=":formEditar"
+                                     oncomplete="PF('dlgEditar').show()" />
+
+                    <!-- Eliminar receta -->
+                    <p:commandButton value="🗑️" title="Eliminar"
+                                     onclick="confirmDeletePF('#{r.id_rec}'); return false;"
+                                     styleClass="btn btn-danger" />
+
+                    <p:commandButton id="btnEliminar#{r.id_rec}"
+                                     widgetVar="btnEliminar#{r.id_rec}"
+                                     actionListener="#{recetasBean.eliminarRecetaPorId(r.id_rec)}"
+                                     update=":formTabla:tablaRecetas"
+                                     style="display:none" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </div>
+
+    <!-- Dialogo Insumos -->
+    <p:dialog id="dlgInsumos" header="Gestión de Insumos" widgetVar="dlgInsumos"
+              modal="true" width="700" height="500" resizable="false">
+        <h:form id="dlgInsumosForm">
+            <ui:include src="receta_insumos.xhtml"/>
+        </h:form>
+    </p:dialog>
+
+   <!-- Dialogo Agregar Insumo -->
+<p:dialog id="dlgAgregarInsumo" widgetVar="dlgAgregarInsumo" header="Agregar Insumo a Receta"
+          modal="true" width="600" height="400" resizable="false" draggable="true">
+    <h:form id="dlgAgregarInsumoForm">
+
+        <h:outputText value="Selecciona el insumo y la cantidad a agregar:" style="font-weight:bold;"/>
+
+        <p:outputLabel for="insumoSelect" value="Selecciona un insumo:" />
+        <p:selectOneMenu id="insumoSelect" value="#{recetaInsumosBean.recetaInsumo.id_ins}" required="true">
+            <f:selectItem itemLabel="-- Selecciona --" itemValue="" />
+            <f:selectItems value="#{recetaInsumosBean.listaInsumosDisponibles}" var="insumo"
+                           itemLabel="#{insumo.nombre} (#{insumo.cantidad} #{insumo.unidad_medida})"
+                           itemValue="#{insumo.id_ins}" />
+        </p:selectOneMenu>
+
+        <p:panelGrid columns="2" columnClasses="label,value" style="margin-top:1rem;">
+            <h:outputLabel value="Cantidad a agregar:" for="cantidad" />
+            <p:inputText id="cantidad" value="#{recetaInsumosBean.recetaInsumo.cantidad}" required="true" />
+        </p:panelGrid>
+
+        <p:commandButton value="Agregar Insumo"
+                         action="#{recetaInsumosBean.agregar}"
+                         update="@form, :formTabla:tablaRecetas"
+                         oncomplete="PF('dlgAgregarInsumo').hide(); PF('dlgInsumos').hide();"
+                         styleClass="btn btn-success" />
+
+        <p:commandButton value="Cancelar"
+                         onclick="PF('dlgAgregarInsumo').hide();return false;"
+                         styleClass="btn btn-secondary" />
+    </h:form>
+</p:dialog>
+
+
+    <!-- Dialogo Nueva Receta -->
+    <p:dialog id="dlgNuevo" widgetVar="dlgNuevo" header="Nueva Receta" modal="true" resizable="false">
+        <h:form id="formNuevo">
+            <p:panelGrid columns="2" styleClass="form-group" columnClasses="label,value" style="gap:0.5rem;">
+                <h:outputLabel value="Nombre:" for="nombre" />
+                <p:inputText id="nombre" value="#{recetasBean.receta.nombre}" required="true" />
+
+                <h:outputLabel value="Descripción:" for="descripcion" />
+                <p:inputText id="descripcion" value="#{recetasBean.receta.descripcion}" required="true" />
+            </p:panelGrid>
+
+            <p:commandButton value="Guardar"
+                             action="#{recetasBean.agregarReceta}"
+                             update=":formTabla"
+                             oncomplete="PF('dlgNuevo').hide()" />
+        </h:form>
+    </p:dialog>
+
+    <!-- Dialogo Editar Receta -->
+    <p:dialog id="dlgEditar" widgetVar="dlgEditar" header="Editar Receta" modal="true" resizable="false">
+        <h:form id="formEditar">
+            <p:panelGrid columns="2" styleClass="form-group" columnClasses="label,value" style="gap:0.5rem;">
+                <h:outputLabel value="Nombre:" for="editarNombre" />
+                <p:inputText id="editarNombre" value="#{recetasBean.receta.nombre}" required="true" />
+
+                <h:outputLabel value="Descripción:" for="editarDescripcion" />
+                <p:inputText id="editarDescripcion" value="#{recetasBean.receta.descripcion}" required="true" />
+            </p:panelGrid>
+
+            <p:commandButton value="Actualizar"
+                             action="#{recetasBean.editarReceta}"
+                             update=":formTabla,formEditar"
+                             oncomplete="PF('dlgEditar').hide()" />
+        </h:form>
+    </p:dialog>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDeletePF(id) {
+            Swal.fire({
+                title: '¿Eliminar receta?',
+                text: "Esta acción no se puede deshacer",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d32f2f',
+                cancelButtonColor: '#9e9e9e',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    PF('btnEliminar' + id).jq.click();
+                }
+            });
+        }
+    </script>
+
+    <footer class="footer">
+        <p>copy; 2025 Péguele a la Empanada. Sistema de Producción.</p>
+    </footer>
+</h:body>
+</html>

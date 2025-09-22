@@ -9,6 +9,14 @@
 </h:head>
 
 <h:body>
+      
+        <!-- Botón Nuevo Insumo -->
+    <p:commandButton value="➕ Nuevo Insumo"
+                     icon="pi pi-plus"
+                     styleClass="btn btn-success"
+                     actionListener="#{recetaInsumosBean.prepararNuevoInsumo}" 
+                     oncomplete="PF('dlgAgregarInsumo').show()"
+                     update=":dlgAgregarInsumoForm" />
 
     <h:form id="formInsumos">
 

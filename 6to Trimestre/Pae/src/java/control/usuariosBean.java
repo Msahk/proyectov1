@@ -46,6 +46,8 @@ public class usuariosBean implements Serializable {
     private final usuariosDao usuDAO = new usuariosDao();
     private usuarios usuario = new usuarios();
     private List<usuarios> lstUsu = new ArrayList<>();
+    private List<usuarios> lstUsuFiltrados;
+
     Part excel;
     
     public void exportarPDF() throws IOException {
@@ -129,61 +131,6 @@ public class usuariosBean implements Serializable {
         }
     }
     
-    public void exportarUsuariosExcel() {
-    Workbook wb = new XSSFWorkbook();
-    Sheet sheet = wb.createSheet("Usuarios");
-    int rownum = 0;
-
-    // cabecera
-    Row header = sheet.createRow(rownum++);
-    header.createCell(0).setCellValue("idUsu");
-    header.createCell(1).setCellValue("Documento");
-    header.createCell(2).setCellValue("Nombres");
-    header.createCell(3).setCellValue("Apellidos");
-    header.createCell(4).setCellValue("Telefono");
-    header.createCell(5).setCellValue("Direccion");
-    header.createCell(6).setCellValue("Correo");
-    header.createCell(7).setCellValue("Rol");
-    header.createCell(8).setCellValue("Estado");
-
-    // obtiene lista de usuarios desde tu DAO (ajusta el método)
-    java.util.List<usuarios> list = usuDAO.listar();
-
-    for (usuarios u : list) {
-        Row r = sheet.createRow(rownum++);
-        r.createCell(0).setCellValue(u.getIdUsu());
-        r.createCell(1).setCellValue(u.getDocumento());
-        r.createCell(2).setCellValue(u.getNombres() == null ? "" : u.getNombres());
-        r.createCell(3).setCellValue(u.getApellidos() == null ? "" : u.getApellidos());
-        r.createCell(4).setCellValue(u.getTelefono());
-        r.createCell(5).setCellValue(u.getDireccion() == null ? "" : u.getDireccion());
-        r.createCell(6).setCellValue(u.getCorreo() == null ? "" : u.getCorreo());
-        r.createCell(7).setCellValue(u.getRol() == null ? "" : u.getRol());
-        r.createCell(8).setCellValue(u.getEstado() == null ? "" : u.getEstado());
-    }
-
-    // Auto-ajustar columnas (opcional)
-    for (int i = 0; i <= 8; i++) sheet.autoSizeColumn(i);
-
-    // Enviar al navegador
-    FacesContext fc = FacesContext.getCurrentInstance();
-    ExternalContext ec = fc.getExternalContext();
-    try {
-        ec.responseReset();
-        ec.setResponseContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        ec.setResponseHeader("Content-Disposition", "attachment; filename=\"usuarios.xlsx\"");
-        try (java.io.OutputStream os = ec.getResponseOutputStream()) {
-            wb.write(os);
-            os.flush();
-        }
-        fc.responseComplete();
-    } catch (IOException ex) {
-        ex.printStackTrace();
-    } finally {
-        try { wb.close(); } catch (IOException ignored) {}
-    }
-}
-    
     public usuarios getUsuario() {
         return usuario;
     }
@@ -192,6 +139,16 @@ public class usuariosBean implements Serializable {
         this.usuario = usuario;
     }
 
+    public List<usuarios> getLstUsuFiltrados() {
+        return lstUsuFiltrados;
+    }
+
+    public void setLstUsuFiltrados(List<usuarios> lstUsuFiltrados) {
+        this.lstUsuFiltrados = lstUsuFiltrados;
+    }
+
+    
+    
     public void autenticar() {
     boolean logged = false;
     String message = null;
