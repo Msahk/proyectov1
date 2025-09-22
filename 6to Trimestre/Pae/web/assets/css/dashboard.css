@@ -26,19 +26,6 @@ body {
     min-height: 100vh;
 }
 
-.header {
-    background-color: var(--fondo-secundario);
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #b71c1c;
-}
 
 .user-info {
     color: #ccc;

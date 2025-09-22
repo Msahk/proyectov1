@@ -12,7 +12,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Poppins",'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 html {
@@ -57,10 +57,11 @@ html {
     position: sticky;
     top: 0;
     z-index: 1000;
+    height: 105px;
 }
 
 .logo {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     font-weight: bold;
     color: #b71c1c;
 }
