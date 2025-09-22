@@ -28,6 +28,11 @@
     <div class="container">
         <div class="page-header">
             <h1>Gestión de Inventario</h1>
+            <!-- Botón para nuevo insumo -->
+            <p:commandButton value="➕ Nuevo" 
+                             onclick="PF('dlgNuevo').show()" 
+                             type="button" 
+                             styleClass="btn btn-success" />
         </div>
 
         <!-- Barra de acciones -->
@@ -100,53 +105,76 @@
                 </p:column>
 
                 <p:column headerText="Acciones" style="text-align:center; width:150px;">
+                    
+                    
                     <p:commandButton value="✏️"
-                                     title="Editar"
-                                     onclick="abrirModalEditar('#{ins.id_ins}', '#{ins.nombre}', '#{ins.cantidad}', '#{ins.unidad_medida}', '#{ins.stock_min}')"
-                                     type="button"
-                                     styleClass="btn btn-sm btn-warning" />
+                 title="Editar"
+                 actionListener="#{insumosBean.cargarPorId(ins.id_ins)}"
+                 update=":formEditar"
+                 oncomplete="PF('dlgEditar').show()" />
+
                     <p:commandButton value="🗑️"
                                      title="Eliminar"
-                                     onclick="confirmarEliminar('#{ins.id_ins}')"
-                                     type="button"
-                                     styleClass="btn btn-sm btn-danger" />
+                                     actionListener="#{insumosBean.eliminar(ins)}"
+                                     update="tablaInsumos msj"
+                                     styleClass="btn btn-sm btn-danger"
+                                     onclick="return confirm('¿Eliminar este insumo?');" />
                 </p:column>
             </p:dataTable>
         </h:form>
     </div>
 
+    <!-- Dialogo Nuevo -->
+    <p:dialog id="dlgNuevo" widgetVar="dlgNuevo" header="Nuevo Insumo" modal="true" resizable="false">
+        <h:form id="formNuevo">
+            <h:panelGrid columns="2" cellpadding="5">
+                <h:outputLabel value="Nombre:" />
+                <p:inputText value="#{insumosBean.insumo.nombre}" required="true" />
+
+                <h:outputLabel value="Cantidad:" />
+                <p:inputText value="#{insumosBean.insumo.cantidad}" required="true" />
+
+                <h:outputLabel value="Unidad:" />
+                <p:inputText value="#{insumosBean.insumo.unidad_medida}" required="true" />
+
+                <h:outputLabel value="Stock Mínimo:" />
+                <p:inputText value="#{insumosBean.insumo.stock_min}" required="true" />
+            </h:panelGrid>
+
+            <p:commandButton value="Guardar"
+                             actionListener="#{insumosBean.agregar}"
+                             update=":formTabla msj"
+                             oncomplete="PF('dlgNuevo').hide()" />
+        </h:form>
+    </p:dialog>
+
+<!-- Diálogo Editar -->
+<p:dialog id="dlgEditar" widgetVar="dlgEditar" header="Editar Insumo" modal="true" resizable="false">
+    <h:form id="formEditar">
+        <h:panelGrid columns="2" cellpadding="5">
+            <h:outputLabel value="Nombre:" for="editarNombre" />
+            <p:inputText id="editarNombre" value="#{insumosBean.insumo.nombre}" required="true" />
+
+            <h:outputLabel value="Cantidad:" for="editarCantidad" />
+            <p:inputText id="editarCantidad" value="#{insumosBean.insumo.cantidad}" required="true" />
+
+            <h:outputLabel value="Unidad:" for="editarUnidad" />
+            <p:inputText id="editarUnidad" value="#{insumosBean.insumo.unidad_medida}" required="true" />
+
+            <h:outputLabel value="Stock Mínimo:" for="editarStock" />
+            <p:inputText id="editarStock" value="#{insumosBean.insumo.stock_min}" required="true" />
+        </h:panelGrid>
+
+        <p:commandButton value="Actualizar"
+                         actionListener="#{insumosBean.actualizar}"
+                         update=":formTabla msj"
+                         oncomplete="PF('dlgEditar').hide()" />
+    </h:form>
+</p:dialog>
+
     <!-- Footer -->
     <footer class="footer">
         <p>&copy; 2025 Péguele a la Empanada. Sistema de Inventario.</p>
     </footer>
-
-    <!-- Scripts -->
-    <h:outputScript target="body">
-        function abrirModalEditar(id, nombre, cantidad, unidad, stock) {
-            document.getElementById('editarId').value = id;
-            document.getElementById('editarNombre').value = nombre;
-            document.getElementById('editarCantidad').value = cantidad;
-            document.getElementById('editarUnidad').value = unidad;
-            document.getElementById('editarStock').value = stock;
-            PF('dlgEditar').show();
-        }
-
-        function confirmarEliminar(id) {
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "Se eliminará este insumo del inventario.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = 'inventario.xhtml?eliminarId=' + id;
-                }
-            });
-        }
-    </h:outputScript>
 </h:body>
 </html>
