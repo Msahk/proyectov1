@@ -172,30 +172,39 @@ public List<ventas> listar() {
      }
     
     public boolean actualizar(ventas v) {
-        String sql = "UPDATE ventas SET Tipo=?, fecha=?, id_usu=?, id_Cliente=?, total=?, estado=?, observaciones=? "
-                   + "WHERE id_ven=?";
+    String sql = "UPDATE ventas SET Tipo=?, fecha=?, id_usu=?, id_Cliente=?, total=?, estado=?, observaciones=? "
+               + "WHERE id_ven=?";
 
-        try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+    try (Connection con = getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, v.getTipo());
-            ps.setTimestamp(2, new Timestamp(v.getFecha().getTime()));
-            if (v.getIdUsuario() > 0) ps.setInt(3, v.getIdUsuario());
-            else ps.setNull(3, Types.INTEGER);
-            ps.setInt(4, v.getIdCliente());
-            ps.setDouble(5, v.getTotal());
-            ps.setString(6, v.getEstado());
-            ps.setString(7, v.getObservaciones());
-            ps.setInt(8, v.getIdVen());
+        ps.setString(1, v.getTipo());
+        ps.setTimestamp(2, new Timestamp(v.getFecha().getTime()));
+        if (v.getIdUsuario() > 0) ps.setInt(3, v.getIdUsuario());
+        else ps.setNull(3, Types.INTEGER);
+        ps.setInt(4, v.getIdCliente());
+        ps.setDouble(5, v.getTotal());
+        ps.setString(6, v.getEstado());
+        ps.setString(7, v.getObservaciones());
+        ps.setInt(8, v.getIdVen());
 
-            return ps.executeUpdate() > 0;
+        int rows = ps.executeUpdate();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+       
+        if (rows > 0) {
+            pedidosDao pedidosDao = new pedidosDao();
+            if (pedidosDao.existePedidoParaVenta(v.getIdVen())) {
+                pedidosDao.actualizarEstadoYObservacionesPorVenta(v.getIdVen(), v.getEstado(), v.getObservaciones());
+            }
         }
-    }
 
+        return rows > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
     
     public boolean eliminar(int id) {
         String sql = "DELETE FROM ventas WHERE id_ven=?";

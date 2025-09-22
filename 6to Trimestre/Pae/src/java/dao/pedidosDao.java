@@ -73,6 +73,19 @@ public class pedidosDao {
             return false;
         }
     }
+    public boolean eliminarPorVenta(int idVenta) {
+    String sql = "DELETE FROM pedidos WHERE id_ven=?";
+    try (Connection con = getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, idVenta);
+        return ps.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 
     public boolean actualizar(pedidos p) {
         String sql = "UPDATE pedidos SET id_ven=?, fecha_entrega=?, estado=?, observaciones_pedido=? WHERE id_ped=?";
@@ -111,6 +124,21 @@ public class pedidosDao {
             return false;
         }
     }
+    public boolean actualizarEstadoYObservacionesPorVenta(int idVenta, String estado, String observaciones) {
+    String sql = "UPDATE pedidos SET estado=?, observaciones_pedido=? WHERE id_ven=?";
+    try (Connection con = getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setString(1, estado);
+        ps.setString(2, observaciones);
+        ps.setInt(3, idVenta);
+        return ps.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 
     public pedidos obtenerPorId(int idPed) {
         String sql = "SELECT * FROM pedidos WHERE id_ped=?";

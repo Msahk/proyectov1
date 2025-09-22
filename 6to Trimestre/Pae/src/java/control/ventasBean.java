@@ -3,6 +3,7 @@ package control;
 import dao.ventasDao;
 import dao.usuariosDao;
 import dao.clientesDao;
+import dao.pedidosDao;
 import modelo.ventas;
 import modelo.usuarios;
 import modelo.clientes;
@@ -121,11 +122,10 @@ public class ventasBean implements Serializable {
                     nuevoPedido.setObservacionesPedido(v.getObservaciones());
                     pedidosDao.agregar(nuevoPedido);
                     control.pedidosBean pedidosBean = (control.pedidosBean) FacesContext.getCurrentInstance()
-    .getExternalContext().getSessionMap().get("pedidosBean");
-if (pedidosBean != null) {
-    pedidosBean.cargarPedidos();
-}
-
+                        .getExternalContext().getSessionMap().get("pedidosBean");
+                    if (pedidosBean != null) {
+                        pedidosBean.cargarPedidos();
+                    }
                 }
             }
         }
@@ -142,39 +142,79 @@ if (pedidosBean != null) {
     }
 }
 
-    public String actualizarVenta() {
-        if (ventaSeleccionada != null) {
-            if ("pedido".equalsIgnoreCase(ventaSeleccionada.getTipo())) {
-                if (ventasDao.actualizarTipoVenta(ventaSeleccionada)) {
-                    FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage("Venta actualizada correctamente y reflejada en pedidos."));
-                    cargarVentas();
-                    return "/views/Ventas/index.xhtml?faces-redirect=true";
-                } else {
-                    FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al actualizar la venta", null));
-                    return null;
+   public String actualizarVenta() {
+    if (ventaSeleccionada != null) {
+        
+        ventas ventaAntes = ventasDao.obtenerPorId(ventaSeleccionada.getIdVen());
+        boolean cambioADirectaAPedido = ventaAntes != null
+            && "directa".equalsIgnoreCase(ventaAntes.getTipo())
+            && "pedido".equalsIgnoreCase(ventaSeleccionada.getTipo());
+
+        boolean actualizado;
+
+        if ("pedido".equalsIgnoreCase(ventaSeleccionada.getTipo())) {
+            actualizado = ventasDao.actualizarTipoVenta(ventaSeleccionada);
+        } else {
+            actualizado = ventasDao.actualizar(ventaSeleccionada);
+        }
+
+        if (actualizado) {
+            
+            if (cambioADirectaAPedido) {
+                dao.pedidosDao pedidosDao = new dao.pedidosDao();
+                if (!pedidosDao.existePedidoParaVenta(ventaSeleccionada.getIdVen())) {
+                    modelo.pedidos nuevoPedido = new modelo.pedidos();
+                    nuevoPedido.setIdVen(ventaSeleccionada.getIdVen());
+                    nuevoPedido.setIdCliente(ventaSeleccionada.getIdCliente());
+                    nuevoPedido.setNombreCliente(ventaSeleccionada.getNombreCliente());
+                    nuevoPedido.setEstado("Pendiente");
+                    nuevoPedido.setFechaEntrega(new java.util.Date());
+                    nuevoPedido.setObservacionesPedido(ventaSeleccionada.getObservaciones());
+                    pedidosDao.agregar(nuevoPedido);
                 }
-            } else {
-                if (ventasDao.actualizar(ventaSeleccionada)) {
-                    FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage("Venta actualizada correctamente"));
-                    cargarVentas();
-                    return "/views/Ventas/index.xhtml?faces-redirect=true";
-                } else {
-                    FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al actualizar la venta", null));
-                    return null;
+                control.pedidosBean pedidosBean = (control.pedidosBean) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSessionMap().get("pedidosBean");
+                if (pedidosBean != null) {
+                    pedidosBean.cargarPedidos(); 
                 }
             }
+
+            
+            dao.pedidosDao pedidosDao = new dao.pedidosDao();
+            if (pedidosDao.existePedidoParaVenta(ventaSeleccionada.getIdVen())) {
+                pedidosDao.actualizarEstadoYObservacionesPorVenta(
+                    ventaSeleccionada.getIdVen(), 
+                    ventaSeleccionada.getEstado(), 
+                    ventaSeleccionada.getObservaciones()
+                );
+            }
+
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage("Venta actualizada correctamente"));
+            cargarVentas();
+            return "/views/Ventas/index.xhtml?faces-redirect=true";
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al actualizar la venta", null));
+            return null;
         }
-        return null;
     }
+    return null;
+}
 
     public void eliminarVenta(int id) {
+          pedidosDao pedidosDao = new pedidosDao();
+           if (pedidosDao.existePedidoParaVenta(id)) {
+                pedidosDao.eliminarPorVenta(id); 
+           }
         if (ventasDao.eliminar(id)) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Venta eliminada correctamente"));
+            control.pedidosBean pedidosBean = (control.pedidosBean) FacesContext.getCurrentInstance()
+                .getExternalContext().getSessionMap().get("pedidosBean");
+            if (pedidosBean != null) {
+                pedidosBean.cargarPedidos(); 
+            }
             cargarVentas();
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
