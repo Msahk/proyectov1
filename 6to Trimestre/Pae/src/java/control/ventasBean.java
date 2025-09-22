@@ -4,6 +4,8 @@ import dao.ventasDao;
 import dao.usuariosDao;
 import dao.clientesDao;
 import dao.pedidosDao;
+import java.io.File;
+import java.io.IOException;
 import modelo.ventas;
 import modelo.usuarios;
 import modelo.clientes;
@@ -16,6 +18,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 @ManagedBean(name = "ventasBean")
 @SessionScoped
@@ -44,6 +52,29 @@ public class ventasBean implements Serializable {
     private List<usuarios> listaUsuarios = new ArrayList<>();
 
     private clientes clienteNuevo = new clientes(); 
+    
+    public void exportarPDF() throws IOException {
+        try {
+            String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/ventas.jasper");
+            File jasper = new File(path);
+            ventasDataSource uds = new ventasDataSource();
+            
+            JasperPrint jprint = JasperFillManager.fillReport(jasper.getPath(), null, uds);
+            
+            HttpServletResponse resp = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        
+            resp.addHeader("Content-disposition", "attachment; filename=Ventas.pdf");
+            
+            try (ServletOutputStream stream = resp.getOutputStream()){
+                JasperExportManager.exportReportToPdfStream(jprint, stream);
+                
+                stream.flush();
+                stream.close();
+            }
+        } catch (JRException | IOException e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error creando reporte"));
+        }
+    }
 
     @PostConstruct
     public void init() {

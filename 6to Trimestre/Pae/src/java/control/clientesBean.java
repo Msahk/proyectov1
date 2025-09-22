@@ -1,6 +1,8 @@
 package control;
 
 import dao.clientesDao;
+import java.io.File;
+import java.io.IOException;
 import modelo.clientes;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -10,6 +12,12 @@ import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 @ManagedBean(name = "clientesBean")
 @SessionScoped
@@ -33,7 +41,9 @@ public class clientesBean implements Serializable {
         listaClientes = dao.filtrar(filtroNombre, filtroTelefono, filtroCorreo);
     }
 
-    
+    public void listar() {
+        listaClientes = dao.listar();
+    }
     public String getFiltroNombre() { return filtroNombre; }
     public void setFiltroNombre(String filtroNombre) { this.filtroNombre = filtroNombre; }
     public String getFiltroTelefono() { return filtroTelefono; }
@@ -78,6 +88,29 @@ public class clientesBean implements Serializable {
             return null;
         }
     }
+       public void exportarPDF() throws IOException {
+        try {
+            String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/clientes.jasper");
+            File jasper = new File(path);
+            ClientesDataSource uds = new ClientesDataSource();
+            
+            JasperPrint jprint = JasperFillManager.fillReport(jasper.getPath(), null, uds);
+            
+            HttpServletResponse resp = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        
+            resp.addHeader("Content-disposition", "attachment; filename=Clientes.pdf");
+            
+            try (ServletOutputStream stream = resp.getOutputStream()){
+                JasperExportManager.exportReportToPdfStream(jprint, stream);
+                
+                stream.flush();
+                stream.close();
+            }
+        } catch (JRException | IOException e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error creando reporte"));
+        }
+    }
+    
 
     public void eliminarCliente(int id) {
         boolean ok = dao.eliminarEnCascada(id);
