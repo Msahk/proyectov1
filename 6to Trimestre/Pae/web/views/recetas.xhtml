@@ -1,404 +1,158 @@
-    <!DOCTYPE html>
-    <html xmlns="http://www.w3.org/1999/xhtml"
-          xmlns:h="http://xmlns.jcp.org/jsf/html"
-          xmlns:f="http://xmlns.jcp.org/jsf/core"
-          xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
 
     <h:head>
         <meta charset="UTF-8" />
         <title>Gestión de Recetas</title>
         <link rel="stylesheet" href="#{request.contextPath}/assets/css/inventario.css" />
-
-        <style>
-            /* --- Tus estilos originales, sin tocar nada --- */
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background-color: #f5f5f5;
-                margin: 0;
-                padding: 0;
-                color: #212121;
-            }
-            .container { width: 90%; max-width: 1100px; margin: 2rem auto; }
-            .page-header h1 { margin-bottom: 0.3rem; text-align: center; }
-            .page-header p { margin-bottom: 2rem; color: #555; text-align: center; }
-            .inventario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-            .ingrediente-card { padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;
-                                background-color: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-            .card-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
-            .btn { padding: 0.4rem 0.8rem; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; margin: 0.2rem 0.1rem; }
-            .btn-primary { background-color: #b71c1c; color: white; }
-            .btn-primary:hover { background-color: #8e1414; }
-            .btn-secondary { background-color: #555; color: white; }
-            .btn-secondary:hover { background-color: #333; }
-            .btn-danger { background-color: #e53935; color: white; }
-            .btn-danger:hover { background-color: #c62828; }
-            .modal-content { max-height: 80vh; overflow-y: auto; padding: 2rem; border-radius: 10px; background-color: #fff; }
-            @media (max-width: 768px) { .inventario-grid { grid-template-columns: 1fr; } }
-            footer.footer { text-align: center; padding: 1rem; margin-top: 2rem; background-color: #000; color: white; border-radius: 0 0 10px 10px; }
-            .btn-cancelar, .btn-eliminar { padding: 10px 20px; font-size: 14px; border-radius: 6px; cursor: pointer; min-width: 120px; text-align: center; display: inline-block; transition: background-color 0.3s ease; }
-            .btn-cancelar { background-color: #ccc; color: #333; border: none; }
-            .btn-cancelar:hover { background-color: #999; }
-            .btn-eliminar { background-color: #e74c3c; color: white; text-decoration: none; border: none; }
-            .btn-eliminar:hover { background-color: #c0392b; }
-            
-            /* Contenedor del formulario */
-.actions-bar h:form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem; /* separación vertical entre panelGrid y botón */
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-/* Panel grid */
-h:panelGrid.form-group {
-    display: grid;
-    grid-template-columns: 150px 1fr; /* etiqueta + input */
-    gap: 1rem 1.5rem; /* fila y columna */
-    align-items: center;
-}
-
-/* Labels */
-h:outputLabel {
-    text-align: right;
-    font-weight: 500;
-    color: #333;
-}
-
-/* Inputs */
-h:inputText.form-input {
-    width: 100%;
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-}
-
-/* Botón principal */
-h:commandButton.btn.btn-primary {
-    align-self: flex-start; /* alinear a la izquierda */
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-        </style>
     </h:head>
 
-   <h:body>
-
-    <!-- <ui:include src="navbar.xhtml" /> -->
-    
-   
-
-<div class="container">
-     <h:button outcome="/views/produccion" value="⬅️ Regresar" styleClass="btn btn-secondary"/>
-    <div class="page-header">
-        <h1>Gestión de Recetas</h1>
-        <p>Agrega, edita o elimina recetas, y gestiona los insumos de cada una.</p>
-    </div>
-    
-    
-    <!-- Formulario para agregar nueva receta -->
-    <div class="actions-bar">
-        <h:form id="formReceta" style="flex:1;">
-            <h:panelGrid columns="2" styleClass="form-group">
-                <h:outputLabel value="Nombre de la receta" />
-                <h:inputText value="#{recetasBean.receta.nombre}" required="true" styleClass="form-input" />
-
-                <h:outputLabel value="Descripción" />
-                <h:inputText value="#{recetasBean.receta.descripcion}" required="true" styleClass="form-input" />
-            </h:panelGrid>
-
-            <h:commandButton value="Registrar Receta" 
-                             action="#{recetasBean.agregarReceta}" 
-                             styleClass="btn btn-primary">
-                <!-- Refresca la tabla de recetas después de agregar -->
-                <f:ajax execute="@form" render=":formTablaRecetas"/>
-            </h:commandButton>
-        </h:form>
-    </div>
-
-    <!-- Grid de recetas -->
-    <h:form id="formTablaRecetas">
-        <div class="inventario-grid" id="tablaRecetas">
-            <ui:repeat value="#{recetasBean.listaRecetas}" var="r">
-                <div class="ingrediente-card receta-card">
-                    <div class="card-header">
-                        <div>
-                            <div class="ingrediente-nombre">#{r.nombre}</div>
-                            <div class="ingrediente-codigo">ID: #{r.id_rec}</div>
-                        </div>
-                    </div>
-                    <div class="receta-descripcion" style="margin-bottom: 1rem;">#{r.descripcion}</div>
-                    <div class="card-actions">
-
-                        <!-- Botón Gestionar Insumos -->
-                        <h:commandButton value="Gestionar Insumos"
-                                         styleClass="btn btn-primary btn-small">
-                            <f:setPropertyActionListener value="#{r.id_rec}" 
-                                                         target="#{recetaInsumosBean.idReceta}" />
-                            <f:ajax render=":formInsumo :tablaInsumos" 
-                                    onevent="function(){ document.getElementById('modal').style.display='block'; }"/>
-                        </h:commandButton>
-
-                       <h:commandButton value="Editar"
-                 type="button"
-                 onclick="openEditModal(#{r.id_rec}, '#{r.nombre}', '#{r.descripcion}');"
-                 styleClass="btn btn-secondary btn-small" />
-
-
-                        <!-- Botón Eliminar -->
-                        <!-- Botón Eliminar dentro del repeat -->
-<h:commandButton value="🗑 Eliminar"
-                 onclick="document.getElementById('deleteForm:recetaIdHidden').value='#{r.id_rec}';
-                          document.getElementById('confirmModal').style.display='block'; return false;"
-                 styleClass="btn btn-danger btn-small"/>
-
-
-                    </div>
-                </div>
-            </ui:repeat>
-        </div>
-    </h:form>
-</div>
-
-
-    <!-- Modales (sin JSP) -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Gestión de Insumos</h3>
-                <span class="close" onclick="closeModal()">×</span>
+    <h:body>
+        <div class="container">
+            <h:button outcome="/views/produccion" value="⬅️ Regresar" styleClass="btn btn-secondary"/>
+            <div class="page-header">
+                <h1>Gestión de Recetas</h1>
+                <p>Agrega, edita o elimina recetas, y gestiona los insumos de cada una.</p>
             </div>
 
-            <!-- Formulario para agregar insumos -->
-            <h:form id="formInsumo">
+            <!-- Barra de acciones -->
+            <div class="actions-bar">
+                <p:commandButton value="➕ Nueva Receta" 
+                                 onclick="PF('dlgNuevo').show()" 
+                                 type="button" 
+                                 styleClass="btn btn-success" />
+            </div>
 
-                <!-- ID de la receta seleccionada -->
-                <h:inputHidden value="#{recetaInsumosBean.idReceta}" id="modal_id_rec" />
+            <!-- Tabla de recetas -->
+           <h:form id="formTabla">
+    <p:dataTable id="tablaRecetas"
+                 value="#{recetasBean.listaRecetas}"
+                 var="r"
+                 paginator="true"
+                 rows="10"
+                 style="width:100%;">
 
-                <div class="form-group">
-                    <label>Selecciona insumo</label>
-                    <h:selectOneMenu value="#{recetaInsumosBean.recetaInsumo.id_ins}" 
-                                     styleClass="form-input" required="true">
-                        <f:selectItem itemLabel="Seleccione un insumo" itemValue="" noSelectionOption="true" />
-                        <f:selectItems value="#{recetasBean.insumos}" var="i"
-                                       itemLabel="#{i.nombre}" itemValue="#{i.id_ins}" />
-                    </h:selectOneMenu>
-                </div>
+        <p:column headerText="ID" style="width:60px; text-align:center;">
+            <h:outputText value="#{r.id_rec}" />
+        </p:column>
 
-                <div class="form-group">
-                    <label>Cantidad</label>
-                    <h:inputText value="#{recetaInsumosBean.recetaInsumo.cantidad}" 
-                                 styleClass="form-input" required="true" />
-                </div>
+        <p:column headerText="Nombre">
+            <h:outputText value="#{r.nombre}" />
+        </p:column>
 
-                <div class="form-group">
-                    <label>Unidad</label>
-                    <h:inputText value="#{recetaInsumosBean.recetaInsumo.unidad}" 
-                                 styleClass="form-input" required="true" />
-                </div>
+        <p:column headerText="Descripción">
+            <h:outputText value="#{r.descripcion}" />
+        </p:column>
 
-                <h:commandButton value="Agregar" 
-                                 action="#{recetaInsumosBean.agregar}" 
-                                 styleClass="btn btn-primary">
-                    <f:ajax execute="@form" 
-                            render=":tablaInsumos :formInsumo" 
-                            onevent="function(data){ if(data.status==='success'){ console.log('✅ Insumo agregado'); } }"/>
-                </h:commandButton>
+        <p:column headerText="Acciones" style="text-align:center; width:250px;">
 
-            </h:form>
+            <!-- Botón Gestionar Insumos -->
+            <p:commandButton value="Insumos" icon="pi pi-list"
+                             styleClass="btn btn-primary"
+                             actionListener="#{recetaInsumosBean.setIdReceta(r.id_rec)}"
+                             update=":dlgInsumosForm"
+                             oncomplete="PF('dlgInsumos').show()" />
 
-            <!-- Tabla de insumos asignados -->
-            <h:form id="tablaInsumos" style="margin-top:15px;">
+            <!-- Botón Editar -->
+            <p:commandButton value="✏️" title="Editar"
+                             actionListener="#{recetasBean.prepararEdicion(r)}"
+                             update=":formEditar"
+                             oncomplete="PF('dlgEditar').show()" />
 
-                <!-- Si hay insumos asociados -->
-                <h:panelGroup id="panelInsumos" rendered="#{not empty recetaInsumosBean.listaInsumos}">
-                    <h:dataTable value="#{recetaInsumosBean.listaInsumos}" var="ri" styleClass="table">
+            <!-- Botón visible para SweetAlert2 -->
+            <p:commandButton value="🗑️" title="Eliminar"
+                             onclick="confirmDeletePF('#{r.id_rec}'); return false;"
+                             styleClass="btn btn-danger" />
 
-                        <!-- Nombre del insumo -->
-                        <h:column>
-                            <f:facet name="header">Insumo</f:facet>
-                            #{ri.nombre_insumo}
-                        </h:column>
+            
+            
+            <p:commandButton id="btnEliminar#{r.id_rec}"
+                 widgetVar="btnEliminar#{r.id_rec}"
+                 actionListener="#{recetasBean.eliminarRecetaPorId(r.id_rec)}"
+                 update=":formTabla:tablaRecetas"
+                 style="display:none" />
 
-                        <!-- Cantidad -->
-                        <h:column>
-                            <f:facet name="header">Cantidad</f:facet>
-                            #{ri.cantidad}
-                        </h:column>
+        </p:column>
 
-                        <!-- Unidad -->
-                        <h:column>
-                            <f:facet name="header">Unidad</f:facet>
-                            #{ri.unidad}
-                        </h:column>
+    </p:dataTable>
+</h:form>
 
-                        <!-- Acciones -->
-                        <h:column>
-                            <f:facet name="header">Acciones</f:facet>
-                            <h:commandButton value="Eliminar" 
-                                             action="#{recetaInsumosBean.eliminar(ri.id_rec_ins)}"
-                                             styleClass="btn btn-delete">
-                                <f:ajax execute="@this" render=":tablaInsumos :formInsumo" />
-                            </h:commandButton>
-                        </h:column>
-
-                    </h:dataTable>
-                </h:panelGroup>
-
-                <!-- Si no hay insumos asociados -->
-                <h:panelGroup rendered="#{empty recetaInsumosBean.listaInsumos}">
-                    <div class="empty-msg">No hay insumos asignados a esta receta.</div>
-                </h:panelGroup>
-
-            </h:form>
 
         </div>
-    </div>
-<!-- Modal de edición de receta -->
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Editar Receta</h3>
-            <span class="close" onclick="closeModal()">×</span>
-        </div>
-        <h:form id="editForm">
-            <h:inputHidden id="edit_id_rec" value="#{recetasBean.receta.id_rec}" />
-            <div class="form-group">
-                <label>Nombre</label>
-                <h:inputText id="edit_nombre" value="#{recetasBean.receta.nombre}" required="true" styleClass="form-input" />
-            </div>
-            <div class="form-group">
-                <label>Descripción</label>
-                <h:inputText id="edit_descripcion" value="#{recetasBean.receta.descripcion}" required="true" styleClass="form-input" />
-            </div>
-            <!-- Botón que llama al bean -->
-           <h:commandButton value="Guardar Cambios" 
-                 action="#{recetasBean.editarReceta}" 
-                 styleClass="btn btn-primary">
-    <f:ajax execute="@form" render=":formTablaRecetas" 
-            onevent="function(data){
-                if(data.status==='success'){
-                    document.getElementById('editModal').style.display='none';
-                }
-            }" />
-</h:commandButton>
-        </h:form>
-    </div>
-</div>
 
-<!-- Confirmación de eliminación de receta -->
-<!-- Confirmación de eliminación de receta -->
-<div id="confirmModal" class="modal" style="display:none;">
-    <div class="modal-content" style="max-width:400px; margin:auto; text-align:center;">
-        <h3>Confirmar eliminación</h3>
-        <p>¿Seguro que deseas eliminar esta receta?</p>
-
-        <h:form id="deleteForm">
-            <!-- Campo oculto para almacenar id de la receta -->
-            <h:inputHidden id="recetaIdHidden" value="#{recetasBean.idReceta}" />
-
-            <!-- Botón de confirmación de eliminación -->
-            <h:commandButton value="Sí, eliminar"
-                             action="#{recetasBean.eliminarReceta}"
-                             styleClass="btn-eliminar">
-                <!-- Ejecuta solo este form y refresca la tabla de recetas y el form de registro -->
-                <f:ajax execute="@form" render=":formTablaRecetas :formReceta"
-                        onevent="function(data){
-                            if (data.status === 'success') {
-                                // Cierra el modal después de eliminar
-                                document.getElementById('confirmModal').style.display = 'none';
-                            }
-                        }" />
-            </h:commandButton>
-
-            <!-- Botón cancelar -->
-            <button type="button" class="btn-cancelar"
-                    onclick="document.getElementById('confirmModal').style.display='none';">
-                Cancelar
-            </button>
-        </h:form>
-    </div>
-</div>
-
-
-
-
-
-<!-- Confirmación de eliminación de insumo -->
-<div id="confirmInsumoModal" class="modal" style="display:none;">
-    <div class="modal-content" style="max-width:400px; margin:auto; text-align:center;">
-        <h3>Confirmar eliminación</h3>
-        <p>¿Seguro que deseas eliminar este insumo de la receta?</p>
-        <h:form id="deleteInsumoForm">
-            <h:commandButton value="Sí, eliminar" 
-                             action="#{recetasBean.eliminarInsumoDeReceta(recetaInsumosBean.idRecIns)}" 
-                             styleClass="btn-eliminar" 
-                             onclick="closeConfirmInsumoModal()" />
-            <button type="button" class="btn-cancelar" onclick="closeConfirmInsumoModal()">Cancelar</button>
-        </h:form>
-    </div>
-</div>
-
-
-    <!-- Scripts -->
-    <script>
-        function openModal(id_rec) {
-            document.getElementById("modal").style.display = "block";
-            document.getElementById("modal_id_rec").value = id_rec;
-            document.getElementById("insumosFrame").src = "#{request.contextPath}/views/receta_insumos.xhtml?id_rec=" + id_rec;
-        }
-        function closeModal() {
-            document.getElementById("modal").style.display = "none";
-            document.getElementById("insumosFrame").src = "";
-        }
-        function openEditModal(id, nombre, desc) {
-    document.getElementById("editModal").style.display = "block";
-    document.getElementById("editForm:edit_id_rec").value = id;
-    document.getElementById("editForm:edit_nombre").value = nombre;
-    document.getElementById("editForm:edit_descripcion").value = desc;
-}
-
-        function closeEditModal() {
-            document.getElementById("editModal").style.display = "none";
-        }
-     function openConfirmModal(idReceta) {
-    // Asigna el id de la receta al hidden del formulario
-    document.getElementById('deleteForm:recetaIdHidden').value = idReceta;
-    // Muestra el modal
-    document.getElementById('confirmModal').style.display = 'block';
-}
-
-function closeConfirmModal() {
-    // Oculta el modal
-    document.getElementById('confirmModal').style.display = 'none';
-}
-
-        function openConfirmInsumo(idRelacion) {
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Eliminar este insumo no se puede deshacer!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d32f2f',
-                cancelButtonColor: '#9e9e9e',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "receta_insumosController?accion=eliminar&amp;id_rel=" + idRelacion;
-                }
-            });
-        }
-        function closeConfirmInsumoModal() {
-            document.getElementById("confirmInsumoModal").style.display = "none";
-        }
-    </script>
-
-    <footer class="footer">
-        <p>copy; 2025 Péguele a la Empanada. Sistema de Producción.</p>
-    </footer>
-</h:body>
         
- </html>
+        <!-- Dialogo Insumos -->
+<p:dialog id="dlgInsumos" header="Gestión de Insumos" widgetVar="dlgInsumos"
+          modal="true" width="700" height="500" resizable="false">
+    <h:form id="dlgInsumosForm">
+        <ui:include src="receta_insumos.xhtml"/>
+    </h:form>
+</p:dialog>
+        <!-- Dialogo Nueva Receta -->
+        <p:dialog id="dlgNuevo" widgetVar="dlgNuevo" header="Nueva Receta" modal="true" resizable="false">
+            <h:form id="formNuevo">
+                <p:panelGrid columns="2" styleClass="form-group" columnClasses="label,value" style="gap:0.5rem;">
+                    <h:outputLabel value="Nombre:" for="nombre" />
+                    <p:inputText id="nombre" value="#{recetasBean.receta.nombre}" required="true" />
+
+                    <h:outputLabel value="Descripción:" for="descripcion" />
+                    <p:inputText id="descripcion" value="#{recetasBean.receta.descripcion}" required="true" />
+                </p:panelGrid>
+
+
+                <p:commandButton value="Guardar"
+                                 action="#{recetasBean.agregarReceta}"
+                                 update=":formTabla"
+                                 oncomplete="PF('dlgNuevo').hide()" />
+            </h:form>
+        </p:dialog>
+
+        <!-- Dialogo Editar Receta -->
+        <p:dialog id="dlgEditar" widgetVar="dlgEditar" header="Editar Receta" modal="true" resizable="false">
+            <h:form id="formEditar">
+                <p:panelGrid columns="2" styleClass="form-group" columnClasses="label,value" style="gap:0.5rem;">
+                    <h:outputLabel value="Nombre:" for="editarNombre" />
+                    <p:inputText id="editarNombre" value="#{recetasBean.receta.nombre}" required="true" />
+
+                    <h:outputLabel value="Descripción:" for="editarDescripcion" />
+                    <p:inputText id="editarDescripcion" value="#{recetasBean.receta.descripcion}" required="true" />
+                </p:panelGrid>
+
+
+                <p:commandButton value="Actualizar"
+                                 action="#{recetasBean.editarReceta}"
+                                 update=":formTabla,formEditar"
+                                 oncomplete="PF('dlgEditar').hide()" />
+            </h:form>
+        </p:dialog>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+                         function confirmDeletePF(id) {
+                             Swal.fire({
+                                 title: '¿Eliminar receta?',
+                                 text: "Esta acción no se puede deshacer",
+                                 icon: 'warning',
+                                 showCancelButton: true,
+                                 confirmButtonColor: '#d32f2f',
+                                 cancelButtonColor: '#9e9e9e',
+                                 confirmButtonText: 'Sí, eliminar',
+                                 cancelButtonText: 'Cancelar'
+                             }).then((result) => {
+                                 if (result.isConfirmed) {
+                                     PF('btnEliminar' + id).jq.click(); // dispara el botón oculto
+                                 }
+                             });
+                         }
+
+        </script>
+
+        <footer class="footer">
+            <p>copy; 2025 Péguele a la Empanada. Sistema de Producción.</p>
+        </footer>
+    </h:body>
+</html>
