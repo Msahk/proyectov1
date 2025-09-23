@@ -8,6 +8,7 @@ import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import modelo.produccion;
 import dao.produccionDao;
@@ -29,7 +30,11 @@ public class produccionBean implements Serializable {
     private List<produccion> listaProducciones;
     private List<recetas> listaRecetas;
     private produccion produccion;
-    private List<produccion_receta> recetasSeleccionadas;
+    private List<Integer> recetasSeleccionadasIds; // IDs seleccionadas en checkbox
+
+    // Filtros
+    private String filtroEstado;
+    private String filtroUsuario;
 
     private int idProduccionEditar;
     private Integer idProdEliminar;
@@ -42,7 +47,7 @@ public class produccionBean implements Serializable {
         listaProducciones = pdao.listar();
         listaRecetas = rdao.listar();
         produccion = new produccion();
-        recetasSeleccionadas = new ArrayList<>();
+        recetasSeleccionadasIds = new ArrayList<>();
     }
 
     // =====================
@@ -52,22 +57,36 @@ public class produccionBean implements Serializable {
     public List<recetas> getListaRecetas() { return listaRecetas; }
     public produccion getProduccion() { return produccion; }
     public void setProduccion(produccion produccion) { this.produccion = produccion; }
-    public List<produccion_receta> getRecetasSeleccionadas() { return recetasSeleccionadas; }
-    public void setRecetasSeleccionadas(List<produccion_receta> recetasSeleccionadas) { this.recetasSeleccionadas = recetasSeleccionadas; }
+    public List<Integer> getRecetasSeleccionadasIds() { return recetasSeleccionadasIds; }
+    public void setRecetasSeleccionadasIds(List<Integer> recetasSeleccionadasIds) { this.recetasSeleccionadasIds = recetasSeleccionadasIds; }
+
+    public String getFiltroEstado() { return filtroEstado; }
+    public void setFiltroEstado(String filtroEstado) { this.filtroEstado = filtroEstado; }
+    public String getFiltroUsuario() { return filtroUsuario; }
+    public void setFiltroUsuario(String filtroUsuario) { this.filtroUsuario = filtroUsuario; }
 
     // =====================
     // CRUD PRODUCCIÓN
     // =====================
     public void registrarProduccion() {
         try {
-            if (recetasSeleccionadas == null || recetasSeleccionadas.isEmpty()) {
+            if (recetasSeleccionadasIds == null || recetasSeleccionadasIds.isEmpty()) {
                 addMessage("⚠️ Debes seleccionar al menos una receta.");
                 return;
             }
 
+            // Reconstruir lista de produccion_receta a partir de IDs
+            List<produccion_receta> seleccionadas = new ArrayList<>();
+            for (Integer idRec : recetasSeleccionadasIds) {
+                produccion_receta pr = new produccion_receta();
+                pr.setId_rec(idRec);
+                pr.setCantidad(1); // Ajusta según tu lógica
+                seleccionadas.add(pr);
+            }
+            produccion.setRecetas(seleccionadas);
+
             produccion.setEstado("PENDIENTE");
-            produccion.setUsuario(1); // TODO: tomar desde sesión
-            produccion.setRecetas(recetasSeleccionadas);
+            produccion.setUsuario(1); // TODO: obtener desde sesión
 
             boolean exito = pdao.agregarProduccion(produccion);
             if (exito) {
@@ -77,7 +96,6 @@ public class produccionBean implements Serializable {
             } else {
                 addMessage("❌ Error al registrar producción.");
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             addMessage("❌ Error: " + e.getMessage());
@@ -86,12 +104,14 @@ public class produccionBean implements Serializable {
 
     public void cargarProduccion(int id) {
         produccion = pdao.obtenerPorId(id);
-        if (produccion == null) {
-            addMessage("⚠️ Producción no encontrada.");
-            recetasSeleccionadas = new ArrayList<>();
-        } else {
-            recetasSeleccionadas = pdao.listarRecetasPorProduccion(id);
+        recetasSeleccionadasIds = new ArrayList<>();
+        if (produccion != null) {
+            for (produccion_receta pr : pdao.listarRecetasPorProduccion(id)) {
+                recetasSeleccionadasIds.add(pr.getId_rec());
+            }
             idProduccionEditar = id;
+        } else {
+            addMessage("⚠️ Producción no encontrada.");
         }
     }
 
@@ -103,11 +123,18 @@ public class produccionBean implements Serializable {
 
         try {
             boolean estadoActualizado = pdao.actualizarEstado(produccion);
-            boolean recetasActualizadas = true;
 
-            if (recetasSeleccionadas != null && !recetasSeleccionadas.isEmpty()) {
-                recetasActualizadas = pdao.actualizarRecetas(produccion.getId_proc(), recetasSeleccionadas);
+            List<produccion_receta> seleccionadas = new ArrayList<>();
+            if (recetasSeleccionadasIds != null) {
+                for (Integer idRec : recetasSeleccionadasIds) {
+                    produccion_receta pr = new produccion_receta();
+                    pr.setId_rec(idRec);
+                    pr.setCantidad(1);
+                    seleccionadas.add(pr);
+                }
             }
+
+            boolean recetasActualizadas = pdao.actualizarRecetas(produccion.getId_proc(), seleccionadas);
 
             if (estadoActualizado && recetasActualizadas) {
                 listaProducciones = pdao.listar();
@@ -116,7 +143,6 @@ public class produccionBean implements Serializable {
             } else {
                 addMessage("❌ Error al actualizar producción.");
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             addMessage("❌ Error: " + e.getMessage());
@@ -143,25 +169,11 @@ public class produccionBean implements Serializable {
     }
 
     // =====================
-    // GESTIÓN DE RECETAS
-    // =====================
-    public void agregarReceta() {
-        if (recetasSeleccionadas == null) recetasSeleccionadas = new ArrayList<>();
-        recetasSeleccionadas.add(new produccion_receta());
-    }
-
-    public void eliminarReceta(produccion_receta recetaSel) {
-        if (recetasSeleccionadas != null) {
-            recetasSeleccionadas.remove(recetaSel);
-        }
-    }
-
-    // =====================
     // UTILIDADES
     // =====================
     private void resetForm() {
         produccion = new produccion();
-        recetasSeleccionadas = new ArrayList<>();
+        recetasSeleccionadasIds = new ArrayList<>();
         idProduccionEditar = 0;
     }
 
@@ -169,5 +181,13 @@ public class produccionBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, msg, null));
         System.out.println(msg);
+    }
+
+    // Método auxiliar para mostrar nombres de recetas en la tabla
+    public String getNombresRecetas(produccion prod) {
+        if (prod.getRecetas() == null) return "";
+        return prod.getRecetas().stream()
+                .map(r -> r.getNombreReceta())
+                .collect(Collectors.joining(", "));
     }
 }
