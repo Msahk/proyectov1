@@ -5,71 +5,63 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-<h:head>
-    <title>Gestión de Clientes</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-</h:head>
-<h:body class="bg-light">
-      <f:event type="preRenderView" listener="#{clientesBean.listar()}" />
-    <ui:include src="/views/Navbar.xhtml" />
+    <h:head>
+        <title>Gestión de Clientes</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    </h:head>
+    <h:body styleClass="body">
+        <f:event type="preRenderView" listener="#{clientesBean.listar()}" />
+        <ui:include src="/views/Navbar.xhtml" />
+        <center>
+            <div class="container mt-5" style="max-width: 1600px">
+                <div class="card shadow p-3">
+                    <h1>Gestión de Clientes</h1>
 
-    <div class="container mt-5">
-        <div class="card shadow p-4">
-            <h2 class="text-center">Gestión de Clientes</h2>
-            <hr/>
-            
-            <h:form>
-                 <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{clientesBean.exportarPDF}"/>
-                 <h:commandButton value="Enviar Correos" 
-    action="/views/Clientes/correo.xhtml?faces-redirect=true" 
-    styleClass="btn btn-primary"/>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <h:outputLabel value="Nombre:" />
-                        <h:inputText value="#{clientesBean.filtroNombre}" styleClass="form-control" />
-                    </div>
-                    <div class="col-md-4">
-                        <h:outputLabel value="Teléfono:" />
-                        <h:inputText value="#{clientesBean.filtroTelefono}" styleClass="form-control" />
-                    </div>
-                    <div class="col-md-4">
-                        <h:outputLabel value="Correo:" />
-                        <h:inputText value="#{clientesBean.filtroCorreo}" styleClass="form-control" />
-                    </div>
-                    <div class="col-md-12 mt-2">
-                        <h:commandButton value="Filtrar" action="#{clientesBean.cargarClientes}" />
-                        <h:commandButton value="Nuevo Cliente" action="#{clientesBean.prepararNuevoCliente}"  />
-                    </div>
+                    <h:form>
+                        <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{clientesBean.exportarPDF}"/>
+                        <h:commandButton value="Enviar Correos" 
+                                         action="/views/Clientes/correoClientes.xhtml?faces-redirect=true" 
+                                         styleClass="btn btn-primary" style="margin-left: 10px"/>
+
+                        
+                        <br/><br/>
+                        
+                        <p:dataTable value="#{clientesBean.listaClientes}" var="c" >
+                            <p:column>
+                                <f:facet name="header">ID</f:facet>
+                                    <p:outputLabel value="#{c.id_Cliente}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Nombre</f:facet>
+                                    <p:outputLabel value="#{c.nombre}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Teléfono</f:facet>
+                                    <p:outputLabel value="#{c.telefono}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Correo</f:facet>
+                                    <p:outputLabel value="#{c.correo}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Opciones</f:facet>
+                                <h:commandLink action="editarCliente" actionListener="#{clientesBean.prepararEdicion(c)}" styleClass="btn btn-outline-success d-inline-flex align-items-center">
+                                 <i class="bi bi-pencil" aria-hidden="true"></i>
+                                </h:commandLink>
+                                <h:commandLink  action="#{clientesBean.eliminarCliente(c.id_Cliente)}"
+
+                                               onclick="return confirm('¿Seguro que quieres eliminar este cliente?');" 
+                                               styleClass="btn btn-outline-danger d-inline-flex align-items-center">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                </h:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    <br/>
+                        <p:commandButton 
+                            value="Menu anterior" icon="pi pi-home" action="/views/Dashboard.xhtml?faces-redirect=true" />
+                    </h:form>
                 </div>
-                
-                <h:dataTable value="#{clientesBean.listaClientes}" var="c" border="1" cellpadding="5" class="table table-bordered">
-                    <h:column>
-                        <f:facet name="header">ID</f:facet>
-                        #{c.id_Cliente}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Nombre</f:facet>
-                        #{c.nombre}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Teléfono</f:facet>
-                        #{c.telefono}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Correo</f:facet>
-                        #{c.correo}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Opciones</f:facet>
-                        <h:commandButton value="Editar" action="#{clientesBean.prepararEdicion(c)}"  />
-                        <h:commandButton value="Eliminar" action="#{clientesBean.eliminarCliente(c.id_Cliente)}"
-                                         
-                                         onclick="return confirm('¿Seguro que quieres eliminar este cliente?');" />
-                    </h:column>
-                </h:dataTable>
-            </h:form>
-            
-        </div>
-    </div>
-</h:body>
+            </div>
+        </center>
+    </h:body>
 </html>

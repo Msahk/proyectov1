@@ -4,126 +4,80 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-<h:head>
-    <title>Gestión de Ventas</title>
-    
-    <link rel="stylesheet" 
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-</h:head>
-<h:body class="body">
-    <f:event type="preRenderView" listener="#{ventasBean.cargarVentas()}" />
-    
-     <ui:include src="/views/Navbar.xhtml" />
-<div class="container mt-5">
-        <div class="card shadow p-4">
-            <h2 class="text-center">Gestión de Ventas</h2>
-            
+    <h:head>
+        <title>Gestión de Ventas</title>
 
-                        
-           
-          
+        <link rel="stylesheet" 
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    </h:head>
+    <h:body class="body">
+        <f:event type="preRenderView" listener="#{ventasBean.cargarVentas()}" />
 
-            <hr/>
-    <div class="container  mt-5">
-        <div class="card shadow p-4">
-     <h:form id="filtroVentasForm">
-         <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{ventasBean.exportarPDF}"/>
-    <h:panelGrid columns="10" cellpadding="5" class="table table-borderless">
-        <h:outputLabel value="ID Venta:" />
-        <h:inputText value="#{ventasBean.filtroIdVenta}" styleClass="form-control" />
+        <ui:include src="/views/Navbar.xhtml" />
+        <center>
+            <div class="container mt-5" style="max-width: 1600px">
+                <div class="card shadow p-3">
+                    <h1>Gestión de Ventas</h1>
+                    <h:form id="filtroVentasForm">
+                        <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{ventasBean.exportarPDF}"/>
+                        <h:commandButton value="Nueva Venta" style="margin-left: 10px" styleClass="btn btn-primary" action="nuevaVenta.xhtml?faces-redirect=true" />
+                        <h:commandButton value="Gestionar Clientes" style="margin-left: 10px" action="/views/Clientes/Index.xhtml?faces-redirect=true" styleClass="btn btn-primary" />
 
-        <h:outputLabel value="Tipo:" />
-        <h:selectOneMenu value="#{ventasBean.filtroTipo}" styleClass="form-select">
-            <f:selectItem itemValue="" itemLabel="Todos" />
-            <f:selectItem itemValue="directa" itemLabel="Directa" />
-            <f:selectItem itemValue="pedido" itemLabel="Pedido" />
-        </h:selectOneMenu>
+                        <br/><br/>
 
-        <h:outputLabel value="Cliente:" />
-        <h:inputText value="#{ventasBean.filtroCliente}" styleClass="form-control"/>
+                        <p:dataTable value="#{ventasBean.listaVentas}" var="venta">
+                            <p:column>
+                                <f:facet name="header">ID</f:facet>
+                                    #{venta.idVen}
+                            </p:column>
 
-        <h:outputLabel value="Usuario:" />
-        <h:inputText value="#{ventasBean.filtroUsuario}" styleClass="form-control"/>
+                            <p:column>
+                                <f:facet name="header">Tipo</f:facet>
+                                    #{venta.tipo}
+                            </p:column>
 
-        <h:outputLabel value="Total mínimo:" />
-        <h:inputText value="#{ventasBean.filtroTotalMin}" styleClass="form-control" />
+                            <p:column>
+                                <f:facet name="header">Cliente</f:facet>
+                                    #{venta.nombreCliente}
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Usuario</f:facet>
+                                    #{venta.nombreUsuario}
+                            </p:column>
 
-        <h:outputLabel value="Total máximo:" />
-        <h:inputText value="#{ventasBean.filtroTotalMax}" styleClass="form-control" />
+                            <p:column>
+                                <f:facet name="header">Total</f:facet>
+                                    #{venta.total}
+                            </p:column>
 
-        <h:outputLabel value="Estado:" />
-        <h:selectOneMenu value="#{ventasBean.filtroEstado}" styleClass="form-select">
-            <f:selectItem itemValue="" itemLabel="Todos" />
-            <f:selectItem itemValue="Procesando" itemLabel="Procesando" />
-            <f:selectItem itemValue="Completada" itemLabel="Completada" />
-        </h:selectOneMenu>
+                            <p:column>
+                                <f:facet name="header">Estado</f:facet>
+                                    #{venta.estado}
+                            </p:column>
 
-        <h:outputLabel value="Fecha desde:" />
-        <p:calendar value="#{ventasBean.filtroFechaDesde}" pattern="yyyy-MM-dd" showButtonPanel="true" navigator="true" locale="es" />
+                            <p:column>
+                                <f:facet name="header">Observaciones</f:facet>
+                                    #{venta.observaciones}
+                            </p:column>
 
-        <h:outputLabel value="Fecha hasta:" />
-        <p:calendar value="#{ventasBean.filtroFechaHasta}" pattern="yyyy-MM-dd" showButtonPanel="true" navigator="true" locale="es" />
+                            <p:column>
+                                <f:facet name="header">Opciones</f:facet>
+                                <h:commandLink action="editarVentas" actionListener="#{ventasBean.prepararEdicion(venta)}" styleClass="btn btn-outline-warning d-inline-flex align-items-center">
+                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                </h:commandLink>
 
-        <h:commandButton value="Filtrar" action="#{ventasBean.filtrarVentas}" styleClass="btn btn-primary" />
-    </h:panelGrid>
-</h:form>
-            <h:form>
-                <h:dataTable value="#{ventasBean.listaVentas}" var="venta" border="1" cellpadding="5" class="table table-bordered">
-                    <h:column>
-                        <f:facet name="header">ID</f:facet>
-                        #{venta.idVen}
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Tipo</f:facet>
-                        #{venta.tipo}
-                    </h:column>
-
-                   <h:column>
-    <f:facet name="header">Cliente</f:facet>
-    #{venta.nombreCliente}
-</h:column>
-<h:column>
-    <f:facet name="header">Usuario</f:facet>
-    #{venta.nombreUsuario}
-</h:column>
-
-                    <h:column>
-                        <f:facet name="header">Total</f:facet>
-                        #{venta.total}
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Estado</f:facet>
-                        #{venta.estado}
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Observaciones</f:facet>
-                        #{venta.observaciones}
-                    </h:column>
-
-                    <h:column>
-                        <h:commandButton value="Editar" action="#{ventasBean.prepararEdicion(venta)}" />
-                    </h:column>
-
-                    <h:column>
-                        <h:commandButton value="Eliminar" action="#{ventasBean.eliminarVenta(venta.idVen)}" />
-                    </h:column>
-                </h:dataTable>
-            </h:form>
-
-            
-            <h:form>
-                <h:commandButton value="Nueva Venta" styleClass="btn btn-primary mt-3" action="nuevaVenta.xhtml?faces-redirect=true" />
-            </h:form>
-            <h:form>
-    <h:commandButton value="Gestionar Clientes" action="/views/Clientes/Index.xhtml?faces-redirect=true" styleClass="btn btn-info" />
-</h:form>
-        </div>
-    </div>
-      </div>
-    </div>
-
-</h:body>
+                                <h:commandLink onclick="return confirm('¿Está seguro de ELIMINAR la venta?!!')" actionListener="#{ventasBean.eliminarVenta(venta.idVen)}"
+                                               styleClass="btn btn-outline-danger d-inline-flex align-items-center">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                </h:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                        <br/>
+                        <p:commandButton 
+                            value="Menu anterior" icon="pi pi-home" action="/views/Dashboard.xhtml?faces-redirect=true" />
+                    </h:form>
+                </div>
+            </div>
+        </center>
+    </h:body>
 </html>
