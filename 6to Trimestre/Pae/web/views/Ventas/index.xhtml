@@ -6,7 +6,6 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Gestión de Ventas</title>
-
         <link rel="stylesheet" 
               href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     </h:head>
@@ -19,61 +18,72 @@
                 <div class="card shadow p-3">
                     <h1>Gestión de Ventas</h1>
                     <h:form id="filtroVentasForm">
+                        
                         <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{ventasBean.exportarPDF}"/>
                         <h:commandButton value="Nueva Venta" style="margin-left: 10px" styleClass="btn btn-primary" action="nuevaVenta.xhtml?faces-redirect=true" />
                         <h:commandButton value="Gestionar Clientes" style="margin-left: 10px" action="/views/Clientes/Index.xhtml?faces-redirect=true" styleClass="btn btn-primary" />
                         
-
                         <br/><br/>
-
                         <p:dataTable value="#{ventasBean.listaVentas}" var="venta">
                             <p:column>
                                 <f:facet name="header">ID</f:facet>
-                                    #{venta.idVen}
+                                #{venta.idVen}
                             </p:column>
-
                             <p:column>
                                 <f:facet name="header">Tipo</f:facet>
-                                    #{venta.tipo}
+                                #{venta.tipo}
                             </p:column>
-
                             <p:column>
                                 <f:facet name="header">Cliente</f:facet>
-                                    #{venta.nombreCliente}
+                                #{venta.nombreCliente}
                             </p:column>
                             <p:column>
                                 <f:facet name="header">Usuario</f:facet>
-                                    #{venta.nombreUsuario}
+                                #{venta.nombreUsuario}
                             </p:column>
-
                             <p:column>
                                 <f:facet name="header">Total</f:facet>
-                                    #{venta.total}
+                                #{venta.total}
                             </p:column>
-
                             <p:column>
                                 <f:facet name="header">Estado</f:facet>
-                                    #{venta.estado}
+                                #{venta.estado}
                             </p:column>
-
                             <p:column>
                                 <f:facet name="header">Observaciones</f:facet>
-                                    #{venta.observaciones}
+                                #{venta.observaciones}
                             </p:column>
-
                             <p:column>
                                 <f:facet name="header">Opciones</f:facet>
                                 <h:commandLink action="editarVentas" actionListener="#{ventasBean.prepararEdicion(venta)}" styleClass="btn btn-outline-warning d-inline-flex align-items-center">
                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                 </h:commandLink>
-
                                 <h:commandLink onclick="return confirm('¿Está seguro de ELIMINAR la venta?!!')" actionListener="#{ventasBean.eliminarVenta(venta.idVen)}"
                                                styleClass="btn btn-outline-danger d-inline-flex align-items-center">
                                     <i class="bi bi-trash" aria-hidden="true"></i>
                                 </h:commandLink>
                             </p:column>
+                            <p:column headerText="Detalle">
+                                <p:commandButton value="Detalle"
+                                                 actionListener="#{ventasBean.verDetalleVenta(venta.idVen)}"
+                                                 update=":detalleDialog"
+                                                 oncomplete="PF('detalleDialog').show()" />
+                            </p:column>
                         </p:dataTable>
-                        <br/>
+                    </h:form>
+                    <!-- El dialogo debe ir FUERA del formulario para evitar problemas de referencia -->
+                    <p:dialog id="detalleDialog" widgetVar="detalleDialog" modal="true" header="Detalle de Venta">
+                        <p:dataTable value="#{ventasBean.detallesVentaActual}" var="det">
+                            <p:column headerText="Empanada">
+                                <h:outputText value="#{det.nombreEmpanada}" />
+                            </p:column>
+                            <p:column headerText="Cantidad">
+                                <h:outputText value="#{det.cantidad}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:dialog>
+                    <br/>
+                    <h:form>
                         <p:commandButton 
                             value="Menu anterior" icon="pi pi-home" action="/views/Dashboard.xhtml?faces-redirect=true" />
                     </h:form>

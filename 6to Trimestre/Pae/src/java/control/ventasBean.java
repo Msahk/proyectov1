@@ -28,6 +28,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.File;
+import modelo.DetalleVentaDTO;
 
 @ManagedBean(name = "ventasBean")
 @SessionScoped
@@ -52,8 +53,10 @@ public class ventasBean implements Serializable {
     private String filtroEstado;
     private Date filtroFechaDesde;
     private Date filtroFechaHasta;
-
+    
+private List<DetalleVentaDTO> detallesVentaActual = new ArrayList<>();
     private List<usuarios> listaUsuarios = new ArrayList<>();
+    
 
     private clientes clienteNuevo = new clientes(); 
     
@@ -118,7 +121,9 @@ public class ventasBean implements Serializable {
     public List<ventas> getListaVentas() { return listaVentas; }
     public void setListaVentas(List<ventas> listaVentas) { this.listaVentas = listaVentas; }
 
-    // Método de filtro avanzado
+   public List<DetalleVentaDTO> getDetallesVentaActual() {
+    return detallesVentaActual;
+}
     public void filtrarVentas() {
         java.sql.Date sqlFechaDesde = filtroFechaDesde != null ? new java.sql.Date(filtroFechaDesde.getTime()) : null;
         java.sql.Date sqlFechaHasta = filtroFechaHasta != null ? new java.sql.Date(filtroFechaHasta.getTime()) : null;
@@ -185,6 +190,8 @@ public class ventasBean implements Serializable {
     public void setVentaSeleccionada(ventas ventaSeleccionada) {
         this.ventaSeleccionada = ventaSeleccionada;
     }
+    
+    
 
    
 
@@ -305,6 +312,10 @@ public class ventasBean implements Serializable {
         }
     }
     return null;
+}
+   public void verDetalleVenta(int idVenta) {
+    
+    detallesVentaActual = ventasDao.obtenerDetallesPorVenta(idVenta);
 }
    
 

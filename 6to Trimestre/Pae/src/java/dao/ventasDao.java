@@ -4,6 +4,7 @@ import modelo.ventas;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.DetalleVentaDTO;
 
 public class ventasDao {
 
@@ -41,6 +42,29 @@ public class ventasDao {
         }
         return lista;
     }
+    public List<DetalleVentaDTO> obtenerDetallesPorVenta(int idVenta) {
+    List<DetalleVentaDTO> detalles = new ArrayList<>();
+    String sql = "SELECT r.nombre AS empanada, dv.cantidad " +
+                 "FROM detalle_venta dv " +
+                 "JOIN produccion p ON dv.id_proc = p.id_proc " +
+                 "JOIN produccion_recetas pr ON pr.id_produccion = p.id_proc " +
+                 "JOIN recetas r ON pr.id_rec = r.id_rec " +
+                 "WHERE dv.id_ven = ?";
+    try (Connection con = getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, idVenta);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            DetalleVentaDTO dto = new DetalleVentaDTO();
+            dto.setNombreEmpanada(rs.getString("empanada"));
+            dto.setCantidad(rs.getInt("cantidad"));
+            detalles.add(dto);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return detalles;
+}
 public boolean actualizarTipoVenta(modelo.ventas v) {
         String sql = "UPDATE ventas SET Tipo=?, fecha=?, id_usu=?, id_Cliente=?, total=?, estado=?, observaciones=? WHERE id_ven=?";
         try (Connection con = getConnection();
