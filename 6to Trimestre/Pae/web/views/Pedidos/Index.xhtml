@@ -4,117 +4,77 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-<h:head>
-    <title>Gestión de Pedidos</title>
-    <link rel="stylesheet" 
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-</h:head>
-<h:body class="bg-light">
+    <h:head>
+        <title>Gestión de Pedidos</title>
+        <link rel="stylesheet" 
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    </h:head>
+    <h:body styleClass="body">
 
-    <ui:include src="/views/Navbar.xhtml" />
-   <f:event type="preRenderView" listener="#{pedidosBean.cargarPedidos()}"/>
+        <ui:include src="/views/Navbar.xhtml" />
+        <f:event type="preRenderView" listener="#{pedidosBean.cargarPedidos()}"/>
+        <center>
+            <div class="container mt-5" style="max-width: 1600px">
+                <div class="card shadow p-3">
+                    <h1>Gestión de Pedidos</h1>
 
-    <div class="container mt-5">
-        <div class="card shadow p-4">
-            <h2 class="text-center">Gestión de Pedidos</h2>
-            
 
-           
-          
+                    <h:form>
+                        <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{pedidosBean.exportarPDF}"/>
+                        <h:commandButton/>
+                        <h:commandButton value="Migrar"
+    action="/views/Pedidos/migrarPedidos.xhtml?faces-redirect=true"
+    styleClass="btn btn-primary" />
+                        <br/><br/>
+                        <p:dataTable value="#{pedidosBean.listaPedidos}" var="pedido">
+                            <p:column>
+                                <f:facet name="header">ID Pedido</f:facet>
+                                <p:outputLabel value="#{pedido.idPed}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Venta</f:facet>
+                                <p:outputLabel value="#{pedido.idVen}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Cliente</f:facet>
+                                <p:outputLabel value="#{pedido.nombreCliente}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Fecha Entrega</f:facet>
+                                <p:outputLabel value="#{pedido.fechaEntrega}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Estado</f:facet>
+                                <p:outputLabel value="#{pedido.estado}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Observaciones</f:facet>
+                                <p:outputLabel value="#{pedido.observacionesPedido}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Opciones</f:facet>
+                                <h:commandLink action="editarPedido"
+                                               styleClass="btn btn-outline-success d-inline-flex align-items-center"
+                                               actionListener="#{pedidosBean.prepararEdicion(pedido)}" >
+                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                </h:commandLink>
 
-            <hr/>
-<h:form id="filtroPedidosForm">
-     <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{pedidosBean.exportarPDF}"/>
-    <h:panelGrid columns="8" cellpadding="8" style="margin-bottom: 20px;" class="table table-borderless">
-        
-        <h:outputLabel value="ID Pedido:" />
-        <h:inputText value="#{pedidosBean.filtroIdPedido}" styleClass="form-control" />
+                                <h:commandLink
 
-        
-        <h:outputLabel value="ID Venta:" />
-        <h:inputText value="#{pedidosBean.filtroIdVenta}" styleClass="form-control" />
+                                    actionListener="#{pedidosBean.eliminarPedido(pedido.idPed)}"
+                                    onclick="return confirm('¿Está segur@ de ELIMINAR el pedido?')" 
+                                    styleClass="btn btn-outline-danger d-inline-flex align-items-center">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                </h:commandLink>
 
-        
-        <h:outputLabel value="Estado:" />
-        <h:selectOneMenu value="#{pedidosBean.filtroEstado}" styleClass="form-select">
-            <f:selectItem itemValue="" itemLabel="Todos" />
-            <f:selectItem itemValue="Pendiente" itemLabel="Pendiente" />
-            <f:selectItem itemValue="Tomado" itemLabel="Tomado" />
-            <f:selectItem itemValue="Completado" itemLabel="Completado" />
-        </h:selectOneMenu>
-
-        
-        <h:outputLabel value="Cliente:" />
-        <h:inputText value="#{pedidosBean.filtroCliente}" styleClass="form-control" />
-
-        
-        <h:outputLabel value="Fecha desde:" />
-        <p:calendar value="#{pedidosBean.filtroFechaDesde}"
-                    pattern="yyyy-MM-dd"
-                    showButtonPanel="true"
-                    navigator="true"
-                    locale="es"
-                    styleClass="form-control" />
-
-       
-        <h:outputLabel value="Fecha hasta:" />
-        <p:calendar value="#{pedidosBean.filtroFechaHasta}"
-                    pattern="yyyy-MM-dd"
-                    showButtonPanel="true"
-                    navigator="true"
-                    locale="es"
-                    styleClass="form-control" />
-
-        
-        <h:outputLabel />
-        <h:commandButton value="Filtrar" action="#{pedidosBean.filtrarPedidos}" styleClass="btn btn-primary" />
-    </h:panelGrid>
-</h:form>
-            <h:form>
-               <h:dataTable value="#{pedidosBean.listaPedidos}" var="pedido" class="table">
-    <h:column>
-        <f:facet name="header">ID Pedido</f:facet>
-        #{pedido.idPed}
-    </h:column>
-    <h:column>
-        <f:facet name="header">Venta</f:facet>
-        #{pedido.idVen}
-    </h:column>
-    <h:column>
-        <f:facet name="header">Cliente</f:facet>
-        #{pedido.nombreCliente}
-    </h:column>
-                    <h:column>
-                        <f:facet name="header">Fecha Entrega</f:facet>
-                        #{pedido.fechaEntrega}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Estado</f:facet>
-                        #{pedido.estado}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Observaciones</f:facet>
-                        #{pedido.observacionesPedido}
-                    </h:column>
-                    <h:column>
-                        <h:commandButton value="Editar" 
-                                        
-                                         action="#{pedidosBean.prepararEdicion(pedido)}" />
-                    </h:column>
-                    <h:column>
-                        <h:commandButton value="Eliminar"
-                                        
-                                         action="#{pedidosBean.eliminarPedido(pedido.idPed)}"
-                                         onclick="return confirm('¿Está segur@ de ELIMINAR el pedido?')" />
-                    </h:column>
-                </h:dataTable>
-            </h:form>
-
-            <h:form>
-               
-            </h:form>
-        </div>
-    </div>
-
-</h:body>
+                            </p:column>
+                        </p:dataTable>
+                        <br/>
+                        <p:commandButton 
+                            value="Menu anterior" icon="pi pi-home" action="/views/Dashboard.xhtml?faces-redirect=true" />
+                    </h:form>
+                </div>
+            </div>
+        </center>
+    </h:body>
 </html>
