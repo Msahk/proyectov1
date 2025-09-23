@@ -172,7 +172,12 @@ public class usuariosBean implements Serializable {
                 sesUsuario.setNombres(rs.getString("nombres"));
                 sesUsuario.setApellidos(rs.getString("apellidos"));
                 sesUsuario.setRol(rs.getString("rol"));
+                sesUsuario.setEstado(rs.getString("estado"));
 
+                
+                if ("A".equals(sesUsuario.getEstado())) {
+
+                    
                 SessionUserBean bean = FacesContext.getCurrentInstance()
     .getApplication()
     .evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{sessionUser}", SessionUserBean.class);
@@ -185,6 +190,11 @@ System.out.println("DEBUG: usuario guardado en bean: " + bean.getUsuario() + " n
                 logged = true;
                 message = sesUsuario.getNombres() + " " + sesUsuario.getApellidos();
                 redirectTo = "views/Dashboard.xhtml"; 
+                } else {
+                    logged = false;
+                    message = "Usuario inactivo";
+                    redirectTo = "index.xhtml"; 
+                }
             } else {
                 message = "Correo/Documento o contraseña inválidos";
             }

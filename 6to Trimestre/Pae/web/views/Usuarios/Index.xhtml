@@ -16,7 +16,7 @@
         <f:event type="preRenderView" listener="#{usuariosBean.listar()}" />
         <p:growl id="msj" showDetail="true" showSummary="true" />
         <center>
-            <div class="container mt-5">
+            <div class="container mt-5" style="max-width: 1600px">
                 <div class="card shadow p-3">
                     <h1>Gestión de Usuarios</h1>
 
@@ -75,7 +75,7 @@
                                 <p:outputLabel value="#{usu.direccion}" />
                             </p:column>
 
-                            <p:column filterBy="#{usu.correo}" filterMatchMode="contains" sortBy="#{usu.correo}">
+                            <p:column filterBy="#{usu.correo}" width="305" filterMatchMode="contains" sortBy="#{usu.correo}">
                                 <f:facet name="header">Correo</f:facet>
                                 <p:outputLabel value="#{usu.correo}" />
                             </p:column>
