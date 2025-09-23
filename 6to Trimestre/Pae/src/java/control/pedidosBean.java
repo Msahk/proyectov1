@@ -27,6 +27,11 @@ import net.sf.jasperreports.engine.JasperPrint;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.File;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import java.io.InputStream;
+import java.util.Iterator;
+import javax.servlet.http.Part;
 
 @ManagedBean(name = "pedidosBean")
 @SessionScoped
@@ -46,6 +51,7 @@ private String filtroEstado;
 private String filtroCliente;
 private Date filtroFechaDesde;
 private Date filtroFechaHasta;
+private Part excel;
 
 
     private pedidosDao pedidosDao = new pedidosDao();
@@ -154,6 +160,49 @@ public String actualizarPedido() {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al eliminar el pedido: " + pedidosDao.ultimoError, null));
         }
     }
+    public void migrar() {
+    try {
+        Workbook libro = WorkbookFactory.create(excel.getInputStream());
+        Sheet hoja = libro.getSheetAt(0);
+        Iterator<Row> itrFila = hoja.rowIterator();
+        itrFila.next(); // Saltar cabecera
+
+        while (itrFila.hasNext()) {
+            Row fila = itrFila.next();
+            Iterator<Cell> itrCelda = fila.cellIterator();
+            pedidos ped = new pedidos();
+            int campo = 1;
+
+            while (itrCelda.hasNext()) {
+                Cell celda = itrCelda.next();
+                switch (campo) {
+                    case 1:
+                        ped.setIdVen((int) celda.getNumericCellValue());
+                        break;
+                    case 2:
+                        ped.setFechaEntrega(celda.getDateCellValue());
+                        break;
+                    case 3:
+                        ped.setEstado(celda.getRichStringCellValue().toString());
+                        break;
+                    case 4:
+                        ped.setObservacionesPedido(celda.getRichStringCellValue().toString());
+                        break;
+                }
+                campo++;
+            }
+            pedidosDao.agregar(ped); 
+        }
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Pedidos migrados exitosamente"));
+    } catch (Exception e) {
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "Error migrando pedidos"));
+    }
+}
+
+public Part getExcel() { return excel; }
+public void setExcel(Part excel) { this.excel = excel; }
     public void exportarPDF() {
     try {
         String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/pedidos.jasper");
