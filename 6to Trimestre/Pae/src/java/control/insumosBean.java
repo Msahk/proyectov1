@@ -28,6 +28,21 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import javax.faces.context.FacesContext;
+import javax.faces.application.FacesMessage;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletOutputStream;
+
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JRException;
+
+// Si usas tu DataSource
+import control.insumosDataSource;
+
 
 
 
@@ -216,5 +231,36 @@ public List<insumos> getInsumosFiltrados() {
     public UploadedFile getArchivoExcel() { return archivoExcel; }
     public void setArchivoExcel(UploadedFile archivoExcel) { this.archivoExcel = archivoExcel; }
    
-   
+   public void exportarPDFInsumos() throws IOException {
+    try {
+        // Ruta del archivo Jasper compilado
+        String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/Insumos.jasper");
+        File jasper = new File(path);
+
+        // Creamos el DataSource de insumos
+        insumosDataSource ids = new insumosDataSource();
+
+        // Llenamos el reporte
+        JasperPrint jprint = JasperFillManager.fillReport(jasper.getPath(), null, ids);
+
+        // Configuramos la respuesta HTTP
+        HttpServletResponse resp = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        resp.addHeader("Content-disposition", "attachment; filename=Insumos.pdf");
+        resp.setContentType("application/pdf");
+
+        // Enviamos el PDF al cliente
+        try (ServletOutputStream stream = resp.getOutputStream()) {
+            JasperExportManager.exportReportToPdfStream(jprint, stream);
+            stream.flush();
+        }
+
+        FacesContext.getCurrentInstance().responseComplete();
+
+    } catch (JRException | IOException e) {
+        e.printStackTrace();
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error creando reporte de insumos"));
+    }
+}
+
 }
