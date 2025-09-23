@@ -14,7 +14,7 @@ public class insumosDao {
     PreparedStatement ps;
     ResultSet rs;
 
-    // Listar todos los insumos
+    
     public List<insumos> listar() {
         List<insumos> lista = new ArrayList<>();
         String sql = "SELECT * FROM insumos";

@@ -21,13 +21,13 @@
                     <div class="form-group">
                     <p:outputLabel value="Seleccione el archivo" />
                     <br/>
-                    <h:inputFile value="#{clientesBean.excel}" style="font-size: 20px"
+                    <h:inputFile value="#{ventasBean.excelVentas}" style="font-size: 20px"
                                  required="true" requiredMessage="Debe seleccionar un archivo" />
 
                     <br/><br/>
 
                     <p:commandButton value="Cargar Usuarios" ajax="false"
-                                     actionListener="#{clientesBean.migrar}" />
+                                     actionListener="#{ventasBean.migrarVentas}" />
             </div>
                 </h:form>
 

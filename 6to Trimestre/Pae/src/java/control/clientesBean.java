@@ -37,6 +37,7 @@ public class clientesBean implements Serializable {
     private String filtroTelefono;
     private String filtroCorreo;
     private Part excel;
+    private List<clientes> listaClientesFiltrados;
 
     @PostConstruct
     public void init() {
@@ -56,7 +57,8 @@ public class clientesBean implements Serializable {
     public void setFiltroTelefono(String filtroTelefono) { this.filtroTelefono = filtroTelefono; }
     public String getFiltroCorreo() { return filtroCorreo; }
     public void setFiltroCorreo(String filtroCorreo) { this.filtroCorreo = filtroCorreo; }
-
+public List<clientes> getListaClientesFiltrados() { return listaClientesFiltrados; }
+public void setListaClientesFiltrados(List<clientes> listaClientesFiltrados) { this.listaClientesFiltrados = listaClientesFiltrados; }
     public String prepararNuevoCliente() {
         clienteNuevo = new clientes();
         return "/views/Clientes/nuevoCliente.xhtml?faces-redirect=true";

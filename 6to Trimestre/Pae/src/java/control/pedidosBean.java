@@ -52,6 +52,7 @@ private String filtroCliente;
 private Date filtroFechaDesde;
 private Date filtroFechaHasta;
 private Part excel;
+private List<pedidos> listaPedidosFiltrados;
 
 
     private pedidosDao pedidosDao = new pedidosDao();
@@ -83,7 +84,8 @@ private Part excel;
     public void setFiltroFechaHasta(Date filtroFechaHasta) { this.filtroFechaHasta = filtroFechaHasta; }
    
     public void setListaPedidos(List<pedidos> listaPedidos) { this.listaPedidos = listaPedidos; }
-
+public List<pedidos> getListaPedidosFiltrados() { return listaPedidosFiltrados; }
+public void setListaPedidosFiltrados(List<pedidos> listaPedidosFiltrados) { this.listaPedidosFiltrados = listaPedidosFiltrados; }
     
     public void filtrarPedidos() {
         java.sql.Date sqlFechaDesde = filtroFechaDesde != null ? new java.sql.Date(filtroFechaDesde.getTime()) : null;

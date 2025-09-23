@@ -22,6 +22,10 @@
                         <h:commandButton value="Enviar Correos" 
                                          action="/views/Clientes/correoClientes.xhtml?faces-redirect=true" 
                                          styleClass="btn btn-primary" style="margin-left: 10px"/>
+                        <h:commandButton/>
+                        <h:commandButton value="Nuevo Cliente"
+                 action="nuevoCliente.xhtml?faces-redirect=true"
+                 styleClass="btn btn-primary" />
                          <h:commandButton />
                         <h:commandButton value="Migrar"
     action="/views/Clientes/migrarClientes.xhtml?faces-redirect=true"
@@ -30,36 +34,35 @@
                         
                         <br/><br/>
                         
-                        <p:dataTable value="#{clientesBean.listaClientes}" var="c" >
-                            <p:column>
-                                <f:facet name="header">ID</f:facet>
-                                    <p:outputLabel value="#{c.id_Cliente}" />
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">Nombre</f:facet>
-                                    <p:outputLabel value="#{c.nombre}" />
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">Teléfono</f:facet>
-                                    <p:outputLabel value="#{c.telefono}" />
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">Correo</f:facet>
-                                    <p:outputLabel value="#{c.correo}" />
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">Opciones</f:facet>
-                                <h:commandLink action="editarCliente" actionListener="#{clientesBean.prepararEdicion(c)}" styleClass="btn btn-outline-success d-inline-flex align-items-center">
-                                 <i class="bi bi-pencil" aria-hidden="true"></i>
-                                </h:commandLink>
-                                <h:commandLink  action="#{clientesBean.eliminarCliente(c.id_Cliente)}"
-
-                                               onclick="return confirm('¿Seguro que quieres eliminar este cliente?');" 
-                                               styleClass="btn btn-outline-danger d-inline-flex align-items-center">
-                                    <i class="bi bi-trash" aria-hidden="true"></i>
-                                </h:commandLink>
-                            </p:column>
-                        </p:dataTable>
+                       <p:dataTable value="#{clientesBean.listaClientes}" var="cli"
+             widgetVar="wtClientes"
+             filteredValue="#{clientesBean.listaClientesFiltrados}"
+             paginator="true" rows="10"
+             filterEvent="keyup">
+    <f:facet name="header">
+        <div align="right">
+            <p:inputText id="globalFilter" onkeyup="PF('wtClientes').filter()" style="width:10rem"
+                         placeholder="Buscar ..." />
+        </div>
+    </f:facet>
+    <p:column filterBy="#{cli.id_Cliente}" filterMatchMode="contains" sortBy="#{cli.id_Cliente}">
+        <f:facet name="header">ID</f:facet>
+        <h:outputText value="#{cli.id_Cliente}" />
+    </p:column>
+    <p:column filterBy="#{cli.nombre}" filterMatchMode="contains" sortBy="#{cli.nombre}">
+        <f:facet name="header">Nombre</f:facet>
+        <h:outputText value="#{cli.nombre}" />
+    </p:column>
+    <p:column filterBy="#{cli.telefono}" filterMatchMode="contains" sortBy="#{cli.telefono}">
+        <f:facet name="header">Teléfono</f:facet>
+        <h:outputText value="#{cli.telefono}" />
+    </p:column>
+    <p:column filterBy="#{cli.correo}" filterMatchMode="contains" sortBy="#{cli.correo}">
+        <f:facet name="header">Correo</f:facet>
+        <h:outputText value="#{cli.correo}" />
+    </p:column>
+   
+</p:dataTable>
                     <br/>
                         <p:commandButton 
                             value="Menu anterior" icon="pi pi-home" action="/views/Dashboard.xhtml?faces-redirect=true" />

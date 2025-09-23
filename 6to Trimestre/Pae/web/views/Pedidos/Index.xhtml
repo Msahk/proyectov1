@@ -26,49 +26,39 @@
     action="/views/Pedidos/migrarPedidos.xhtml?faces-redirect=true"
     styleClass="btn btn-primary" />
                         <br/><br/>
-                        <p:dataTable value="#{pedidosBean.listaPedidos}" var="pedido">
-                            <p:column>
-                                <f:facet name="header">ID Pedido</f:facet>
-                                <p:outputLabel value="#{pedido.idPed}" />
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">Venta</f:facet>
-                                <p:outputLabel value="#{pedido.idVen}" />
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">Cliente</f:facet>
-                                <p:outputLabel value="#{pedido.nombreCliente}" />
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">Fecha Entrega</f:facet>
-                                <p:outputLabel value="#{pedido.fechaEntrega}" />
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">Estado</f:facet>
-                                <p:outputLabel value="#{pedido.estado}" />
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">Observaciones</f:facet>
-                                <p:outputLabel value="#{pedido.observacionesPedido}" />
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">Opciones</f:facet>
-                                <h:commandLink action="editarPedido"
-                                               styleClass="btn btn-outline-success d-inline-flex align-items-center"
-                                               actionListener="#{pedidosBean.prepararEdicion(pedido)}" >
-                                    <i class="bi bi-pencil" aria-hidden="true"></i>
-                                </h:commandLink>
-
-                                <h:commandLink
-
-                                    actionListener="#{pedidosBean.eliminarPedido(pedido.idPed)}"
-                                    onclick="return confirm('¿Está segur@ de ELIMINAR el pedido?')" 
-                                    styleClass="btn btn-outline-danger d-inline-flex align-items-center">
-                                    <i class="bi bi-trash" aria-hidden="true"></i>
-                                </h:commandLink>
-
-                            </p:column>
-                        </p:dataTable>
+                       <p:dataTable value="#{pedidosBean.listaPedidos}" var="ped"
+             widgetVar="wtPedidos"
+             filteredValue="#{pedidosBean.listaPedidosFiltrados}"
+             paginator="true" rows="10"
+             filterEvent="keyup">
+    <f:facet name="header">
+        <div align="right">
+            <p:inputText id="globalFilter" onkeyup="PF('wtPedidos').filter()" style="width:10rem"
+                         placeholder="Buscar ..." />
+        </div>
+    </f:facet>
+    <p:column filterBy="#{ped.idPedido}" filterMatchMode="contains" sortBy="#{ped.idPed}">
+        <f:facet name="header">ID</f:facet>
+        <h:outputText value="#{ped.idPed}" />
+    </p:column>
+    <p:column filterBy="#{ped.nombreCliente}" filterMatchMode="contains" sortBy="#{ped.nombreCliente}">
+        <f:facet name="header">Cliente</f:facet>
+        <h:outputText value="#{ped.nombreCliente}" />
+    </p:column>
+    <p:column filterBy="#{ped.estado}" filterMatchMode="contains" sortBy="#{ped.estado}">
+        <f:facet name="header">Estado</f:facet>
+        <h:outputText value="#{ped.estado}" />
+    </p:column>
+    <p:column filterBy="#{ped.fechaEntrega}" filterMatchMode="contains" sortBy="#{ped.fechaEntrega}">
+        <f:facet name="header">Entrega</f:facet>
+        <h:outputText value="#{ped.fechaEntrega}" />
+    </p:column>
+    <p:column filterBy="#{ped.observacionesPedido}" filterMatchMode="contains" sortBy="#{ped.observacionesPedido}">
+        <f:facet name="header">Observaciones</f:facet>
+        <h:outputText value="#{ped.observacionesPedido}" />
+    </p:column>
+    <!-- Opciones -->
+</p:dataTable>
                         <br/>
                         <p:commandButton 
                             value="Menu anterior" icon="pi pi-home" action="/views/Dashboard.xhtml?faces-redirect=true" />

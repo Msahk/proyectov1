@@ -4,7 +4,7 @@ import modelo.ventas;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import modelo.DetalleVentaDTO;
+import modelo.DetalleVenta;
 
 public class ventasDao {
 
@@ -42,8 +42,8 @@ public class ventasDao {
         }
         return lista;
     }
-    public List<DetalleVentaDTO> obtenerDetallesPorVenta(int idVenta) {
-    List<DetalleVentaDTO> detalles = new ArrayList<>();
+    public List<DetalleVenta> obtenerDetallesPorVenta(int idVenta) {
+    List<DetalleVenta> detalles = new ArrayList<>();
     String sql = "SELECT r.nombre AS empanada, dv.cantidad " +
                  "FROM detalle_venta dv " +
                  "JOIN produccion p ON dv.id_proc = p.id_proc " +
@@ -55,7 +55,7 @@ public class ventasDao {
         ps.setInt(1, idVenta);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            DetalleVentaDTO dto = new DetalleVentaDTO();
+            DetalleVenta dto = new DetalleVenta();
             dto.setNombreEmpanada(rs.getString("empanada"));
             dto.setCantidad(rs.getInt("cantidad"));
             detalles.add(dto);
