@@ -38,6 +38,7 @@ public class produccionBean implements Serializable {
 
     private int idProduccionEditar;
     private Integer idProdEliminar;
+    
 
     // =====================
     // INIT
@@ -64,6 +65,7 @@ public class produccionBean implements Serializable {
     public void setFiltroEstado(String filtroEstado) { this.filtroEstado = filtroEstado; }
     public String getFiltroUsuario() { return filtroUsuario; }
     public void setFiltroUsuario(String filtroUsuario) { this.filtroUsuario = filtroUsuario; }
+   
 
     // =====================
     // CRUD PRODUCCIÓN
@@ -190,4 +192,15 @@ public class produccionBean implements Serializable {
                 .map(r -> r.getNombreReceta())
                 .collect(Collectors.joining(", "));
     }
+    
+    // 🔹 Método para aplicar filtros
+public void aplicarFiltros() {
+    List<produccion> todas = pdao.listar();
+
+    listaProducciones = todas.stream()
+        .filter(p -> (filtroEstado == null || filtroEstado.isEmpty() || p.getEstado().toLowerCase().contains(filtroEstado.toLowerCase())))
+        .filter(p -> (filtroUsuario == null || filtroUsuario.isEmpty() || String.valueOf(p.getUsuario()).contains(filtroUsuario)))
+        .collect(Collectors.toList());
+}
+
 }
