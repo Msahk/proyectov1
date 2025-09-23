@@ -10,25 +10,42 @@
 
     <h:head>
         <title>Gestión de Inventario</title>
+        <h:outputStylesheet>
+            .container { margin: 2rem auto; max-width: 1200px; }
+            .page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+            .actions-bar { display:flex; gap:0.5rem; align-items:center; margin-bottom:1rem; }
+            .btn-circle { border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+            .pdf-btn { background:#e74c3c; color:white; }
+            .import-btn { background:#2ecc71; color:white; }
+            .footer { margin-top:2rem; text-align:center; color:#777; font-size:0.9rem; }
+        </h:outputStylesheet>
     </h:head>
-    <h:body styleClass="body">
+
+    <h:body>
         <ui:include src="/views/Navbar.xhtml" />
         <p:growl id="msj" showDetail="true" showSummary="true" />
-        <div class="container mt-5" style="max-width: 1600px">
-            <div class="card shadow p-3">
-                <h1>Gestión de Inventario</h1>
-                <h:form>
-                    <p:commandButton value="➕ Nuevo" 
-                                     onclick="PF('dlgNuevo').show()" 
-                                     type="button" 
-                                     styleClass="btn btn-success" />
 
+        <div class="container">
+            <div class="page-header">
+                <h1>Gestión de Inventario</h1>
+                <!-- Botón para nuevo insumo -->
+                <p:commandButton value="➕ Nuevo" 
+                                 onclick="PF('dlgNuevo').show()" 
+                                 type="button" 
+                                 styleClass="btn btn-success" />
+            </div>
+
+            <!-- Barra de acciones -->
+            <div class="actions-bar">
+                <h:form id="formExportar" style="display:flex; gap:0.5rem; align-items:center;">
+                    <!-- Exportar PDF -->
                     <p:commandButton icon="pi pi-file-pdf"
                                      styleClass="btn-circle pdf-btn"
                                      title="Generar Reporte PDF"
                                      actionListener="#{insumosBean.generarReportePDF}"
                                      ajax="false" />
 
+                    <!-- Importar Excel -->
                     <p:fileUpload id="importarExcel"
                                   mode="advanced"
                                   dragDropSupport="false"
@@ -42,113 +59,122 @@
                                   style="line-height:0;"
                                   listener="#{insumosBean.importarExcel}" />
                     <p:tooltip for="importarExcel" value="Importar desde Excel" />
-                    
-                    <br/><br/>
-
-                    <p:panel header="Filtros" toggleable="true">
-                        <div style="display:flex; gap:1rem;">
-                            <p:inputText placeholder="Nombre" value="#{insumosBean.filtroNombre}" />
-                            <p:inputText placeholder="Unidad" value="#{insumosBean.filtroUnidad}" />
-                            <p:inputText placeholder="Cantidad Mínima" value="#{insumosBean.filtroCantidadMin}" />
-                            <p:inputText placeholder="Cantidad Máxima" value="#{insumosBean.filtroCantidadMax}" />
-                            <p:commandButton value="Aplicar" icon="pi pi-filter" />
-                        </div>
-                    </p:panel>
-                    <p:dataTable id="tablaInsumos"
-                                 value="#{insumosBean.listaFiltrada}"
-                                 var="ins"
-                                 paginator="true"
-                                 rows="10"
-                                 style="width:100%;">
-
-                        <p:column headerText="ID" style="width:60px; text-align:center;">
-                            <h:outputText value="#{ins.id_ins}" />
-                        </p:column>
-
-                        <p:column headerText="Nombre">
-                            <h:outputText value="#{ins.nombre}" />
-                        </p:column>
-
-                        <p:column headerText="Cantidad" style="text-align:right;">
-                            <h:outputText value="#{ins.cantidad}" />
-                        </p:column>
-
-                        <p:column headerText="Unidad de Medida" style="text-align:center;">
-                            <h:outputText value="#{ins.unidad_medida}" />
-                        </p:column>
-
-                        <p:column headerText="Stock Mínimo" style="text-align:right;">
-                            <h:outputText value="#{ins.stock_min}" />
-                        </p:column>
-
-                        <p:column headerText="Acciones" style="text-align:center; width:150px;">
-
-
-                            <p:commandButton value="✏️"
-                                             title="Editar"
-                                             actionListener="#{insumosBean.cargarPorId(ins.id_ins)}"
-                                             update=":formEditar"
-                                             oncomplete="PF('dlgEditar').show()" />
-
-                            <p:commandButton value="🗑️"
-                                             title="Eliminar"
-                                             actionListener="#{insumosBean.eliminar(ins)}"
-                                             update="tablaInsumos msj"
-                                             styleClass="btn btn-sm btn-danger"
-                                             onclick="return confirm('¿Eliminar este insumo?');" />
-                        </p:column>
-                    </p:dataTable>
                 </h:form>
             </div>
 
-            <!-- Dialogo Nuevo -->
-            <p:dialog id="dlgNuevo" widgetVar="dlgNuevo" header="Nuevo Insumo" modal="true" resizable="false">
-                <h:form id="formNuevo">
-                    <h:panelGrid columns="2" cellpadding="5">
-                        <h:outputLabel value="Nombre:" />
-                        <p:inputText value="#{insumosBean.insumo.nombre}" required="true" />
+            <!-- Filtros -->
+            <h:form id="formFiltros">
+                <p:panel header="Filtros" toggleable="true">
+                    <div style="display:flex; gap:1rem;">
+                        <p:inputText placeholder="Nombre" value="#{insumosBean.filtroNombre}" />
+                        <p:inputText placeholder="Unidad" value="#{insumosBean.filtroUnidad}" />
+                        <p:inputText placeholder="Cantidad Mínima" value="#{insumosBean.filtroCantidadMin}" />
+                        <p:inputText placeholder="Cantidad Máxima" value="#{insumosBean.filtroCantidadMax}" />
+                        <p:commandButton value="Aplicar" update="formTabla" icon="pi pi-filter" />
+                    </div>
+                </p:panel>
+            </h:form>
 
-                        <h:outputLabel value="Cantidad:" />
-                        <p:inputText value="#{insumosBean.insumo.cantidad}" required="true" />
+            <!-- Tabla Inventario -->
+            <h:form id="formTabla">
+                <p:dataTable id="tablaInsumos"
+                             value="#{insumosBean.listaFiltrada}"
+                             var="ins"
+                             paginator="true"
+                             rows="10"
+                             style="width:100%;">
 
-                        <h:outputLabel value="Unidad:" />
-                        <p:inputText value="#{insumosBean.insumo.unidad_medida}" required="true" />
+                    <p:column headerText="ID" style="width:60px; text-align:center;">
+                        <h:outputText value="#{ins.id_ins}" />
+                    </p:column>
 
-                        <h:outputLabel value="Stock Mínimo:" />
-                        <p:inputText value="#{insumosBean.insumo.stock_min}" required="true" />
-                    </h:panelGrid>
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{ins.nombre}" />
+                    </p:column>
 
-                    <p:commandButton value="Guardar"
-                                     actionListener="#{insumosBean.agregar}"
-                                     update=":formTabla msj"
-                                     oncomplete="PF('dlgNuevo').hide()" />
-                </h:form>
-            </p:dialog>
+                    <p:column headerText="Cantidad" style="text-align:right;">
+                        <h:outputText value="#{ins.cantidad}" />
+                    </p:column>
 
-            <!-- Diálogo Editar -->
-            <p:dialog id="dlgEditar" widgetVar="dlgEditar" header="Editar Insumo" modal="true" resizable="false">
-                <h:form id="formEditar">
-                    <h:panelGrid columns="2" cellpadding="5">
-                        <h:outputLabel value="Nombre:" for="editarNombre" />
-                        <p:inputText id="editarNombre" value="#{insumosBean.insumo.nombre}" required="true" />
+                    <p:column headerText="Unidad de Medida" style="text-align:center;">
+                        <h:outputText value="#{ins.unidad_medida}" />
+                    </p:column>
 
-                        <h:outputLabel value="Cantidad:" for="editarCantidad" />
-                        <p:inputText id="editarCantidad" value="#{insumosBean.insumo.cantidad}" required="true" />
+                    <p:column headerText="Stock Mínimo" style="text-align:right;">
+                        <h:outputText value="#{ins.stock_min}" />
+                    </p:column>
 
-                        <h:outputLabel value="Unidad:" for="editarUnidad" />
-                        <p:inputText id="editarUnidad" value="#{insumosBean.insumo.unidad_medida}" required="true" />
+                    <p:column headerText="Acciones" style="text-align:center; width:150px;">
 
-                        <h:outputLabel value="Stock Mínimo:" for="editarStock" />
-                        <p:inputText id="editarStock" value="#{insumosBean.insumo.stock_min}" required="true" />
-                    </h:panelGrid>
 
-                    <p:commandButton value="Actualizar"
-                                     actionListener="#{insumosBean.actualizar}"
-                                     update=":formTabla msj"
-                                     oncomplete="PF('dlgEditar').hide()" />
-                </h:form>
-            </p:dialog>
+                        <p:commandButton value="✏️"
+                                         title="Editar"
+                                         actionListener="#{insumosBean.cargarPorId(ins.id_ins)}"
+                                         update=":formEditar"
+                                         oncomplete="PF('dlgEditar').show()" />
 
+                        <p:commandButton value="🗑️"
+                                         title="Eliminar"
+                                         actionListener="#{insumosBean.eliminar(ins)}"
+                                         update="tablaInsumos msj"
+                                         styleClass="btn btn-sm btn-danger"
+                                         onclick="return confirm('¿Eliminar este insumo?');" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
         </div>
+
+        <!-- Dialogo Nuevo -->
+        <p:dialog id="dlgNuevo" widgetVar="dlgNuevo" header="Nuevo Insumo" modal="true" resizable="false">
+            <h:form id="formNuevo">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel value="Nombre:" />
+                    <p:inputText value="#{insumosBean.insumo.nombre}" required="true" />
+
+                    <h:outputLabel value="Cantidad:" />
+                    <p:inputText value="#{insumosBean.insumo.cantidad}" required="true" />
+
+                    <h:outputLabel value="Unidad:" />
+                    <p:inputText value="#{insumosBean.insumo.unidad_medida}" required="true" />
+
+                    <h:outputLabel value="Stock Mínimo:" />
+                    <p:inputText value="#{insumosBean.insumo.stock_min}" required="true" />
+                </h:panelGrid>
+
+                <p:commandButton value="Guardar"
+                                 actionListener="#{insumosBean.agregar}"
+                                 update=":formTabla msj"
+                                 oncomplete="PF('dlgNuevo').hide()" />
+            </h:form>
+        </p:dialog>
+
+        <!-- Diálogo Editar -->
+        <p:dialog id="dlgEditar" widgetVar="dlgEditar" header="Editar Insumo" modal="true" resizable="false">
+            <h:form id="formEditar">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel value="Nombre:" for="editarNombre" />
+                    <p:inputText id="editarNombre" value="#{insumosBean.insumo.nombre}" required="true" />
+
+                    <h:outputLabel value="Cantidad:" for="editarCantidad" />
+                    <p:inputText id="editarCantidad" value="#{insumosBean.insumo.cantidad}" required="true" />
+
+                    <h:outputLabel value="Unidad:" for="editarUnidad" />
+                    <p:inputText id="editarUnidad" value="#{insumosBean.insumo.unidad_medida}" required="true" />
+
+                    <h:outputLabel value="Stock Mínimo:" for="editarStock" />
+                    <p:inputText id="editarStock" value="#{insumosBean.insumo.stock_min}" required="true" />
+                </h:panelGrid>
+
+                <p:commandButton value="Actualizar"
+                                 actionListener="#{insumosBean.actualizar}"
+                                 update=":formTabla msj"
+                                 oncomplete="PF('dlgEditar').hide()" />
+            </h:form>
+        </p:dialog>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>copy; 2025 Péguele a la Empanada. Sistema de Inventario.</p>
+        </footer>
     </h:body>
 </html>

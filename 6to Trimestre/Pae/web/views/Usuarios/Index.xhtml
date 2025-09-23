@@ -8,7 +8,7 @@
     <h:head>
         <title>Gestión de Usuarios</title>  
     </h:head>
-    <h:body>
+    <h:body styleClass="body">
         <ui:include src="/views/Navbar.xhtml" />
         <f:event type="preRenderView" listener="#{usuariosBean.listar()}" />
         <p:growl id="msj" showDetail="true" showSummary="true" />
@@ -35,13 +35,13 @@
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
                                      rowsPerPageTemplate="5,10,{ShowAll|'Todos'}" filterEvent="keyup">
-                           <f:facet name="header">
-                        <div align="right">
-                            <p:inputText id="globalFilter" onkeyup="PF('wtUsu').filter()" style="width:10rem"
-                                        placeholder="Buscar ..." />                            
-                        </div>                        
-                    </f:facet>
-                            
+                            <f:facet name="header">
+                                <div align="right">
+                                    <p:inputText id="globalFilter" onkeyup="PF('wtUsu').filter()" style="width:10rem"
+                                                 placeholder="Buscar ..." />                            
+                                </div>                        
+                            </f:facet>
+
                             <p:column filterBy="#{usu.idUsu}" width="60" filterMatchMode="contains" sortBy="#{usu.idUsu}">
                                 <f:facet name="header">Id</f:facet>
                                 <p:outputLabel value="#{usu.idUsu}" />
