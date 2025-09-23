@@ -37,30 +37,31 @@
 
             <!-- Barra de acciones -->
             <div class="actions-bar">
-                <h:form id="formExportar" style="display:flex; gap:0.5rem; align-items:center;">
-                    <!-- Exportar PDF -->
-                    <p:commandButton icon="pi pi-file-pdf"
-                                     styleClass="btn-circle pdf-btn"
-                                     title="Generar Reporte PDF"
-                                     actionListener="#{insumosBean.generarReportePDF}"
-                                     ajax="false" />
+    <h:form id="formExportar" style="display:flex; gap:0.5rem; align-items:center;">
+        <!-- Exportar PDF -->
+        <p:commandButton value="Reporte PDF"
+                         icon="pi pi-file-pdf"
+                         styleClass="btn btn-primary"
+                         title="Generar Reporte PDF"
+                         actionListener="#{insumosBean.exportarPDFInsumos}"
+                         ajax="false" />
 
-                    <!-- Importar Excel -->
-                    <p:fileUpload id="importarExcel"
-                                  mode="advanced"
-                                  dragDropSupport="false"
-                                  auto="true"
-                                  sizeLimit="1048576"
-                                  allowTypes="/(\.|\/)(xls|xlsx)$/"
-                                  styleClass="btn-circle import-btn"
-                                  label="📂"
-                                  uploadLabel=""
-                                  cancelLabel=""
-                                  style="line-height:0;"
-                                  listener="#{insumosBean.importarExcel}" />
-                    <p:tooltip for="importarExcel" value="Importar desde Excel" />
-                </h:form>
-            </div>
+        <!-- Importar Excel -->
+        <p:fileUpload id="importarExcel"
+                      mode="advanced"
+                      dragDropSupport="false"
+                      auto="true"
+                      sizeLimit="1048576"
+                      allowTypes="/(\.|\/)(xls|xlsx)$/"
+                      styleClass="btn-circle import-btn"
+                      label="📂"
+                      uploadLabel=""
+                      cancelLabel=""
+                      style="line-height:0;"
+                      listener="#{insumosBean.importarExcel}" />
+        <p:tooltip for="importarExcel" value="Importar desde Excel" />
+    </h:form>
+</div>
 
             <!-- Filtros -->
             <h:form id="formFiltros">
