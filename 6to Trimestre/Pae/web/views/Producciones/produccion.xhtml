@@ -41,12 +41,19 @@
             <h:form id="formFiltros">
                 <p:panel header="Filtros" toggleable="true">
                     <div style="display:flex; gap:1rem;">
-                        <p:inputText placeholder="Estado" value="#{produccionBean.produccion.estado}" />
-                        <p:inputText placeholder="Usuario" value="#{produccionBean.produccion.usuario}" />
-                        <p:commandButton value="Aplicar" update="formTabla" icon="pi pi-filter" />
+                        <!-- Usamos variables independientes del bean -->
+                        <p:inputText placeholder="Estado" value="#{produccionBean.filtroEstado}" />
+                        <p:inputText placeholder="Usuario" value="#{produccionBean.filtroUsuario}" />
+
+                        <!-- Botón de aplicar filtros -->
+                        <p:commandButton value="Aplicar"
+                                         action="#{produccionBean.aplicarFiltros}"
+                                         update="formTabla:tablaProducciones msj"
+                                         icon="pi pi-filter" />
                     </div>
                 </p:panel>
             </h:form>
+
 
             <!-- Tabla Producciones -->
             <h:form id="formTabla">
