@@ -21,6 +21,10 @@
 
                     <h:form>
                         <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{pedidosBean.exportarPDF}"/>
+                        <h:commandButton/>
+                        <h:commandButton value="Migrar"
+    action="/views/Pedidos/migrarPedidos.xhtml?faces-redirect=true"
+    styleClass="btn btn-primary" />
                         <br/><br/>
                         <p:dataTable value="#{pedidosBean.listaPedidos}" var="pedido">
                             <p:column>
