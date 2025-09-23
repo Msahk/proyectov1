@@ -100,17 +100,16 @@
         <!-- Dialogo Nuevo -->
         <p:dialog id="dlgNuevo" widgetVar="dlgNuevo" header="Nueva Producción" modal="true" resizable="false">
             <h:form id="formNuevo">
-               <h:panelGrid columns="2" cellpadding="5">
-    <h:outputLabel value="Fecha Producción:" />
-    <p:calendar value="#{produccionBean.produccion.fecha_produccion}" pattern="yyyy-MM-dd" required="true" />
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel value="Fecha Producción:" />
+                    <p:calendar value="#{produccionBean.produccion.fecha_produccion}" pattern="yyyy-MM-dd" required="true" />
 
-    <h:outputLabel value="Recetas:" />
-    <p:selectManyCheckbox value="#{produccionBean.recetasSeleccionadas}" layout="grid" columns="1">
-        <f:selectItems value="#{produccionBean.listaRecetas}" var="r"
-                       itemLabel="#{r.nombre}" itemValue="#{r}" />
-    </p:selectManyCheckbox>
-</h:panelGrid>
-
+                    <h:outputLabel value="Recetas:" />
+                    <p:selectManyCheckbox value="#{produccionBean.recetasSeleccionadasIds}" layout="grid" columns="1">
+                        <f:selectItems value="#{produccionBean.listaRecetas}" var="r"
+                                       itemLabel="#{r.nombre}" itemValue="#{r.id_rec}" />
+                    </p:selectManyCheckbox>
+                </h:panelGrid>
 
                 <p:commandButton value="Guardar"
                                  actionListener="#{produccionBean.registrarProduccion}"
@@ -122,16 +121,16 @@
         <!-- Dialogo Editar -->
         <p:dialog id="dlgEditar" widgetVar="dlgEditar" header="Editar Producción" modal="true" resizable="false">
             <h:form id="formEditar">
-               <h:panelGrid columns="2" cellpadding="5">
-    <h:outputLabel value="Estado:" />
-    <p:inputText value="#{produccionBean.produccion.estado}" required="true" />
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel value="Estado:" />
+                    <p:inputText value="#{produccionBean.produccion.estado}" required="true" />
 
-    <h:outputLabel value="Recetas:" />
-    <p:selectManyCheckbox value="#{produccionBean.recetasSeleccionadas}" layout="grid" columns="1">
-        <f:selectItems value="#{produccionBean.listaRecetas}" var="r"
-                       itemLabel="#{r.nombre}" itemValue="#{r}" />
-    </p:selectManyCheckbox>
-</h:panelGrid>
+                    <h:outputLabel value="Recetas:" />
+                    <p:selectManyCheckbox value="#{produccionBean.recetasSeleccionadasIds}" layout="grid" columns="1">
+                        <f:selectItems value="#{produccionBean.listaRecetas}" var="r"
+                                       itemLabel="#{r.nombre}" itemValue="#{r.id_rec}" />
+                    </p:selectManyCheckbox>
+                </h:panelGrid>
 
                 <p:commandButton value="Actualizar"
                                  actionListener="#{produccionBean.actualizarProduccion}"
