@@ -14,21 +14,23 @@
 		<![CDATA[SELECT p.*, v.id_Cliente, c.nombre AS nombreCliente FROM pedidos p JOIN ventas v ON p.id_ven = v.id_ven JOIN clientes c ON v.id_Cliente = c.id_Cliente ORDER BY p.id_ped DESC]]>
 	</queryString>
 	<field name="id_ped" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="id_ven" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="fecha_entrega" class="java.time.LocalDateTime">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="estado" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="observaciones_pedido" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="nombreCliente" class="java.lang.String"/>
+    <fieldDescription><![CDATA[]]></fieldDescription>
+</field>
+<field name="id_ven" class="java.lang.Integer">
+    <fieldDescription><![CDATA[]]></fieldDescription>
+</field>
+<field name="fecha_entrega" class="java.util.Date">
+    <fieldDescription><![CDATA[]]></fieldDescription>
+</field>
+<field name="estado" class="java.lang.String">
+    <fieldDescription><![CDATA[]]></fieldDescription>
+</field>
+<field name="observaciones_pedido" class="java.lang.String">
+    <fieldDescription><![CDATA[]]></fieldDescription>
+</field>
+<field name="nombreCliente" class="java.lang.String">
+    <fieldDescription><![CDATA[]]></fieldDescription>
+</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

@@ -19,18 +19,16 @@ public class ClientesDataSource implements JRDataSource{
         lstUsu = new ArrayList<>();
         indice = -1;
         try {
-          String sql = "SELECT * FROM usuarios";
+          String sql = "SELECT * FROM clientes";
             PreparedStatement ps = ConDB.conectar().prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
         
             while(rs.next()) {
                 clientes usu = new clientes();
-                usu.setId_Cliente(rs.getInt("cliente"));
-                usu.setNombre(rs.getString("nombres"));
-                
-                usu.setTelefono(rs.getString("telefono"));
-               
-                usu.setCorreo(rs.getString("correo"));
+                usu.setId_Cliente(rs.getInt("id_Cliente"));
+usu.setNombre(rs.getString("nombre"));
+usu.setTelefono(rs.getString("telefono"));
+usu.setCorreo(rs.getString("correo"));
                 
 
                 lstUsu.add(usu);
@@ -55,17 +53,17 @@ public class ClientesDataSource implements JRDataSource{
         
         switch (nomcampo) {
             case "id_Cliente":
-                valor = lstUsu.get(indice).getId_Cliente();
-                break;
-            case "nombre":
-                valor = lstUsu.get(indice).getNombre();
-                break;
-            case "telefono":
-                valor = lstUsu.get(indice).getTelefono();
-                break;
-            case "correo":
-                valor = lstUsu.get(indice).getCorreo();
-                break;
+    valor = lstUsu.get(indice).getId_Cliente();
+    break;
+case "nombre":
+    valor = lstUsu.get(indice).getNombre();
+    break;
+case "telefono":
+    valor = lstUsu.get(indice).getTelefono();
+    break;
+case "correo":
+    valor = lstUsu.get(indice).getCorreo();
+    break;
            
         }
         

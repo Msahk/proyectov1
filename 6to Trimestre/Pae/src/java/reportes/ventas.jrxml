@@ -22,9 +22,9 @@
 	<field name="Tipo" class="java.lang.String">
 		<fieldDescription><![CDATA[Fecha en la que se realizo la venta]]></fieldDescription>
 	</field>
-	<field name="fecha" class="java.time.LocalDateTime">
-		<fieldDescription><![CDATA[Valor total de la venta en esa fecha]]></fieldDescription>
-	</field>
+	<field name="fecha" class="java.util.Date">
+    <fieldDescription><![CDATA[Valor total de la venta en esa fecha]]></fieldDescription>
+</field>
 	<field name="total" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
@@ -161,7 +161,7 @@
 					<textElement>
 						<font size="14"/>
 					</textElement>
-					<textFieldExpression><![CDATA[""+$F{fecha}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{fecha}.toString()]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
 					<reportElement style="Detail" positionType="Float" x="297" y="0" width="99" height="18" uuid="21fb9109-c3d4-40a2-b3bb-83852b78702b"/>
