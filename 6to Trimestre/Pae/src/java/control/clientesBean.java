@@ -18,6 +18,11 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import java.io.InputStream;
+import java.util.Iterator;
+import javax.servlet.http.Part;
 
 @ManagedBean(name = "clientesBean")
 @SessionScoped
@@ -31,6 +36,7 @@ public class clientesBean implements Serializable {
     private String filtroNombre;
     private String filtroTelefono;
     private String filtroCorreo;
+    private Part excel;
 
     @PostConstruct
     public void init() {
@@ -111,6 +117,47 @@ public class clientesBean implements Serializable {
         }
     }
     
+
+public void migrar() {
+    try {
+        Workbook libro = WorkbookFactory.create(excel.getInputStream());
+        Sheet hoja = libro.getSheetAt(0);
+        Iterator<Row> itrFila = hoja.rowIterator();
+        itrFila.next(); // Saltar cabecera
+
+        while (itrFila.hasNext()) {
+            Row fila = itrFila.next();
+            Iterator<Cell> itrCelda = fila.cellIterator();
+            clientes cli = new clientes();
+            int campo = 1;
+
+            while (itrCelda.hasNext()) {
+                Cell celda = itrCelda.next();
+                switch (campo) {
+                    case 1:
+                        cli.setNombre(celda.getRichStringCellValue().toString());
+                        break;
+                    case 2:
+                        cli.setTelefono(celda.getRichStringCellValue().toString());
+                        break;
+                    case 3:
+                        cli.setCorreo(celda.getRichStringCellValue().toString());
+                        break;
+                }
+                campo++;
+            }
+            dao.agregar(cli);
+        }
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Clientes migrados exitosamente"));
+    } catch (Exception e) {
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "Error migrando clientes"));
+    }
+}
+
+public Part getExcel() { return excel; }
+public void setExcel(Part excel) { this.excel = excel; }
 
     public void eliminarCliente(int id) {
         boolean ok = dao.eliminarEnCascada(id);
