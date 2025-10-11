@@ -45,7 +45,7 @@
     </f:facet>
     <p:column filterBy="#{venta.idVen}" filterMatchMode="contains" sortBy="#{venta.idVen}">
         <f:facet name="header">ID</f:facet>
-        <p:outputLabel value="#{venta.idVen}" />
+        <p:outputLabel value="#{venta.idVen}" />    
     </p:column>
     <p:column filterBy="#{venta.tipo}" filterMatchMode="contains" sortBy="#{venta.tipo}">
         <f:facet name="header">Tipo</f:facet>
@@ -73,7 +73,7 @@
     </p:column>
     <p:column>
         <f:facet name="header">Opciones</f:facet>
-        <!-- Opciones aquí -->
+        
         <h:commandLink action="editarVentas" actionListener="#{ventasBean.prepararEdicion(venta)}" styleClass="btn btn-outline-warning d-inline-flex align-items-center">
             <i class="bi bi-pencil" aria-hidden="true"></i>
         </h:commandLink>

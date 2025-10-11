@@ -3,13 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-09-2025 a las 19:53:29
+-- Tiempo de generación: 11-10-2025 a las 20:05:34
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
-
-drop database pae;
-create database pae;
-use pae;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -47,7 +43,9 @@ INSERT INTO `clientes` (`id_Cliente`, `nombre`, `telefono`, `correo`) VALUES
 (2, 'Empresa B', '3223456789', 'ventas@empresaB.com'),
 (3, 'Juan Ruiz', '3334567890', 'juan.ruiz@gmail.com'),
 (4, 'Laura Niño', '3445678901', 'laura.nino@hotmail.com'),
-(5, 'Pedro Paz', '3556789012', 'pedro.paz@gmail.com');
+(5, 'Pedro Paz', '3556789012', 'pedro.paz@gmail.com'),
+(8, 'Mercado', '3456784567', 'sebassmercado97@gmail.com'),
+(9, 'fuquene', '32224567867', 'fuquene@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -73,24 +71,26 @@ CREATE TABLE `insumos` (
   `nombre` varchar(45) NOT NULL,
   `cantidad` decimal(10,2) DEFAULT NULL,
   `unidad_medida` varchar(10) NOT NULL,
-  `stock_min` decimal(10,2) NOT NULL
+  `stock_min` decimal(10,2) NOT NULL,
+  `stock_actual` decimal(10,2) DEFAULT 0.00,
+  `fecha_vencimiento` date DEFAULT NULL,
+  `estado` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `insumos`
 --
 
-INSERT INTO `insumos` (`id_ins`, `nombre`, `cantidad`, `unidad_medida`, `stock_min`) VALUES
-(3, 'Azúcar', 41.00, 'kg', 25.00),
-(4, 'Sal', 50.00, 'kg', 10.00),
-(17, 'chorizo', 8.00, 'kg', 20.00),
-(23, 'Queso', 12.00, 'kg', 1.00),
-(26, 'Pollo desmechado', 60.00, 'kg', 20.00),
-(27, 'Leche', 30.00, 'L', 10.00),
-(28, 'Pan', 25.00, 'kg', 5.00),
-(29, 'Tomate', 40.00, 'kg', 15.00),
-(30, 'Cebolla', 35.00, 'kg', 10.00),
-(31, 'Aceite', 20.00, 'L', 5.00);
+INSERT INTO `insumos` (`id_ins`, `nombre`, `cantidad`, `unidad_medida`, `stock_min`, `stock_actual`, `fecha_vencimiento`, `estado`) VALUES
+(3, 'Azúcar', 40.00, 'kg', 25.00, 0.00, NULL, 'Activo'),
+(4, 'Sal', 50.00, 'kg', 10.00, 0.00, NULL, 'Activo'),
+(17, 'chorizo', 3.00, 'kg', 20.00, 0.00, NULL, 'Activo'),
+(23, 'Queso', 12.00, 'kg', 1.00, 0.00, NULL, 'Activo'),
+(26, 'Pollo desmechado', 60.00, 'kg', 20.00, 0.00, NULL, 'Activo'),
+(38, 'Pan', 25.00, 'kg', 5.00, 0.00, NULL, 'Activo'),
+(39, 'Tomate', 40.00, 'kg', 15.00, 0.00, NULL, 'Activo'),
+(40, 'Cebolla', 35.00, 'kg', 10.00, 0.00, NULL, 'Activo'),
+(42, 'Carne desmecha\'', 5.00, 'ml', 1.00, 1.00, '2025-10-10', 'Inactivo');
 
 -- --------------------------------------------------------
 
@@ -112,12 +112,7 @@ CREATE TABLE `inv_entradas` (
 --
 
 INSERT INTO `inv_entradas` (`id_entrada`, `id_ins`, `cantidad`, `fecha_hora`, `usuario`, `observacion`) VALUES
-(8, 26, 100.00, '2025-09-10 21:13:41', 'Sistema', 'Registro inicial del insumo'),
-(9, 27, 30.00, '2025-09-13 12:49:00', 'Sistema', 'Registro inicial del insumo'),
-(10, 28, 25.00, '2025-09-13 12:49:00', 'Sistema', 'Registro inicial del insumo'),
-(11, 29, 40.00, '2025-09-13 12:49:00', 'Sistema', 'Registro inicial del insumo'),
-(12, 30, 35.00, '2025-09-13 12:49:00', 'Sistema', 'Registro inicial del insumo'),
-(13, 31, 20.00, '2025-09-13 12:49:00', 'Sistema', 'Registro inicial del insumo');
+(8, 26, 100.00, '2025-09-10 21:13:41', 'Sistema', 'Registro inicial del insumo');
 
 -- --------------------------------------------------------
 
@@ -147,7 +142,8 @@ INSERT INTO `inv_salidas` (`id_salida`, `id_ins`, `cantidad`, `fecha_hora`, `usu
 (19, 26, 5.00, '2025-09-10 21:21:31', 'Sistema', 52, 'Salida por producción finalizada'),
 (20, 17, 1.00, '2025-09-10 21:21:31', 'Sistema', 52, 'Salida por producción finalizada'),
 (22, 17, 1.00, '2025-09-10 21:22:10', 'Sistema', 53, 'Salida por producción finalizada'),
-(23, 3, 2.00, '2025-09-12 20:07:52', 'Sistema', 54, 'Salida por producción finalizada');
+(23, 3, 2.00, '2025-09-12 20:07:52', 'Sistema', 54, 'Salida por producción finalizada'),
+(24, 17, 5.00, '2025-09-23 06:57:53', 'UsuarioX', NULL, 'Salida por producción finalizada');
 
 -- --------------------------------------------------------
 
@@ -159,7 +155,7 @@ CREATE TABLE `pedidos` (
   `id_ped` int(11) NOT NULL,
   `id_ven` int(11) NOT NULL,
   `fecha_entrega` datetime NOT NULL,
-  `estado` enum('Tomado','Pendiente') NOT NULL DEFAULT 'Pendiente',
+  `estado` enum('Pendiente','Tomado','Completado') DEFAULT NULL,
   `observaciones_pedido` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -172,7 +168,10 @@ INSERT INTO `pedidos` (`id_ped`, `id_ven`, `fecha_entrega`, `estado`, `observaci
 (2, 4, '2025-06-23 10:00:00', 'Pendiente', 'Cliente requiere empaque especial'),
 (3, 2, '2025-06-24 11:00:00', 'Pendiente', 'Agregar factura impresa'),
 (4, 4, '2025-06-25 08:00:00', 'Pendiente', 'Urgente'),
-(5, 2, '2025-06-26 13:00:00', 'Pendiente', 'Revisar dirección');
+(5, 2, '2025-06-26 13:00:00', 'Pendiente', 'Revisar dirección'),
+(8, 8, '2025-09-23 11:35:26', 'Pendiente', 'empanada de queso'),
+(9, 10, '2025-09-23 11:53:06', 'Pendiente', 'emapanda arroz'),
+(10, 11, '2025-10-10 21:00:25', 'Pendiente', '');
 
 -- --------------------------------------------------------
 
@@ -193,7 +192,6 @@ CREATE TABLE `produccion` (
 --
 
 INSERT INTO `produccion` (`id_proc`, `fecha_produccion`, `estado`, `usuario`, `fecha_hora`) VALUES
-(39, '2025-08-18', 'PENDIENTE', 1, '2025-08-17 22:31:41'),
 (40, '2025-09-07', 'FINALIZADA', 1, '2025-09-07 19:31:04'),
 (41, '2025-09-07', 'FINALIZADA', 1, '2025-09-07 19:35:29'),
 (42, '2025-09-07', 'FINALIZADA', 1, '2025-09-07 19:52:48'),
@@ -201,7 +199,9 @@ INSERT INTO `produccion` (`id_proc`, `fecha_produccion`, `estado`, `usuario`, `f
 (51, '2025-09-10', 'FINALIZADA', 1, '2025-09-10 21:18:44'),
 (52, '2025-09-10', 'FINALIZADA', 1, '2025-09-10 21:21:30'),
 (53, '2025-09-10', 'FINALIZADA', 1, '2025-09-10 21:22:03'),
-(54, '2025-09-12', 'FINALIZADA', 1, '2025-09-12 20:07:36');
+(54, '2025-09-12', 'FINALIZADA', 1, '2025-09-12 20:07:36'),
+(66, '2025-10-17', 'Pendiente', 0, '2025-10-11 12:18:17'),
+(67, '2025-10-10', 'Pendiente', 0, '2025-10-11 13:02:42');
 
 -- --------------------------------------------------------
 
@@ -222,13 +222,7 @@ CREATE TABLE `produccion_recetas` (
 
 INSERT INTO `produccion_recetas` (`id_detalle`, `id_produccion`, `id_rec`, `cantidad`) VALUES
 (33, 40, 5, 1),
-(34, 41, 17, 2),
 (35, 42, 5, 1),
-(43, 39, 13, 1),
-(47, 50, 18, 5),
-(48, 51, 18, 1),
-(49, 52, 18, 1),
-(50, 53, 18, 1),
 (51, 54, 21, 2);
 
 -- --------------------------------------------------------
@@ -240,19 +234,20 @@ INSERT INTO `produccion_recetas` (`id_detalle`, `id_produccion`, `id_rec`, `cant
 CREATE TABLE `recetas` (
   `id_rec` int(11) NOT NULL,
   `nombre` varchar(50) NOT NULL,
-  `descripcion` text DEFAULT NULL
+  `descripcion` text DEFAULT NULL,
+  `estado` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `recetas`
 --
 
-INSERT INTO `recetas` (`id_rec`, `nombre`, `descripcion`) VALUES
-(5, 'Carne', 'Empanada de carne'),
-(13, 'Champinon', 'Empanada de ChampiÃ±on'),
-(17, 'pan', 'Empanada de carne'),
-(18, 'Pollo', 'Empanada de pollo'),
-(21, 'Mixta', 'Empanada Mixta');
+INSERT INTO `recetas` (`id_rec`, `nombre`, `descripcion`, `estado`) VALUES
+(5, 'Carne\'', 'Empanada de carne¿', 'Inactivo'),
+(13, 'Champinon', 'Empanada de ChampiÃ±on', 'Activo'),
+(21, 'Mixta', 'Empanada Mixta', 'Activo'),
+(22, 'Mixta', 'EM', 'Activo'),
+(27, 'carne mixta', 'DAWDADWAD', 'Inactivo');
 
 -- --------------------------------------------------------
 
@@ -274,9 +269,10 @@ CREATE TABLE `receta_insumos` (
 
 INSERT INTO `receta_insumos` (`id_rec_ins`, `id_rec`, `id_ins`, `cantidad`, `unidad`) VALUES
 (57, 13, 3, 1.00, 'Kilogramos'),
-(61, 18, 26, 5.00, 'Kilogramos'),
-(64, 18, 17, 1.00, 'Kilogramos'),
-(65, 21, 3, 1.00, 'gramo');
+(65, 21, 3, 1.00, 'gramo'),
+(67, 5, 3, 2.00, 'l'),
+(68, 5, 42, 2.00, 'l'),
+(70, 27, 42, 1.00, 'l');
 
 -- --------------------------------------------------------
 
@@ -302,12 +298,22 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usu`, `documento`, `nombres`, `apellidos`, `telefono`, `direccion`, `correo`, `rol`, `estado`, `password`) VALUES
-(1, 1034280742, 'Marlon', 'Avila', 3214108646, 'Cll 6 #2-47', 'avilamarlon31@gmail.com', 'A', 'A', '$2a$10$IGAAj/4G4K0Dph.8qZo01OqEMcprEi1CALAybarjcF4aujM7nhdNe'),
-(2, 123456789, 'Ana', 'Pérez', 3001234567, 'Cra 10 #23-45', 'ana.perez@example.com', 'EP', 'A', '$2a$10$Bp.OxJtKekqM9.GqADl.SOcjaICVfWsnS2pDmewJDez11H.6zBSXK'),
+(1, 1034280742, 'Marlon', 'Avila', 3214108646, 'Cll 6 #2-47', 'avilamarlon31@gmail.com', 'A', 'A', '81dc9bdb52d04dc20036dbd8313ed055'),
+(2, 123456789, 'Ana', 'Pérez', 3001234567, 'Cra 10 #23-45', 'ana.perez@example.com', 'EP', 'A', '81dc9bdb52d04dc20036dbd8313ed055'),
 (3, 987654321, 'Carlos', 'Ramírez', 3009876543, 'Av 5 #67-89', 'carlos.ramirez@example.com', 'EP', 'A', '$2a$10$mOUXQ3T7iwyJSLUZug7Xs.Iu/BjlxHn35BukcKo/guUWLFLmMPH5C'),
 (4, 112233445, 'Luisa', 'Martínez', 3011122334, 'Cll 12 #34-56', 'luisa.martinez@example.com', 'EP', 'A', '$2a$10$JgJNP.G5pGDCbWSndvzV9.5nmfAg1NQoQo2wgulB7unbN8w/CEKcW'),
 (5, 554433221, 'Andrés', 'Lopez', 3023344556, 'Cll 78 #90-12', 'andres.lopez@example.com', 'EV', 'A', '$2a$10$4sdQf/iWdlo60jhH/9JW8eA.Do2fXYJa/LZO9GiWPlqN9CNI6utta'),
-(6, 665544332, 'María', 'Gómez', 3034455667, 'Cra 45 #12-34', 'maria.gomez@example.com', 'EV', 'A', '$2a$10$1Wncf/hqx2s7FMPcqIGIBuQQrIJ2WUqFXKQUuM5hva1gircNbWi0G');
+(6, 665544332, 'María', 'Gómez', 3034455667, 'Cra 45 #12-34', 'maria.gomez@example.com', 'EV', 'A', '$2a$10$1Wncf/hqx2s7FMPcqIGIBuQQrIJ2WUqFXKQUuM5hva1gircNbWi0G'),
+(14, 1103098783, 'Sebastián', 'Mercado', 0, 'Calle 18#123', 'sebassmercado97@gmail.com', 'A', 'A', 'e10adc3949ba59abbe56e057f20f883e'),
+(16, 234567890, 'José', 'López', 3002345678, 'Calle 45 #12-34', 'jose.lopez@example.com', 'EV', 'A', '1e777b88dc1bd5273855e2f1173b5649'),
+(17, 345678901, 'Luisa', 'Gómez', 3003456789, 'Cra 15 #56-78', 'luisa.gomez@example.com', 'EP', 'A', 'df61e033f317efc41439746b37266e12'),
+(18, 456789012, 'Carlos', 'Martínez', 3004567890, 'Calle 78 #90-12', 'carlos.martinez@example.com', 'EV', 'A', '170a57f3020b63757aec78581e4b77f2'),
+(19, 567890123, 'Marta', 'Sánchez', 3005678901, 'Cra 20 #34-56', 'marta.sanchez@example.com', 'EP', 'A', 'e9361b43c5dda947d6ff3920c3a48488'),
+(20, 678901234, 'Juan', 'Fernández', 3006789012, 'Calle 90 #23-45', 'juan.fernandez@example.com', 'EV', 'A', '75eb3ee5c6e3a2770aa1d333b1e2b1e4'),
+(21, 789012345, 'Luis', 'Rodríguez', 3007890123, 'Cra 30 #67-89', 'luis.rodriguez@example.com', 'EP', 'A', '68c55691d8cfa59a03218dbf6855004c'),
+(22, 890123456, 'Mónica', 'Díaz', 3008901234, 'Calle 12 #89-01', 'monica.diaz@example.com', 'EV', 'A', 'a135ddbb71f7d2a97788665ab5afae04'),
+(23, 901234567, 'Andrés', 'Vásquez', 3009012345, 'Cra 25 #12-34', 'andres.vasquez@example.com', 'EP', 'A', 'c90c91ecd22ecbeae1a7a72857cebeeb'),
+(24, 123987654, 'Paula', 'García', 3001239876, 'Calle 50 #34-56', 'paula.garcia@example.com', 'EV', 'A', 'cb46bb7c65b2ac56de85e81b515ad71e');
 
 -- --------------------------------------------------------
 
@@ -335,7 +341,11 @@ INSERT INTO `ventas` (`id_ven`, `Tipo`, `fecha`, `id_usu`, `id_Cliente`, `total`
 (2, 'pedido', '2025-06-17 10:00:00', 2, 2, 50000.00, 'Procesando', 'Pedido a entregar'),
 (3, 'directa', '2025-06-18 11:00:00', 3, 3, 15000.00, 'Completada', ''),
 (4, 'pedido', '2025-06-19 12:00:00', 4, 4, 40000.00, 'Procesando', 'Cliente nuevo'),
-(5, 'directa', '2025-06-20 13:00:00', 5, 5, 20000.00, 'Completada', 'Compra recurrente');
+(5, 'directa', '2025-06-20 13:00:00', 5, 5, 20000.00, 'Completada', 'Compra recurrente'),
+(8, 'pedido', '2025-09-23 11:29:10', 6, 4, 50000.00, 'Procesando', 'empanada de queso'),
+(9, 'directa', '2025-09-23 11:51:01', 3, 3, 35000.00, 'Procesando', 'emapanda arroz'),
+(10, 'pedido', '2025-09-23 11:52:25', 5, 9, 4500.00, 'Procesando', 'emapanda arroz'),
+(11, 'pedido', '2025-10-10 20:44:34', 1, 8, 500001.00, 'Procesando', '');
 
 --
 -- Índices para tablas volcadas
@@ -361,7 +371,8 @@ ALTER TABLE `detalle_venta`
 -- Indices de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  ADD PRIMARY KEY (`id_ins`);
+  ADD PRIMARY KEY (`id_ins`),
+  ADD UNIQUE KEY `nombre` (`nombre`,`unidad_medida`);
 
 --
 -- Indices de la tabla `inv_entradas`
@@ -439,7 +450,7 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_venta`
@@ -451,7 +462,7 @@ ALTER TABLE `detalle_venta`
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id_ins` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id_ins` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT de la tabla `inv_entradas`
@@ -463,49 +474,49 @@ ALTER TABLE `inv_entradas`
 -- AUTO_INCREMENT de la tabla `inv_salidas`
 --
 ALTER TABLE `inv_salidas`
-  MODIFY `id_salida` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id_salida` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id_ped` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_ped` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `produccion`
 --
 ALTER TABLE `produccion`
-  MODIFY `id_proc` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador de la prduccion', AUTO_INCREMENT=55;
+  MODIFY `id_proc` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador de la prduccion', AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT de la tabla `produccion_recetas`
 --
 ALTER TABLE `produccion_recetas`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT de la tabla `recetas`
 --
 ALTER TABLE `recetas`
-  MODIFY `id_rec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_rec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `receta_insumos`
 --
 ALTER TABLE `receta_insumos`
-  MODIFY `id_rec_ins` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id_rec_ins` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usu` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Numero de identificacion (Cedula, tarjeta de identidad, etc)', AUTO_INCREMENT=14;
+  MODIFY `id_usu` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Numero de identificacion (Cedula, tarjeta de identidad, etc)', AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id_ven` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificacion de la venta', AUTO_INCREMENT=8;
+  MODIFY `id_ven` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificacion de la venta', AUTO_INCREMENT=12;
 
 --
 -- Restricciones para tablas volcadas
@@ -538,12 +549,6 @@ ALTER TABLE `pedidos`
   ADD CONSTRAINT `fk_pedidos_Ventas2` FOREIGN KEY (`id_ven`) REFERENCES `ventas` (`id_ven`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Filtros para la tabla `produccion`
---
-ALTER TABLE `produccion`
-  ADD CONSTRAINT `fk_produccion_usuario` FOREIGN KEY (`usuario`) REFERENCES `usuarios` (`id_usu`);
-
---
 -- Filtros para la tabla `produccion_recetas`
 --
 ALTER TABLE `produccion_recetas`
@@ -568,13 +573,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
-describe usuarios;
-select * from usuarios;
-
-use pae;
-SELECT * FROM usuarios WHERE (correo = "avilamarlon31@gmail.com" OR documento = "123123") AND password = "81dc9bdb52d04dc20036dbd8313ed055";
-update usuarios set password = "81dc9bdb52d04dc20036dbd8313ed055" where id_usu=1;
-
-ALTER TABLE pedidos MODIFY estado ENUM('Pendiente','Tomado','Completado');
