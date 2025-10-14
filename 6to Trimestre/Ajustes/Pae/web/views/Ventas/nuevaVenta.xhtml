@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Nueva Venta</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+</h:head>
+<h:body class="bg-light">
+
+    <ui:include src="/views/Navbar.xhtml" />
+
+    <div class="container mt-5">
+        <div class="card shadow p-4">
+            <h2 class="text-center">Registrar Nueva Venta</h2>
+            <hr/>
+
+            <!-- 🔹 FORMULARIO UNIFICADO -->
+            <h:form id="formVentaCompleto">
+                <h:messages globalOnly="true" layout="table" styleClass="alert alert-warning"/>
+
+                <!-- Datos generales de la venta -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h:outputLabel value="Tipo:" styleClass="form-label" />
+                        <h:selectOneMenu value="#{ventasBean.ventaNueva.tipo}" styleClass="form-select">
+                            <f:selectItem itemValue="directa" itemLabel="Directa" />
+                            <f:selectItem itemValue="pedido" itemLabel="Pedido" />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-md-6">
+                        <h:outputLabel value="Cliente existente:" styleClass="form-label" />
+                        <h:selectOneMenu id="cliente" value="#{ventasBean.ventaNueva.idCliente}" styleClass="form-select" required="true" requiredMessage="El cliente es obligatorio">
+                            <f:selectItems value="#{ventasBean.listaClientes}" var="cliente"
+                                itemValue="#{cliente.id_Cliente}" itemLabel="#{cliente.nombre}" />
+                        </h:selectOneMenu>
+                        <h:message for="cliente" styleClass="text-danger" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6 d-flex align-items-center">
+                        <h:outputLabel value="¿Registrar cliente nuevo?" styleClass="form-label me-2" />
+                        <h:selectBooleanCheckbox value="#{ventasBean.nuevoCliente}">
+                            <f:ajax render="nuevoClientePanel"/>
+                        </h:selectBooleanCheckbox>
+                    </div>
+                </div>
+
+                <h:panelGroup id="nuevoClientePanel">
+                    <h:panelGroup rendered="#{ventasBean.nuevoCliente}">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <h:outputLabel value="Nombre:" styleClass="form-label" />
+                                <h:inputText value="#{ventasBean.clienteNuevo.nombre}" styleClass="form-control" required="true" requiredMessage="El nombre es obligatorio" />
+                            </div>
+                            <div class="col-md-4">
+                                <h:outputLabel value="Teléfono:" styleClass="form-label" />
+                                <h:inputText value="#{ventasBean.clienteNuevo.telefono}" styleClass="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <h:outputLabel value="Correo:" styleClass="form-label" />
+                                <h:inputText value="#{ventasBean.clienteNuevo.correo}" styleClass="form-control" />
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </h:panelGroup>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h:outputLabel value="Usuario:" styleClass="form-label" />
+                        <h:selectOneMenu value="#{ventasBean.ventaNueva.idUsuario}" styleClass="form-select" required="true" requiredMessage="El usuario es obligatorio">
+                            <f:selectItems value="#{ventasBean.listaUsuarios}" var="usuario"
+                                itemValue="#{usuario.idUsu}" itemLabel="#{usuario.nombres} #{usuario.apellidos}" />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-md-6">
+                        <h:outputLabel value="Total:" styleClass="form-label" />
+                        <h:inputText id="total" value="#{ventasBean.ventaNueva.total}" styleClass="form-control"
+                            required="true"
+                            requiredMessage="El campo total es obligatorio"
+                            validatorMessage="El total debe ser mínimo de $2,500">
+                            <f:validateDoubleRange minimum="2500"/>
+                        </h:inputText>
+                        <h:message for="total" styleClass="text-danger" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h:outputLabel value="Estado:" styleClass="form-label" />
+                        <h:selectOneMenu value="#{ventasBean.ventaNueva.estado}" styleClass="form-select">
+                            <f:selectItem itemValue="Procesando" itemLabel="Procesando" />
+                            <f:selectItem itemValue="Completada" itemLabel="Completada" />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-md-6">
+                        <h:outputLabel value="Observaciones:" styleClass="form-label" />
+                        <h:inputText value="#{ventasBean.ventaNueva.observaciones}" styleClass="form-control" />
+                    </div>
+                </div>
+
+                <hr class="my-4"/>
+                <h3 class="text-center mb-3">Detalle de Empanadas (Recetas)</h3>
+
+                <!-- Selección de receta -->
+                <div class="card p-3 mb-4 bg-light">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-6">
+                            <h:outputLabel for="receta" value="Selecciona la empanada:" styleClass="form-label" />
+                            <h:selectOneMenu id="receta" value="#{ventasBean.recetaSeleccionada}" styleClass="form-select">
+                                <f:selectItem itemLabel="-- Selecciona --" itemValue="" noSelectionOption="true" />
+                                <f:selectItems value="#{ventasBean.listaRecetas}" var="r"
+                                    itemValue="#{r.id_rec}" itemLabel="#{r.nombre}" />
+                            </h:selectOneMenu>
+                        </div>
+
+                        <div class="col-md-3">
+                            <h:outputLabel for="cantidad" value="Cantidad:" styleClass="form-label" />
+                            <h:inputText id="cantidad" value="#{ventasBean.cantidadEmpanada}" styleClass="form-control"
+                                         required="true" requiredMessage="Ingresa la cantidad" />
+                        </div>
+
+                        <div class="col-md-3 text-center">
+                            <h:commandButton value="Agregar al carrito"
+                                             action="#{ventasBean.agregarDetalleEmpanada}"
+                                             styleClass="btn btn-primary w-100">
+                                <f:ajax execute="@form" render="tablaEmpanadas mensajes receta cantidad"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+                    <h:messages id="mensajes" globalOnly="true" layout="list" styleClass="mt-3 text-danger"/>
+                </div>
+
+                <!-- Tabla de empanadas agregadas -->
+                <p:dataTable id="tablaEmpanadas" value="#{ventasBean.detallesVenta}" var="det"
+                             styleClass="table table-bordered text-center" emptyMessage="No hay empanadas agregadas">
+                    <p:column headerText="Empanada">
+                        <h:outputText value="#{det.nombreEmpanada}" />
+                    </p:column>
+                    <p:column headerText="Cantidad">
+                        <h:outputText value="#{det.cantidad}" />
+                    </p:column>
+                    <p:column headerText="Acción">
+                        <h:commandButton value="Eliminar" styleClass="btn btn-danger btn-sm"
+                                         action="#{ventasBean.eliminarDetalle(det)}">
+                            <f:ajax execute="@this" render="tablaEmpanadas mensajes"/>
+                        </h:commandButton>
+                    </p:column>
+                </p:dataTable>
+
+                <!-- Botón único para registrar todo -->
+                <div class="mt-4 text-center">
+                    <h:commandButton value="Registrar Venta"
+                                     action="#{ventasBean.registrarVenta}"
+                                     styleClass="btn btn-success px-4">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+
+                    <h:commandButton value="Volver"
+                                     action="#{ventasBean.volverALaLista}"
+                                     immediate="true"
+                                     styleClass="btn btn-secondary ms-3 px-4" />
+                </div>
+            </h:form>
+
+        </div>
+    </div>
+
+</h:body>
+</html>

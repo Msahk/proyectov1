@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Gestionar Recetas de Venta</title>
+    <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+</h:head>
+
+<h:body class="bg-light">
+    <ui:include src="/views/Navbar.xhtml" />
+
+    <p:growl id="msj" showDetail="true" showSummary="true" />
+
+    <!-- Capturar id de venta desde la URL -->
+    <f:metadata>
+        <f:viewParam name="idVenta" value="#{venta_recetasBean.idVentaSeleccionada}" />
+        <f:viewAction action="#{venta_recetasBean.listar}" />
+    </f:metadata>
+
+    <div class="container mt-5" style="max-width: 1200px;">
+        <div class="card shadow p-4">
+            <h2 class="mb-4">Recetas de la Venta ##{venta_recetasBean.idVentaSeleccionada}</h2>
+
+            <h:form id="formRecetas">
+                <!-- FILA AGREGAR RECETA -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p:selectOneMenu value="#{venta_recetasBean.ventaReceta.idReceta}" 
+                                         styleClass="form-control" filter="true" filterMatchMode="contains"
+                                         required="true" requiredMessage="Seleccione una receta">
+                            <f:selectItem itemLabel="-- Seleccione Receta --" itemValue="#{null}" />
+                            <f:selectItems value="#{ventasBean.listaRecetas}" var="r"
+                                           itemLabel="#{r.nombre}" itemValue="#{r.id_rec}" />
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="col-md-3">
+                        <p:inputText value="#{venta_recetasBean.ventaReceta.cantidad}" 
+                                     styleClass="form-control" placeholder="Cantidad" required="true" />
+                    </div>
+                    <div class="col-md-3">
+                        <p:commandButton value="Agregar" icon="pi pi-plus"
+                                         action="#{venta_recetasBean.agregar}" 
+                                         update="tablaRecetas, msj" styleClass="btn btn-primary w-100"/>
+                    </div>
+                </div>
+
+                <!-- TABLA DE RECETAS ASOCIADAS -->
+                <p:dataTable id="tablaRecetas" 
+                             value="#{venta_recetasBean.lstVentaRecetas}" 
+                             var="vr"
+                             emptyMessage="No hay recetas asociadas a esta venta"
+                             paginator="true" rows="5" 
+                             rowsPerPageTemplate="5,10,20" 
+                             styleClass="table table-bordered table-hover"
+                             widgetVar="wtRecetas">
+
+                    <p:column headerText="ID Receta">
+                        <h:outputText value="#{vr.idReceta}" />
+                    </p:column>
+
+                    <p:column headerText="Nombre Receta">
+                        <h:outputText value="#{vr.nombreReceta}" />
+                    </p:column>
+
+                    <p:column headerText="Cantidad">
+                        <h:outputText value="#{vr.cantidad}" />
+                    </p:column>
+
+                    <p:column headerText="Opciones" style="width:15rem">
+                        <p:commandButton icon="pi pi-trash"
+                                         title="Eliminar"
+                                         action="#{venta_recetasBean.eliminar(vr)}"
+                                         update="tablaRecetas, msj"
+                                         onclick="return confirm('¿Está seguro de eliminar esta receta de la venta?');"
+                                         styleClass="btn btn-sm btn-outline-danger mx-1" />
+                    </p:column>
+                </p:dataTable>
+
+                <div class="mt-3">
+                    <h:commandButton value="Volver" 
+                                     action="/views/Ventas/index.xhtml?faces-redirect=true" 
+                                     styleClass="btn btn-outline-dark" />
+                </div>
+            </h:form>
+        </div>
+    </div>
+</h:body>
+</html>
