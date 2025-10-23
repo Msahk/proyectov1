@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="author" content="WB DataDic" />
+    <meta name="description" content="pae Data Dictionary." />
+    <title>pae Data Dictionary</title>
+    <style type="text/css">
+    table{
+        width: 100%;
+        margin-bottom: 30px;
+    }
+    abbr{
+        cursor: help;
+    }
+    table, td, th{
+        border-style: solid;
+        border-width: 1px;
+    }
+    table caption{
+        font-size: 120%;
+        font-weight: bold;
+    }
+    caption{
+        color: black;
+    }
+    td, th{
+        border-color: silver;
+    }
+    tr:hover{
+        color: #333;
+        background-color: #F2F2F2;
+    }
+    th{
+        background-color: silver;
+    }
+    td{
+        color: gray;
+    }
+    ul{
+        font-style: italic;
+    }
+    #title-sect{
+        color: gray;
+        text-align: right;
+    }
+    .proj-desc{
+        text-align: right;
+    }
+    </style>
+</head>
+<body>
+<div id="title-sect">
+<h1>pae<br> Data Dictionay</h1>
+<p>
+<em>2025-10-22</em>
+</p>
+<p class="proj-desc">
+<em></em>
+</p>
+</div>
+<h2>Alphabetic Index</h2>
+<ul>
+<li><a href='#clientes'>clientes</a></li>
+<li><a href='#insumos'>insumos</a></li>
+<li><a href='#pedidos'>pedidos</a></li>
+<li><a href='#produccion'>produccion</a></li>
+<li><a href='#produccion_recetas'>produccion_recetas</a></li>
+<li><a href='#receta_insumos'>receta_insumos</a></li>
+<li><a href='#recetas'>recetas</a></li>
+<li><a href='#usuarios'>usuarios</a></li>
+<li><a href='#venta_produccion'>venta_produccion</a></li>
+<li><a href='#venta_recetas'>venta_recetas</a></li>
+<li><a href='#ventas'>ventas</a></li>
+</ul>
+<table id='clientes'>
+<caption>clientes</caption>
+<tr><td colspan='11'></td></tr>
+<tr>
+    <th>Column name</th>
+    <th>DataType</th>
+    <th><abbr title='Primary Key'>PK</abbr></th>
+    <th><abbr title='Not Null'>NN</abbr></th>
+    <th><abbr title='Unique'>UQ</abbr></th>
+    <th><abbr title='Binary'>BIN</abbr></th>
+    <th><abbr title='Unsigned'>UN</abbr></th>
+    <th><abbr title='Zero Fill'>ZF</abbr></th>
+    <th><abbr title='Auto Increment'>AI</abbr></th>
+    <th>Default</th>
+    <th>Comment</th>
+</tr>
+<tr>
+    <td>id_Cliente</td>
+    <td>INT(11)</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td></td>
+    <td>Numero de registro del cliente</td>
+</tr>
+<tr>
+    <td>nombre</td>
+    <td>VARCHAR(100)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Nombres y/o apellidos del cliente</td>
+</tr>
+<tr>
+    <td>telefono</td>
+    <td>VARCHAR(20)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero telefonico del cliente</td>
+</tr>
+<tr>
+    <td>correo</td>
+    <td>VARCHAR(100)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Correo electronico del cliente</td>
+</tr>
+<table id='insumos'>
+<caption>insumos</caption>
+<tr><td colspan='11'></td></tr>
+<tr>
+    <th>Column name</th>
+    <th>DataType</th>
+    <th><abbr title='Primary Key'>PK</abbr></th>
+    <th><abbr title='Not Null'>NN</abbr></th>
+    <th><abbr title='Unique'>UQ</abbr></th>
+    <th><abbr title='Binary'>BIN</abbr></th>
+    <th><abbr title='Unsigned'>UN</abbr></th>
+    <th><abbr title='Zero Fill'>ZF</abbr></th>
+    <th><abbr title='Auto Increment'>AI</abbr></th>
+    <th>Default</th>
+    <th>Comment</th>
+</tr>
+<tr>
+    <td>id_ins</td>
+    <td>INT(11)</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td></td>
+    <td>Numero de registro del insumo</td>
+</tr>
+<tr>
+    <td>nombre</td>
+    <td>VARCHAR(45)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Nombre del insumo</td>
+</tr>
+<tr>
+    <td>cantidad</td>
+    <td>DECIMAL(10,2)</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>NULL</td>
+    <td>Cantidad de insumos</td>
+</tr>
+<tr>
+    <td>unidad_medida</td>
+    <td>VARCHAR(10)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Unidad de medida de insumos (El peso del insumo)</td>
+</tr>
+<tr>
+    <td>stock_min</td>
+    <td>DECIMAL(10,2)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Stock minimo que debe tener el insumo</td>
+</tr>
+<tr>
+    <td>stock_actual</td>
+    <td>DECIMAL(10,2)</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>0.00</td>
+    <td>Cantidad actual del insumo</td>
+</tr>
+<tr>
+    <td>fecha_vencimiento</td>
+    <td>DATE</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>NULL</td>
+    <td>Fecha de vencimiento del insumo</td>
+</tr>
+<tr>
+    <td>estado</td>
+    <td>ENUM('Activo', 'Inactivo', 'Insumo vencido', 'Stock insuficiente')</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>'Activo'</td>
+    <td>Estado del insumo, puede ser Activo, inactivo, insumo vencido o stock insuficiente</td>
+</tr>
+<table id='pedidos'>
+<caption>pedidos</caption>
+<tr><td colspan='11'></td></tr>
+<tr>
+    <th>Column name</th>
+    <th>DataType</th>
+    <th><abbr title='Primary Key'>PK</abbr></th>
+    <th><abbr title='Not Null'>NN</abbr></th>
+    <th><abbr title='Unique'>UQ</abbr></th>
+    <th><abbr title='Binary'>BIN</abbr></th>
+    <th><abbr title='Unsigned'>UN</abbr></th>
+    <th><abbr title='Zero Fill'>ZF</abbr></th>
+    <th><abbr title='Auto Increment'>AI</abbr></th>
+    <th>Default</th>
+    <th>Comment</th>
+</tr>
+<tr>
+    <td>id_ped</td>
+    <td>INT(11)</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td></td>
+    <td>Numero de registro del pedido</td>
+</tr>
+<tr>
+    <td>id_ven</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero de registro de la venta (FK)</td>
+</tr>
+<tr>
+    <td>fecha_entrega</td>
+    <td>DATETIME</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Fecha de entrega del pedido</td>
+</tr>
+<tr>
+    <td>estado</td>
+    <td>ENUM('Pendiente', 'Tomado', 'Completado')</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>NULL</td>
+    <td>Estado del pedido (Puede ser pendiente, tomado o completado)</td>
+</tr>
+<tr>
+    <td>observaciones_pedido</td>
+    <td>LONGTEXT</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Todas las observaciones del pedido</td>
+</tr>
+<table id='produccion'>
+<caption>produccion</caption>
+<tr><td colspan='11'></td></tr>
+<tr>
+    <th>Column name</th>
+    <th>DataType</th>
+    <th><abbr title='Primary Key'>PK</abbr></th>
+    <th><abbr title='Not Null'>NN</abbr></th>
+    <th><abbr title='Unique'>UQ</abbr></th>
+    <th><abbr title='Binary'>BIN</abbr></th>
+    <th><abbr title='Unsigned'>UN</abbr></th>
+    <th><abbr title='Zero Fill'>ZF</abbr></th>
+    <th><abbr title='Auto Increment'>AI</abbr></th>
+    <th>Default</th>
+    <th>Comment</th>
+</tr>
+<tr>
+    <td>id_proc</td>
+    <td>INT(11)</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td></td>
+    <td>Numero de identificacion de la prduccion</td>
+</tr>
+<tr>
+    <td>estado</td>
+    <td>VARCHAR(20)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>'Pendiente'</td>
+    <td>Estado de la produccion</td>
+</tr>
+<tr>
+    <td>usuario</td>
+    <td>VARCHAR(150)</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>NULL</td>
+    <td>Nombre de usuario que realiza la produccion</td>
+</tr>
+<tr>
+    <td>fecha_hora</td>
+    <td>DATETIME</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>CURRENT_TIMESTAMP()</td>
+    <td>Fecha y hora a la que se realiza la produccion</td>
+</tr>
+<table id='produccion_recetas'>
+<caption>produccion_recetas</caption>
+<tr><td colspan='11'></td></tr>
+<tr>
+    <th>Column name</th>
+    <th>DataType</th>
+    <th><abbr title='Primary Key'>PK</abbr></th>
+    <th><abbr title='Not Null'>NN</abbr></th>
+    <th><abbr title='Unique'>UQ</abbr></th>
+    <th><abbr title='Binary'>BIN</abbr></th>
+    <th><abbr title='Unsigned'>UN</abbr></th>
+    <th><abbr title='Zero Fill'>ZF</abbr></th>
+    <th><abbr title='Auto Increment'>AI</abbr></th>
+    <th>Default</th>
+    <th>Comment</th>
+</tr>
+<tr>
+    <td>id_detalle</td>
+    <td>INT(11)</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td></td>
+    <td>Numero de registro del detalle de produccion y receta</td>
+</tr>
+<tr>
+    <td>id_produccion</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero de registro de la produccion (FK)</td>
+</tr>
+<tr>
+    <td>id_rec</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero de registro de la receta (FK)</td>
+</tr>
+<tr>
+    <td>cantidad</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>1</td>
+    <td>Cantidad de receta en la produccion</td>
+</tr>
+<table id='receta_insumos'>
+<caption>receta_insumos</caption>
+<tr><td colspan='11'></td></tr>
+<tr>
+    <th>Column name</th>
+    <th>DataType</th>
+    <th><abbr title='Primary Key'>PK</abbr></th>
+    <th><abbr title='Not Null'>NN</abbr></th>
+    <th><abbr title='Unique'>UQ</abbr></th>
+    <th><abbr title='Binary'>BIN</abbr></th>
+    <th><abbr title='Unsigned'>UN</abbr></th>
+    <th><abbr title='Zero Fill'>ZF</abbr></th>
+    <th><abbr title='Auto Increment'>AI</abbr></th>
+    <th>Default</th>
+    <th>Comment</th>
+</tr>
+<tr>
+    <td>id_rec_ins</td>
+    <td>INT(11)</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td></td>
+    <td>Numero de registro de la receta y el insumo</td>
+</tr>
+<tr>
+    <td>id_rec</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero de registro de la receta (FK)</td>
+</tr>
+<tr>
+    <td>id_ins</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero de registro del insumo (FK)</td>
+</tr>
+<tr>
+    <td>cantidad</td>
+    <td>DECIMAL(10,2)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Cantidad de insumos en la receta (FK)</td>
+</tr>
+<tr>
+    <td>unidad</td>
+    <td>VARCHAR(20)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Unidad del insumo en la receta</td>
+</tr>
+<table id='recetas'>
+<caption>recetas</caption>
+<tr><td colspan='11'></td></tr>
+<tr>
+    <th>Column name</th>
+    <th>DataType</th>
+    <th><abbr title='Primary Key'>PK</abbr></th>
+    <th><abbr title='Not Null'>NN</abbr></th>
+    <th><abbr title='Unique'>UQ</abbr></th>
+    <th><abbr title='Binary'>BIN</abbr></th>
+    <th><abbr title='Unsigned'>UN</abbr></th>
+    <th><abbr title='Zero Fill'>ZF</abbr></th>
+    <th><abbr title='Auto Increment'>AI</abbr></th>
+    <th>Default</th>
+    <th>Comment</th>
+</tr>
+<tr>
+    <td>id_rec</td>
+    <td>INT(11)</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td></td>
+    <td>Numero de registro de la receta</td>
+</tr>
+<tr>
+    <td>nombre</td>
+    <td>VARCHAR(50)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Nombre de la receta</td>
+</tr>
+<tr>
+    <td>descripcion</td>
+    <td>TEXT</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>NULL</td>
+    <td>Descripciion de la receta</td>
+</tr>
+<tr>
+    <td>precio</td>
+    <td>DECIMAL(10,2)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>0.00</td>
+    <td>Precio de la receta</td>
+</tr>
+<tr>
+    <td>estado</td>
+    <td>ENUM('Activo', 'Inactivo')</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>'Activo'</td>
+    <td>Estado de la receta, puede ser activo o inactivo</td>
+</tr>
+<table id='usuarios'>
+<caption>usuarios</caption>
+<tr><td colspan='11'></td></tr>
+<tr>
+    <th>Column name</th>
+    <th>DataType</th>
+    <th><abbr title='Primary Key'>PK</abbr></th>
+    <th><abbr title='Not Null'>NN</abbr></th>
+    <th><abbr title='Unique'>UQ</abbr></th>
+    <th><abbr title='Binary'>BIN</abbr></th>
+    <th><abbr title='Unsigned'>UN</abbr></th>
+    <th><abbr title='Zero Fill'>ZF</abbr></th>
+    <th><abbr title='Auto Increment'>AI</abbr></th>
+    <th>Default</th>
+    <th>Comment</th>
+</tr>
+<tr>
+    <td>id_usu</td>
+    <td>INT(11)</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td></td>
+    <td>Numero de registro de usuario</td>
+</tr>
+<tr>
+    <td>documento</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero de identificacion (Cedula, tarjeta de identidad, etc)</td>
+</tr>
+<tr>
+    <td>nombres</td>
+    <td>VARCHAR(50)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Nombres completos del usuario</td>
+</tr>
+<tr>
+    <td>apellidos</td>
+    <td>VARCHAR(50)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Apellidos completos del usuario</td>
+</tr>
+<tr>
+    <td>telefono</td>
+    <td>BIGINT(20)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero telefonico del usuario</td>
+</tr>
+<tr>
+    <td>direccion</td>
+    <td>VARCHAR(100)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Direccion del usuario</td>
+</tr>
+<tr>
+    <td>correo</td>
+    <td>VARCHAR(100)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Correo electronico del usuario</td>
+</tr>
+<tr>
+    <td>rol</td>
+    <td>ENUM('A', 'EP', 'EV')</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Rol del usuario (Administrador, empleado produccion y empleado ventas)</td>
+</tr>
+<tr>
+    <td>estado</td>
+    <td>ENUM('A', 'I')</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Estado del usuario (Activo o inactivo)</td>
+</tr>
+<tr>
+    <td>password</td>
+    <td>VARCHAR(256)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Contraseña del usuario</td>
+</tr>
+<table id='venta_produccion'>
+<caption>venta_produccion</caption>
+<tr><td colspan='11'></td></tr>
+<tr>
+    <th>Column name</th>
+    <th>DataType</th>
+    <th><abbr title='Primary Key'>PK</abbr></th>
+    <th><abbr title='Not Null'>NN</abbr></th>
+    <th><abbr title='Unique'>UQ</abbr></th>
+    <th><abbr title='Binary'>BIN</abbr></th>
+    <th><abbr title='Unsigned'>UN</abbr></th>
+    <th><abbr title='Zero Fill'>ZF</abbr></th>
+    <th><abbr title='Auto Increment'>AI</abbr></th>
+    <th>Default</th>
+    <th>Comment</th>
+</tr>
+<tr>
+    <td>id_ven_prod</td>
+    <td>INT(11)</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td></td>
+    <td>Numero de registro de la venta y la produccion</td>
+</tr>
+<tr>
+    <td>id_venta</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero de registro de la venta (FK)</td>
+</tr>
+<tr>
+    <td>id_produccion</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero de registro de la produccion (FK)</td>
+</tr>
+<tr>
+    <td>cantidad</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Cantidad de produccion en una venta</td>
+</tr>
+<table id='venta_recetas'>
+<caption>venta_recetas</caption>
+<tr><td colspan='11'></td></tr>
+<tr>
+    <th>Column name</th>
+    <th>DataType</th>
+    <th><abbr title='Primary Key'>PK</abbr></th>
+    <th><abbr title='Not Null'>NN</abbr></th>
+    <th><abbr title='Unique'>UQ</abbr></th>
+    <th><abbr title='Binary'>BIN</abbr></th>
+    <th><abbr title='Unsigned'>UN</abbr></th>
+    <th><abbr title='Zero Fill'>ZF</abbr></th>
+    <th><abbr title='Auto Increment'>AI</abbr></th>
+    <th>Default</th>
+    <th>Comment</th>
+</tr>
+<tr>
+    <td>id_venta_receta</td>
+    <td>INT(11)</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td></td>
+    <td>Numero de registro de venta y su receta</td>
+</tr>
+<tr>
+    <td>id_venta</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero de registro de la venta (FK)</td>
+</tr>
+<tr>
+    <td>id_receta</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero de registro de la receta (FK)</td>
+</tr>
+<tr>
+    <td>cantidad</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>cantidad de recetas en la venta</td>
+</tr>
+<table id='ventas'>
+<caption>ventas</caption>
+<tr><td colspan='11'></td></tr>
+<tr>
+    <th>Column name</th>
+    <th>DataType</th>
+    <th><abbr title='Primary Key'>PK</abbr></th>
+    <th><abbr title='Not Null'>NN</abbr></th>
+    <th><abbr title='Unique'>UQ</abbr></th>
+    <th><abbr title='Binary'>BIN</abbr></th>
+    <th><abbr title='Unsigned'>UN</abbr></th>
+    <th><abbr title='Zero Fill'>ZF</abbr></th>
+    <th><abbr title='Auto Increment'>AI</abbr></th>
+    <th>Default</th>
+    <th>Comment</th>
+</tr>
+<tr>
+    <td>id_ven</td>
+    <td>INT(11)</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td></td>
+    <td>Identificacion de la venta</td>
+</tr>
+<tr>
+    <td>Tipo</td>
+    <td>ENUM('directa', 'pedido')</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Fecha en la que se realizo la venta</td>
+</tr>
+<tr>
+    <td>fecha</td>
+    <td>DATETIME</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Valor total de la venta en esa fecha</td>
+</tr>
+<tr>
+    <td>id_usu</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>NULL</td>
+    <td>Numero de registro del usuario que realiza la venta</td>
+</tr>
+<tr>
+    <td>id_Cliente</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Numero de registro del cliente al que se realiza la venta (FK)</td>
+</tr>
+<tr>
+    <td>total</td>
+    <td>DECIMAL(10,2)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Total de la venta</td>
+</tr>
+<tr>
+    <td>estado</td>
+    <td>ENUM('Procesando', 'Completada')</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Estado de la venta, puede ser procesando o completada</td>
+</tr>
+<tr>
+    <td>observaciones</td>
+    <td>LONGTEXT</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td>NULL</td>
+    <td>Todas las observaciones de la venta</td>
+</tr>
+</table>
+</body>
+</html>
