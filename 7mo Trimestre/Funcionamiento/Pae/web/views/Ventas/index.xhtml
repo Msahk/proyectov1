@@ -19,9 +19,8 @@
             <div class="card shadow p-3">
                 <h1>Gestión de Ventas</h1>
 
-                <!-- FORM PRINCIPAL -->
                 <h:form id="filtroVentasForm">
-                    <!-- Botones superiores en una sola línea -->
+                    
                     <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
                         <h:commandButton value="Reporte PDF"
                                          styleClass="btn btn-primary"
@@ -35,12 +34,10 @@
                         <h:commandButton value="Migrar"
                                          styleClass="btn btn-primary"
                                          action="/views/Ventas/migrarVentas.xhtml?faces-redirect=true" />
-                        <h:commandButton value="Gestionar Pagos"
-                                         styleClass="btn btn-success"
-                                         action="/views/Pagos/Index.xhtml?faces-redirect=true" />
+                        
                     </div>
 
-                    <!-- Tabla de ventas -->
+                    
                     <p:dataTable value="#{ventasBean.listaVentas}" var="venta"
                                  widgetVar="wtVentas"
                                  paginator="true" rows="5"
@@ -75,7 +72,7 @@
                             <h:outputText value="#{venta.nombreUsuario}" />
                         </p:column>
 
-                        <!-- 🔥 Filtro “Asignado a” restaurado -->
+                       
                         <p:column headerText="Asignado a"
                                   filterBy="#{ventasBean.getNombreAsignado(venta)}"
                                   sortBy="#{ventasBean.getNombreAsignado(venta)}"
@@ -95,7 +92,7 @@
                             <h:outputText value="#{venta.observaciones}" />
                         </p:column>
 
-                        <!-- Opciones -->
+                       
                        <p:column headerText="Opciones" style="width: 220px; text-align: center;">
     <div class="d-flex justify-content-center gap-2">
         <h:commandLink action="editarVentas"

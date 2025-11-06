@@ -6,7 +6,7 @@
 
 <h:head>
     <title>Editar Venta</title>
-    <link rel="stylesheet" 
+    <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
 </h:head>
 <h:body class="bg-light">
@@ -22,48 +22,91 @@
                 <h:messages globalOnly="true" layout="table" styleClass="alert alert-warning"/>
 
                 <h:panelGrid columns="2" cellpadding="5" class="table table-borderless">
-                    
+
+                   
                     <h:outputLabel value="Tipo:" styleClass="form-label" />
                     <h:selectOneMenu value="#{ventasBean.ventaSeleccionada.tipo}" styleClass="form-select">
                         <f:selectItem itemValue="directa" itemLabel="Directa" />
                         <f:selectItem itemValue="pedido" itemLabel="Pedido" />
                     </h:selectOneMenu>
 
-                   
+                    
                     <h:outputLabel value="Cliente:" styleClass="form-label" />
-                    <h:selectOneMenu value="#{ventasBean.ventaSeleccionada.idCliente}" styleClass="form-select" required="true" requiredMessage="El cliente es obligatorio">
-                        <f:selectItems value="#{ventasBean.listaClientes}" var="cliente"
-                            itemValue="#{cliente.id_Cliente}" itemLabel="#{cliente.nombre}" />
+                    <h:panelGroup>
+                        
+                        <h:panelGroup rendered="#{sessionUser != null and sessionUser.usuario != null and sessionUser.usuario.rol == 'A'}">
+                            <h:selectOneMenu id="cliente" value="#{ventasBean.ventaSeleccionada.idCliente}" styleClass="form-select" required="true" requiredMessage="El cliente es obligatorio">
+                                <f:selectItem itemValue="0" itemLabel="-- Seleccionar cliente --" />
+                                <f:selectItems value="#{ventasBean.listaClientes}" var="cliente"
+                                               itemValue="#{cliente.id_Cliente}" itemLabel="#{cliente.nombre} (#{cliente.nit})" />
+                            </h:selectOneMenu>
+                            <h:message for="cliente" styleClass="text-danger" />
+                        </h:panelGroup>
+
+                        
+                        <h:panelGroup rendered="#{not (sessionUser != null and sessionUser.usuario != null and sessionUser.usuario.rol == 'A')}">
+                            <h:outputText value="#{ventasBean.ventaSeleccionada.nombreCliente}" styleClass="form-control-plaintext" />
+                          
+                            <h:inputHidden value="#{ventasBean.ventaSeleccionada.idCliente}" />
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+                    
+                    <h:outputLabel value="Usuario que vendió:" styleClass="form-label" />
+                    <h:panelGroup>
+                        
+                        <h:panelGroup rendered="#{sessionUser != null and sessionUser.usuario != null and sessionUser.usuario.rol == 'A'}">
+                            <h:selectOneMenu id="usuario" value="#{ventasBean.ventaSeleccionada.idUsuario}" styleClass="form-select" required="true" requiredMessage="El usuario es obligatorio">
+                                <f:selectItem itemValue="0" itemLabel="-- Seleccionar usuario --" />
+                                <f:selectItems value="#{ventasBean.listaUsuarios}" var="usuario"
+                                               itemValue="#{usuario.idUsu}" itemLabel="#{usuario.nombres} #{usuario.apellidos}" />
+                            </h:selectOneMenu>
+                            <h:message for="usuario" styleClass="text-danger" />
+                        </h:panelGroup>
+
+                       
+                        <h:panelGroup rendered="#{not (sessionUser != null and sessionUser.usuario != null and sessionUser.usuario.rol == 'A')}">
+                            <h:outputText value="#{ventasBean.ventaSeleccionada.nombreUsuario}" styleClass="form-control-plaintext" />
+                           
+                            <h:inputHidden value="#{ventasBean.ventaSeleccionada.idUsuario}" />
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+                    
+                    <h:outputLabel value="Empleado Producción (EP):" styleClass="form-label" />
+                    <h:selectOneMenu value="#{ventasBean.ventaSeleccionada.idAsignado}" styleClass="form-select" >
+                        <f:selectItem itemValue="0" itemLabel="-- No asignado --" />
+                        <f:selectItems value="#{ventasBean.getListaUsuariosEP()}" var="ep"
+                                       itemValue="#{ep.idUsu}" itemLabel="#{ep.nombres} #{ep.apellidos}" />
                     </h:selectOneMenu>
 
                     
-                    <h:outputLabel value="Usuario:" styleClass="form-label" />
-                    <h:selectOneMenu value="#{ventasBean.ventaSeleccionada.idUsuario}" styleClass="form-select" required="true" requiredMessage="El usuario es obligatorio">
-                        <f:selectItems value="#{ventasBean.listaUsuarios}" var="usuario"
-                            itemValue="#{usuario.idUsu}" itemLabel="#{usuario.nombres} #{usuario.apellidos}" />
-                    </h:selectOneMenu>
-
-                   
                     <h:outputLabel value="Total:" styleClass="form-label" />
                     <h:inputText value="#{ventasBean.ventaSeleccionada.total}" styleClass="form-control" required="true" requiredMessage="El campo total es obligatorio">
-                        <f:validateDoubleRange minimum="2500"/>
+                        <f:validateDoubleRange minimum="0"/>
                     </h:inputText>
+                    <h:message for="ventasBean.ventaSeleccionada.total" styleClass="text-danger" />
 
-                  
+                
                     <h:outputLabel value="Estado:" styleClass="form-label" />
                     <h:selectOneMenu value="#{ventasBean.ventaSeleccionada.estado}" styleClass="form-select">
+                        <f:selectItem itemValue="Pago pendiente" itemLabel="Pago pendiente" />
                         <f:selectItem itemValue="Procesando" itemLabel="Procesando" />
+                        <f:selectItem itemValue="Pago completo" itemLabel="Pago completo" />
                         <f:selectItem itemValue="Completada" itemLabel="Completada" />
                     </h:selectOneMenu>
 
-                   
+                    
                     <h:outputLabel value="Observaciones:" styleClass="form-label" />
-                    <h:inputText value="#{ventasBean.ventaSeleccionada.observaciones}" styleClass="form-control" />
+                    <h:inputTextarea value="#{ventasBean.ventaSeleccionada.observaciones}" rows="3" cols="40" styleClass="form-control" />
+
                 </h:panelGrid>
 
                 <div class="mt-4 text-center">
-                    <h:commandButton value="Actualizar" styleClass="btn btn-primary" action="#{ventasBean.actualizarVenta}" />
-                    <h:commandButton value="Volver" styleClass="btn btn-secondary ms-3" action="#{ventasBean.volverALaLista}" />
+                    <h:commandButton value="Actualizar" styleClass="btn btn-primary" action="#{ventasBean.actualizarVenta}">
+                        <f:ajax execute="@form" render="@form messages" />
+                    </h:commandButton>
+                    <h:commandButton value="Volver" styleClass="btn btn-secondary ms-3" action="#{ventasBean.volverALaLista}" immediate="true" />
                 </div>
             </h:form>
         </div>

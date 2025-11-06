@@ -169,6 +169,8 @@ public class usuariosDao {
         }
     }
 
+
+
     public boolean cambiarEstado(usuarios u) {
         String selectSql = "SELECT estado FROM usuarios WHERE id_usu = ?";
         String updateSql = "UPDATE usuarios SET estado = ? WHERE id_usu = ?";

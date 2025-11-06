@@ -81,8 +81,24 @@ public class clientesDao {
         return lista;
     }
 
-    // ➕ Agregar nuevo cliente
+    // ➕ Agregar nuevo cliente (mejorado: devuelve id existente si ya existe)
     public int agregar(clientes c) {
+        // 1) Buscar por teléfono
+        if (c.getTelefono() != null && !c.getTelefono().trim().isEmpty()) {
+            clientes existente = buscarPorTelefono(c.getTelefono());
+            if (existente != null) {
+                return existente.getId_Cliente();
+            }
+        }
+        // 2) Buscar por NIT
+        if (c.getNit() != null && !c.getNit().trim().isEmpty()) {
+            clientes existente = buscarPorNit(c.getNit());
+            if (existente != null) {
+                return existente.getId_Cliente();
+            }
+        }
+
+        // 3) Intentar insertar; manejar posible race condition con unique constraint
         String sql = "INSERT INTO clientes (nombre, nit, telefono, correo) VALUES (?, ?, ?, ?)";
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -90,16 +106,84 @@ public class clientesDao {
             ps.setString(2, c.getNit());
             ps.setString(3, c.getTelefono());
             ps.setString(4, c.getCorreo());
-            ps.executeUpdate();
+            int affected = ps.executeUpdate();
+            if (affected == 0) {
+                return -1;
+            }
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     return rs.getInt(1);
                 }
             }
+        } catch (SQLIntegrityConstraintViolationException dup) {
+            // Ya existe un registro con el mismo valor único (teléfono o nit).
+            // Recuperar el id del registro existente y devolverlo.
+            // Primero intentar por teléfono, luego por nit.
+            try {
+                if (c.getTelefono() != null && !c.getTelefono().trim().isEmpty()) {
+                    clientes existente = buscarPorTelefono(c.getTelefono());
+                    if (existente != null) return existente.getId_Cliente();
+                }
+                if (c.getNit() != null && !c.getNit().trim().isEmpty()) {
+                    clientes existente = buscarPorNit(c.getNit());
+                    if (existente != null) return existente.getId_Cliente();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            // Si no se pudo recuperar, retornar -1
+            dup.printStackTrace();
+            return -1;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    // 🔎 Buscar por teléfono
+    public clientes buscarPorTelefono(String telefono) {
+        String sql = "SELECT id_Cliente, nombre, telefono, nit, correo FROM clientes WHERE telefono = ?";
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, telefono);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    clientes c = new clientes();
+                    c.setId_Cliente(rs.getInt("id_Cliente"));
+                    c.setNombre(rs.getString("nombre"));
+                    c.setTelefono(rs.getString("telefono"));
+                    c.setNit(rs.getString("nit"));
+                    c.setCorreo(rs.getString("correo"));
+                    return c;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // 🔎 Buscar por NIT
+    public clientes buscarPorNit(String nit) {
+        String sql = "SELECT id_Cliente, nombre, telefono, nit, correo FROM clientes WHERE nit = ?";
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nit);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    clientes c = new clientes();
+                    c.setId_Cliente(rs.getInt("id_Cliente"));
+                    c.setNombre(rs.getString("nombre"));
+                    c.setTelefono(rs.getString("telefono"));
+                    c.setNit(rs.getString("nit"));
+                    c.setCorreo(rs.getString("correo"));
+                    return c;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // 🔄 Actualizar cliente en cascada (para relaciones dependientes)

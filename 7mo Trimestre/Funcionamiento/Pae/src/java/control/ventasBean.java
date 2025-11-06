@@ -57,16 +57,15 @@ import java.util.List;
 import modelo.usuarios;
 import dao.pagoDao; // Asegúrate de importar tu DAO
 import modelo.pago;  // Si necesitas usar la clase pago
-
-
-
-
+ // ajustar si tu ConDB está en otro paquete
+// si lo usas en exportarPDF
 
 @Named("ventasBean")
 @SessionScoped
 public class ventasBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     private List<ventas> listaVentasFiltradas;
     private ventasDao ventasDao = new ventasDao();
     private usuariosDao usuariosDao = new usuariosDao();
@@ -100,23 +99,31 @@ public class ventasBean implements Serializable {
     private venta_produccionDao ventaProduccionDao = new venta_produccionDao();
     private produccion_recetasDao produccionRecetasDao = new produccion_recetasDao();
     private List<recetas> listaRecetas = new ArrayList<>();
+    private int originalIdUsuario;
+    private int originalIdCliente;
     private double precioRecetaSeleccionada;
     private double subtotalEmpanada;
     // 🔹 Lista temporal para almacenar los detalles de venta antes de guardar en BD
-private List<venta_recetas> lstVentaRecetasTemp = new ArrayList<>();
-@ManagedProperty(value = "#{sessionUser}")
-private SessionUserBean sessionUser;
-private String filtroAsignado;
-private List<usuarios> listaUsuariosEP;
-private List<usuarios> listaUsuariosVenta;
+    private List<venta_recetas> lstVentaRecetasTemp = new ArrayList<>();
+    @ManagedProperty(value = "#{sessionUser}")
+    private SessionUserBean sessionUser;
+    private String filtroAsignado;
+    private List<usuarios> listaUsuariosEP;
+    private List<usuarios> listaUsuariosVenta;
 
+    // Auto-assignment display field
+    private String nombreAsignadoAuto;
 
+    private static final String EMAIL_REGEX = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
+    private static final String PHONE_REGEX = "^\\d{7,15}$";
+    private static final String NIT_REGEX = "^[0-9A-Za-z\\-]{3,20}$";
+    private static final String NOMBRES_REGEX = "^[\\p{L} .'-]{2,100}$";
 
-
-
-
-
-
+    // Getters / Setters
+    public int getOriginalIdUsuario() { return originalIdUsuario; }
+    public void setOriginalIdUsuario(int originalIdUsuario) { this.originalIdUsuario = originalIdUsuario; }
+    public int getOriginalIdCliente() { return originalIdCliente; }
+    public void setOriginalIdCliente(int originalIdCliente) { this.originalIdCliente = originalIdCliente; }
 
     public Part getExcelVentas() {
         return excelVentas;
@@ -125,6 +132,11 @@ private List<usuarios> listaUsuariosVenta;
     public void setExcelVentas(Part excelVentas) {
         this.excelVentas = excelVentas;
     }
+    
+
+
+    public String getNombreAsignadoAuto() { return nombreAsignadoAuto; }
+    public void setNombreAsignadoAuto(String nombreAsignadoAuto) { this.nombreAsignadoAuto = nombreAsignadoAuto; }
 
     public void exportarPDF() {
         try {
@@ -201,25 +213,27 @@ private List<usuarios> listaUsuariosVenta;
         }
     }
 
-  @PostConstruct
-public void init() {
-    ventaNueva = new ventas();
-    ventaNueva.setFecha(new Date());
+    @PostConstruct
+    public void init() {
+        ventaNueva = new ventas();
+        ventaNueva.setFecha(new Date());
 
-    if (sessionUser != null && sessionUser.isLogged()) {
-        usuarios u = sessionUser.getUsuario();
-        ventaNueva.setIdUsuario(u.getIdUsu());
+        if (sessionUser != null && sessionUser.isLogged()) {
+            usuarios u = sessionUser.getUsuario();
+            if (u != null) {
+                ventaNueva.setIdUsuario(u.getIdUsu());
+                ventaNueva.setNombreUsuario(u.getNombres() + " " + u.getApellidos());
+            }
+        }
+
+        cargarVentas();
+        cargarUsuarios();
+        cargarClientes();
+        cargarRecetas();
+
+        // ✅ Asignar correctamente la lista de usuarios de venta
+        listaUsuariosVenta = listarUsuariosVenta();
     }
-
-    cargarVentas();
-    cargarUsuarios();
-    cargarClientes();
-    cargarRecetas();
-
-    // ✅ Asignar correctamente la lista de usuarios de venta
-    listaUsuariosVenta = listarUsuariosVenta();
-}
-
 
     private void cargarClientes() {
         listaClientes = clienteDao.listar();
@@ -329,15 +343,22 @@ public void init() {
     public void setListaVentasFiltradas(List<ventas> listaVentasFiltradas) {
         this.listaVentasFiltradas = listaVentasFiltradas;
     }
-    
+
     public String getFiltroAsignado() {
-    return filtroAsignado;
-}
+        return filtroAsignado;
+    }
 
-public void setFiltroAsignado(String filtroAsignado) {
-    this.filtroAsignado = filtroAsignado;
-}
+    public void setFiltroAsignado(String filtroAsignado) {
+        this.filtroAsignado = filtroAsignado;
+    }
 
+    public String prepararEdicion(ventas v) {
+        this.ventaSeleccionada = v;
+
+        this.originalIdUsuario = v.getIdUsuario();
+        this.originalIdCliente = v.getIdCliente();
+        return "/views/Ventas/editarVentas.xhtml?faces-redirect=true";
+    }
 
     public void filtrarVentas() {
         java.sql.Date sqlFechaDesde = filtroFechaDesde != null ? new java.sql.Date(filtroFechaDesde.getTime()) : null;
@@ -448,505 +469,579 @@ public void setFiltroAsignado(String filtroAsignado) {
     public void setVentaSeleccionada(ventas ventaSeleccionada) {
         this.ventaSeleccionada = ventaSeleccionada;
     }
-    
+
     public double getPrecioRecetaSeleccionada() {
-    return precioRecetaSeleccionada;
-}
-
-public void setPrecioRecetaSeleccionada(double precioRecetaSeleccionada) {
-    this.precioRecetaSeleccionada = precioRecetaSeleccionada;
-}
-
-public double getSubtotalEmpanada() { return subtotalEmpanada; }
-public void setSubtotalEmpanada(double subtotalEmpanada) { this.subtotalEmpanada = subtotalEmpanada; }
-
-// Getter y setter para inyectar SessionUserBean
-public SessionUserBean getSessionUser() {
-    return sessionUser;
-}
-
-public void setSessionUser(SessionUserBean sessionUser) {
-    this.sessionUser = sessionUser;
-}
-
-public List<usuarios> getListaUsuariosVenta() {
-    if (listaUsuariosVenta == null) {
-        listaUsuariosVenta = new ArrayList<>();
+        return precioRecetaSeleccionada;
     }
-    return listaUsuariosVenta;
-}
 
-//  AJUSTE ESTEBAN
-   public void onClienteChange() {
-    try {
-        if (ventaNueva == null) {
-            System.out.println("onClienteChange: ventaNueva es null");
-            return;
-        }
-
-       
-        System.out.println("onClienteChange: idCliente = " + ventaNueva.getIdCliente());
-
-        if (ventaNueva.getIdCliente() > 0) {
-           
-            nuevoCliente = false;
-            clienteNuevo = new clientes(); 
-            System.out.println("onClienteChange: cliente seleccionado -> nuevoCliente forced false");
-        } else {
-          
-            clienteNuevo = new clientes();
-            System.out.println("onClienteChange: sin cliente seleccionado -> checkbox puede habilitarse");
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
+    public void setPrecioRecetaSeleccionada(double precioRecetaSeleccionada) {
+        this.precioRecetaSeleccionada = precioRecetaSeleccionada;
     }
-}
-  public String guardarVenta() {
-    try {
-        // 🔹 0️⃣ Registrar cliente nuevo si aplica
-        if (nuevoCliente) {
-            int idClienteGenerado = clienteDao.agregar(clienteNuevo);
-            if (idClienteGenerado > 0) {
-                listaClientes = clienteDao.listar();
-                ventaNueva.setIdCliente(idClienteGenerado);
-                ventaNueva.setNombreCliente(clienteNuevo.getNombre());
+
+    public double getSubtotalEmpanada() { return subtotalEmpanada; }
+    public void setSubtotalEmpanada(double subtotalEmpanada) { this.subtotalEmpanada = subtotalEmpanada; }
+
+    // Getter y setter para inyectar SessionUserBean
+    public SessionUserBean getSessionUser() {
+        return sessionUser;
+    }
+
+    public void setSessionUser(SessionUserBean sessionUser) {
+        this.sessionUser = sessionUser;
+    }
+
+    public List<usuarios> getListaUsuariosVenta() {
+        if (listaUsuariosVenta == null) {
+            listaUsuariosVenta = new ArrayList<>();
+        }
+        return listaUsuariosVenta;
+    }
+
+    //  AJUSTE ESTEBAN
+    public void onClienteChange() {
+        try {
+            if (ventaNueva == null) {
+                System.out.println("onClienteChange: ventaNueva es null");
+                return;
+            }
+
+            System.out.println("onClienteChange: idCliente = " + ventaNueva.getIdCliente());
+
+            if (ventaNueva.getIdCliente() > 0) {
+
+                nuevoCliente = false;
+                clienteNuevo = new clientes();
+                System.out.println("onClienteChange: cliente seleccionado -> nuevoCliente forced false");
             } else {
+
+                clienteNuevo = new clientes();
+                System.out.println("onClienteChange: sin cliente seleccionado -> checkbox puede habilitarse");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+
+    public String guardarVenta() {
+        try {
+
+            if (nuevoCliente) {
+                int idClienteGenerado = clienteDao.agregar(clienteNuevo);
+                if (idClienteGenerado > 0) {
+                    listaClientes = clienteDao.listar();
+                    ventaNueva.setIdCliente(idClienteGenerado);
+                    ventaNueva.setNombreCliente(clienteNuevo.getNombre());
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al registrar el nuevo cliente", null));
+                    return null;
+                }
+            }
+
+            
+
+            // Validate that an EP was assigned
+            if (ventaNueva.getIdAsignado() <= 0) {
                 FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al registrar el nuevo cliente", null));
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se encontró ningún empleado de producción disponible. Intenta más tarde."));
                 return null;
             }
-        }
 
-        // 🔹 1️⃣ Guardar venta
-        ventaNueva.setTipo("pedido"); // Mantener tipo pedido si lo deseas
-        int idGenerado = ventasDao.agregar(ventaNueva);
-        if (idGenerado <= 0) {
+            // 🔹 1️⃣ Guardar venta
+            ventaNueva.setTipo("pedido");
+            int idGenerado = ventasDao.agregar(ventaNueva);
+            if (idGenerado <= 0) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al registrar la venta", null));
+                return null;
+            }
+            ventaNueva.setIdVen(idGenerado);
+
+            // 🔹 2️⃣ Limpiar y refrescar
+            ventaNueva = new ventas();
+            ventaNueva.setFecha(new Date());
+            detallesVenta.clear();
+            nombreAsignadoAuto = null;
+            cargarVentas();
+
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al registrar la venta", null));
+                    new FacesMessage("Venta registrada correctamente"));
+
+            return "/views/Ventas/index.xhtml?faces-redirect=true";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al registrar venta: " + e.getMessage(), null));
             return null;
         }
-        ventaNueva.setIdVen(idGenerado);
-
-        // 🔹 2️⃣ Limpiar y refrescar
-        ventaNueva = new ventas();
-        ventaNueva.setFecha(new Date());
-        detallesVenta.clear(); // Si tienes detalles temporales, limpiarlos también
-        cargarVentas();
-
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage("Venta registrada correctamente"));
-
-        return "/views/Ventas/index.xhtml?faces-redirect=true";
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al registrar venta: " + e.getMessage(), null));
-        return null;
-    }
-}
-
-
-
- public String actualizarVenta() {
-    if (ventaSeleccionada == null) {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se ha seleccionado ninguna venta"));
-        return null;
     }
 
-    try {
-        // 🔹 Asignar usuario si no estaba definido
-        if (ventaSeleccionada.getIdAsignado() == 0 && sessionUser != null && sessionUser.isLogged()) {
-            ventaSeleccionada.setIdAsignado(sessionUser.getUsuario().getIdUsu());
-        }
-
-        // 🔹 Recalcular total según detalles actuales
-        recalcularTotalVenta();
-
-        // 🔹 Obtener total de pagos registrados
-        pagoDao pDao = new pagoDao();
-        double totalPagos = pDao.totalPagosVenta(ventaSeleccionada.getIdVen());
-
-        // 🔹 Actualizar estado según pagos
-        if (totalPagos <= 0) {
-            ventaSeleccionada.setEstado("Pago pendiente");
-        } else if (totalPagos < ventaSeleccionada.getTotal()) {
-            ventaSeleccionada.setEstado("Procesando");
-        } else {
-            ventaSeleccionada.setEstado("Pago completo");
-        }
-
-        // 🔹 Actualizar datos generales de la venta
-        boolean actualizado = ventasDao.actualizar(ventaSeleccionada);
-
-        if (!actualizado) {
+    public String actualizarVenta() {
+        if (ventaSeleccionada == null) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo actualizar la venta"));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se ha seleccionado ninguna venta"));
             return null;
         }
 
-        // 🔹 Refrescar lista de ventas
-        cargarVentas();
+        try {
 
-        // 🔹 Mensaje de éxito
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Venta actualizada correctamente"));
-
-        return "/views/Ventas/index.xhtml?faces-redirect=true";
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al actualizar venta: " + e.getMessage()));
-        return null;
-    }
-}
-
-
-
-
-    
-    
-    public void agregarDetalleEmpanada() {
-    recetas receta = recetasDao.obtenerPorId(recetaSeleccionada);
-
-    if (receta != null && cantidadEmpanada > 0) {
-
-        // 🔹 Detalle temporal (para la vista y el cálculo del total)
-        DetalleVenta det = new DetalleVenta();
-        det.setIdReceta(receta.getId_rec());
-        det.setNombreEmpanada(receta.getNombre());
-        det.setCantidad(cantidadEmpanada);
-        det.setPrecioUnitario(receta.getPrecio());
-        det.setSubtotal(receta.getPrecio() * cantidadEmpanada);
-        detallesVenta.add(det);
-
-        // 🔹 También crear el objeto venta_recetas (para trazabilidad en BD)
-        venta_recetas vr = new venta_recetas();
-        vr.setIdReceta(receta.getId_rec());
-        vr.setCantidad(cantidadEmpanada);
-        vr.setPrecio(receta.getPrecio()); // precio al momento de la venta
-        vr.setSubtotal(receta.getPrecio() * cantidadEmpanada); // subtotal histórico
-        vr.setNombreReceta(receta.getNombre());
-        // idVenta se asignará luego cuando se guarde la venta
-
-        // 🔹 Guardarlo en una lista temporal para registrar después
-        if (lstVentaRecetasTemp == null) {
-            lstVentaRecetasTemp = new ArrayList<>();
-        }
-        lstVentaRecetasTemp.add(vr);
-
-        // 🔹 Actualizar el total
-        double nuevoTotal = 0.0;
-        for (DetalleVenta d : detallesVenta) {
-            nuevoTotal += d.getSubtotal();
-        }
-        ventaNueva.setTotal(nuevoTotal);
-
-        // 🔹 Limpiar campos visuales
-        cantidadEmpanada = 0;
-        recetaSeleccionada = 0;
-        precioRecetaSeleccionada = 0.0;
-        subtotalEmpanada = 0.0;
-
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage("Empanada agregada al carrito"));
-    } else {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datos inválidos", "Selecciona receta y cantidad"));
-    }
-}
-
-
-
-public String registrarVenta() {
-    try {
-        // 🔹 Fallback al inicio: verificar si idUsuario no está seteado
-        if (ventaNueva.getIdUsuario() <= 0) {
+            boolean isAdmin = false;
             try {
-                // Intentar obtener desde el bean sessionUser si está disponible
                 if (sessionUser != null && sessionUser.isLogged() && sessionUser.getUsuario() != null) {
-                    ventaNueva.setIdUsuario(sessionUser.getUsuario().getIdUsu());
-                    ventaNueva.setNombreUsuario(sessionUser.getUsuario().getNombres() + " " + sessionUser.getUsuario().getApellidos());
-                    System.out.println("registrarVenta: idUsuario no estaba set, asignado desde sessionUser: " + ventaNueva.getIdUsuario());
-                } else {
-                    // Fallback adicional: intentar obtener el sessionUser manualmente desde FacesContext
-                    SessionUserBean su = FacesContext.getCurrentInstance()
-                            .getApplication()
-                            .evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{sessionUser}", SessionUserBean.class);
-
-                    if (su != null && su.isLogged() && su.getUsuario() != null) {
-                        usuarios u = su.getUsuario();
-                        ventaNueva.setIdUsuario(u.getIdUsu());
-                        ventaNueva.setNombreUsuario(u.getNombres() + " " + u.getApellidos());
-                        System.out.println("registrarVenta: idUsuario no estaba set, asignado desde fallback de FacesContext: " + ventaNueva.getIdUsuario());
-                    } else {
-                        System.err.println("registrarVenta: sessionUser no disponible como fallback");
-                    }
+                    isAdmin = "A".equals(sessionUser.getUsuario().getRol());
                 }
             } catch (Exception ex) {
-                System.err.println("registrarVenta: error al obtener sessionUser para fallback: " + ex.getMessage());
                 ex.printStackTrace();
             }
-        }
 
-        // 🔹 Validar que el usuario exista en BD
-        usuarios usuarioBD = usuariosDao.obtenerPorId(ventaNueva.getIdUsuario());
-        if (usuarioBD == null) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El usuario seleccionado no existe"));
-            return null;
-        }
+            if (!isAdmin) {
+                ventaSeleccionada.setIdUsuario(this.originalIdUsuario);
+                ventaSeleccionada.setIdCliente(this.originalIdCliente);
 
-        // 🔹 Validar empleado de producción asignado
-        if (ventaNueva.getIdAsignado() <= 0) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Debe asignar un empleado de producción (EP)"));
-            return null;
-        }
-
-        // 🔹 Validar que haya detalles (productos)
-        if (detallesVenta.isEmpty()) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Debe agregar al menos una empanada al carrito"));
-            return null;
-        }
-
-        // 🔹 Registrar cliente nuevo si aplica
-        if (nuevoCliente) {
-            int idClienteGenerado = clienteDao.agregar(clienteNuevo);
-            if (idClienteGenerado > 0) {
-                ventaNueva.setIdCliente(idClienteGenerado);
-                ventaNueva.setNombreCliente(clienteNuevo.getNombre());
-                listaClientes = clienteDao.listar(); // refresca lista
             } else {
+
+                usuarios usuarioBD = usuariosDao.obtenerPorId(ventaSeleccionada.getIdUsuario());
+                if (usuarioBD == null) {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El usuario seleccionado no existe"));
+                    return null;
+                }
+
+            }
+
+            // Recalculate total for ventaSeleccionada based on detallesVentaActual
+            recalcularTotalVentaSeleccionada();
+            boolean actualizado = ventasDao.actualizar(ventaSeleccionada);
+
+            if (!actualizado) {
                 FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo registrar el cliente nuevo"));
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo actualizar la venta"));
                 return null;
             }
-        } else if (ventaNueva.getIdCliente() <= 0) {
+
+            cargarVentas();
             FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Debe seleccionar un cliente existente o crear uno nuevo"));
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Venta actualizada correctamente"));
+
+            return "/views/Ventas/index.xhtml?faces-redirect=true";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al actualizar venta: " + e.getMessage()));
             return null;
         }
-
-        // 🔹 Preparar datos base
-        ventaNueva.setTipo("pedido");
-        ventaNueva.setEstado("Pago pendiente");
-        if (ventaNueva.getFecha() == null) {
-            ventaNueva.setFecha(new Date());
-        }
-        ventaNueva.setNombreUsuario(usuarioBD.getNombres() + " " + usuarioBD.getApellidos());
-        double total = detallesVenta.stream().mapToDouble(DetalleVenta::getSubtotal).sum();
-        ventaNueva.setTotal(total);
-
-        // 🔹 Guardar venta principal
-        int idVenta = ventasDao.agregar(ventaNueva);
-        if (idVenta <= 0) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo registrar la venta"));
-            return null;
-        }
-        ventaNueva.setIdVen(idVenta);
-
-        // 🔹 Guardar detalles (recetas y sus cantidades)
-        for (DetalleVenta det : detallesVenta) {
-            det.setIdVen(idVenta);
-            detalleVentaDao.agregar(det);
-
-            venta_recetas vr = new venta_recetas();
-            vr.setIdVenta(idVenta);
-            vr.setIdReceta(det.getIdReceta());
-            vr.setCantidad(det.getCantidad());
-            vr.setPrecio(det.getPrecioUnitario());
-            vr.setSubtotal(det.getSubtotal());
-            ventaRecetasDao.agregar(vr);
-        }
-
-        // 🔹 Limpieza y refresco
-        detallesVenta.clear();
-        ventaNueva = new ventas();
-        ventaNueva.setFecha(new Date());
-        clienteNuevo = new clientes();
-        nuevoCliente = false;
-        cargarVentas();
-
-        FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage("✅ Venta registrada correctamente (Pago pendiente)"));
-
-        return "/views/Ventas/index.xhtml?faces-redirect=true";
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al registrar venta: " + e.getMessage()));
-        return null;
     }
-}
 
+    public void agregarDetalleEmpanada() {
+        recetas receta = recetasDao.obtenerPorId(recetaSeleccionada);
 
+        if (receta != null && cantidadEmpanada > 0) {
 
+            // 🔹 Detalle temporal (para la vista y el cálculo del total)
+            DetalleVenta det = new DetalleVenta();
+            det.setIdReceta(receta.getId_rec());
+            det.setNombreEmpanada(receta.getNombre());
+            det.setCantidad(cantidadEmpanada);
+            det.setPrecioUnitario(receta.getPrecio());
+            det.setSubtotal(receta.getPrecio() * cantidadEmpanada);
+            detallesVenta.add(det);
 
+            // 🔹 También crear el objeto venta_recetas (para trazabilidad en BD)
+            venta_recetas vr = new venta_recetas();
+            vr.setIdReceta(receta.getId_rec());
+            vr.setCantidad(cantidadEmpanada);
+            vr.setPrecio(receta.getPrecio()); // precio al momento de la venta
+            vr.setSubtotal(receta.getPrecio() * cantidadEmpanada); // subtotal histórico
+            vr.setNombreReceta(receta.getNombre());
+            // idVenta se asignará luego cuando se guarde la venta
+
+            // 🔹 Guardarlo en una lista temporal para registrar después
+            if (lstVentaRecetasTemp == null) {
+                lstVentaRecetasTemp = new ArrayList<>();
+            }
+            lstVentaRecetasTemp.add(vr);
+
+            // 🔹 Actualizar el total
+            double nuevoTotal = 0.0;
+            for (DetalleVenta d : detallesVenta) {
+                nuevoTotal += d.getSubtotal();
+            }
+            ventaNueva.setTotal(nuevoTotal);
+
+            // 🔹 Limpiar campos visuales
+            cantidadEmpanada = 0;
+            recetaSeleccionada = 0;
+            precioRecetaSeleccionada = 0.0;
+            subtotalEmpanada = 0.0;
+
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage("Empanada agregada al carrito"));
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datos inválidos", "Selecciona receta y cantidad"));
+        }
+    }
+
+    public String registrarVenta() {
+        try {
+            // 🔹 Asegurar idUsuario (fallback)
+            if (ventaNueva.getIdUsuario() <= 0) {
+                try {
+                    if (sessionUser != null && sessionUser.isLogged() && sessionUser.getUsuario() != null) {
+                        ventaNueva.setIdUsuario(sessionUser.getUsuario().getIdUsu());
+                        ventaNueva.setNombreUsuario(sessionUser.getUsuario().getNombres() + " " + sessionUser.getUsuario().getApellidos());
+                    } else {
+                        SessionUserBean su = FacesContext.getCurrentInstance()
+                                .getApplication()
+                                .evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{sessionUser}", SessionUserBean.class);
+                        if (su != null && su.isLogged() && su.getUsuario() != null) {
+                            usuarios u = su.getUsuario();
+                            ventaNueva.setIdUsuario(u.getIdUsu());
+                            ventaNueva.setNombreUsuario(u.getNombres() + " " + u.getApellidos());
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            // -------------------------
+            //  Cliente nuevo (único bloque)
+            // -------------------------
+            if (nuevoCliente) {
+                // 1) Validación servidor
+                if (!validarClienteNuevo()) {
+                    return null; // mensajes ya agregados por validarClienteNuevo()
+                }
+
+                // 2) Comprobar existencia por teléfono o NIT para evitar unique constraint
+                clientes existente = null;
+                if (clienteNuevo.getTelefono() != null && !clienteNuevo.getTelefono().trim().isEmpty()) {
+                    existente = clienteDao.buscarPorTelefono(clienteNuevo.getTelefono());
+                }
+                if (existente == null && clienteNuevo.getNit() != null && !clienteNuevo.getNit().trim().isEmpty()) {
+                    existente = clienteDao.buscarPorNit(clienteNuevo.getNit());
+                }
+
+                if (existente != null) {
+                    // Reutilizar cliente existente
+                    ventaNueva.setIdCliente(existente.getId_Cliente());
+                    ventaNueva.setNombreCliente(existente.getNombre());
+                } else {
+                    // Insertar nuevo cliente (clientesDao.agregar devuelve id o -1 en fallo)
+                    int idClienteGenerado = clienteDao.agregar(clienteNuevo);
+                    if (idClienteGenerado > 0) {
+                        ventaNueva.setIdCliente(idClienteGenerado);
+                        ventaNueva.setNombreCliente(clienteNuevo.getNombre());
+                        listaClientes = clienteDao.listar(); // refrescar lista
+                    } else {
+                        FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo registrar el cliente nuevo"));
+                        return null;
+                    }
+                }
+            }
+
+            // Validaciones generales
+            usuarios usuarioBD = usuariosDao.obtenerPorId(ventaNueva.getIdUsuario());
+            if (usuarioBD == null) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El usuario seleccionado no existe"));
+                return null;
+            }
+
+      
+
+            if (ventaNueva.getIdAsignado() <= 0) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se encontró ningún empleado de producción disponible. Intenta más tarde."));
+                return null;
+            }
+
+            if (detallesVenta == null || detallesVenta.isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Debe agregar al menos una empanada al carrito"));
+                return null;
+            }
+
+            if (!nuevoCliente && ventaNueva.getIdCliente() <= 0) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Debe seleccionar un cliente existente o crear uno nuevo"));
+                return null;
+            }
+
+            // -------------------------
+            // Preparar y guardar venta
+            // -------------------------
+            ventaNueva.setTipo("pedido");
+            ventaNueva.setEstado("Pago pendiente");
+            if (ventaNueva.getFecha() == null) ventaNueva.setFecha(new Date());
+            ventaNueva.setNombreUsuario(usuarioBD.getNombres() + " " + usuarioBD.getApellidos());
+            double total = detallesVenta.stream().mapToDouble(DetalleVenta::getSubtotal).sum();
+            ventaNueva.setTotal(total);
+
+            int idVenta = ventasDao.agregar(ventaNueva);
+            if (idVenta <= 0) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo registrar la venta"));
+                return null;
+            }
+            ventaNueva.setIdVen(idVenta);
+
+            // Guardar detalles
+            for (DetalleVenta det : detallesVenta) {
+                det.setIdVen(idVenta);
+                detalleVentaDao.agregar(det);
+
+                venta_recetas vr = new venta_recetas();
+                vr.setIdVenta(idVenta);
+                vr.setIdReceta(det.getIdReceta());
+                vr.setCantidad(det.getCantidad());
+                vr.setPrecio(det.getPrecioUnitario());
+                vr.setSubtotal(det.getSubtotal());
+                ventaRecetasDao.agregar(vr);
+            }
+
+            // Limpieza
+            detallesVenta.clear();
+            ventaNueva = new ventas();
+            ventaNueva.setFecha(new Date());
+            clienteNuevo = new clientes();
+            nuevoCliente = false;
+            nombreAsignadoAuto = null;
+            cargarVentas();
+
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage("✅ Venta registrada correctamente (Pago pendiente)"));
+
+            return "/views/Ventas/index.xhtml?faces-redirect=true";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al registrar venta: " + e.getMessage()));
+            return null;
+        }
+    }
 
     public void verDetalleVenta(int idVenta) {
         detallesVentaActual = ventasDao.obtenerDetallesPorVenta(idVenta);
     }
 
-   public void eliminarVenta(int id) {
-    if (ventasDao.eliminar(id)) {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage("Venta eliminada correctamente"));
-        // 🔹 Refrescar lista de ventas
-        cargarVentas();
-    } else {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al eliminar la venta", null));
-    }
-}
-
-
-    public String prepararEdicion(ventas v) {
-        this.ventaSeleccionada = v;
-        return "/views/Ventas/editarVentas.xhtml?faces-redirect=true";
+    public void eliminarVenta(int id) {
+        if (ventasDao.eliminar(id)) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage("Venta eliminada correctamente"));
+            // 🔹 Refrescar lista de ventas
+            cargarVentas();
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al eliminar la venta", null));
+        }
     }
 
     public String volverALaLista() {
         return "/views/Ventas/index.xhtml?faces-redirect=true";
     }
 
-// Eliminar detalle
+    // ---  validar cliente nuevo ---
+    private boolean validarClienteNuevo() {
+        if (clienteNuevo == null) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No hay datos del cliente."));
+            return false;
+        }
 
-public void eliminarDetalle(DetalleVenta det) {
-    detallesVenta.remove(det);
+        boolean ok = true;
+        FacesContext ctx = FacesContext.getCurrentInstance();
 
-    // 🔹 Recalcular el total, incluso si la lista quedó vacía
-    recalcularTotalVenta();
+        // Nombres
+        String nombre = clienteNuevo.getNombre();
+        if (nombre == null || nombre.trim().isEmpty()) {
+            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre requerido", "Ingrese el nombre del cliente."));
+            ok = false;
+        } else if (!nombre.matches(NOMBRES_REGEX)) {
+            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre inválido", "El nombre contiene caracteres no permitidos."));
+            ok = false;
+        }
 
-    // 🔹 Crear nueva referencia para que JSF detecte el cambio
-    detallesVenta = new ArrayList<>(detallesVenta);
-
-    FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage("Receta eliminada del carrito"));
-}
-
-    
-public void inicializarNuevaVenta() {
- 
-    if (!FacesContext.getCurrentInstance().isPostback()) {
-        ventaNueva = new ventas();
-        detallesVenta = new ArrayList<>();
-        recetaSeleccionada = 0;
-        cantidadEmpanada = 0;
-        precioRecetaSeleccionada = 0.0;
-        subtotalEmpanada = 0.0;
-        nuevoCliente = false;
-        clienteNuevo = new clientes();
-        cargarRecetas(); 
-
-   
-        try {
-            SessionUserBean su = FacesContext.getCurrentInstance()
-                    .getApplication()
-                    .evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{sessionUser}", SessionUserBean.class);
-
-            if (su != null && su.isLogged() && su.getUsuario() != null) {
-                usuarios u = su.getUsuario();
-                ventaNueva.setIdUsuario(u.getIdUsu()); // asigna id del usuario en sesión
-                ventaNueva.setNombreUsuario(u.getNombres() + " " + u.getApellidos());
-                System.out.println("inicializarNuevaVenta: usuario en sesión asignado como registrador: " + u.getIdUsu());
-            } else {
-                System.err.println("inicializarNuevaVenta: no se encontró sessionUser o no está logueado");
+        // Teléfono
+        String telefono = clienteNuevo.getTelefono();
+        if (telefono != null && !telefono.trim().isEmpty()) {
+            if (!telefono.matches(PHONE_REGEX)) {
+                ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Teléfono inválido", "El teléfono debe contener solo dígitos (7-15)."));
+                ok = false;
             }
-        } catch (Exception e) {
-            System.err.println("inicializarNuevaVenta: error al obtener sessionUser via EL: " + e.getMessage());
-            e.printStackTrace();
+        } else {
+
+        }
+
+        // Correo
+        String correo = clienteNuevo.getCorreo();
+        if (correo == null || correo.trim().isEmpty()) {
+            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Correo requerido", "Ingrese el correo del cliente."));
+            ok = false;
+        } else if (!correo.matches(EMAIL_REGEX)) {
+            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Correo inválido", "El correo no tiene un formato válido."));
+            ok = false;
+        }
+
+        // NIT
+        String nit = clienteNuevo.getNit();
+        if (nit == null || nit.trim().isEmpty()) {
+            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "NIT requerido", "Ingrese el NIT del cliente."));
+            ok = false;
+        } else if (!nit.matches(NIT_REGEX)) {
+            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "NIT inválido", "El NIT contiene caracteres no permitidos."));
+            ok = false;
+        }
+
+        return ok;
+    }
+
+    // Eliminar detalle
+    public void eliminarDetalle(DetalleVenta det) {
+        detallesVenta.remove(det);
+
+        // 🔹 Recalcular el total, incluso si la lista quedó vacía
+        recalcularTotalVenta();
+
+        // 🔹 Crear nueva referencia para que JSF detecte el cambio
+        detallesVenta = new ArrayList<>(detallesVenta);
+
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage("Receta eliminada del carrito"));
+    }
+
+    public void inicializarNuevaVenta() {
+
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            ventaNueva = new ventas();
+            detallesVenta = new ArrayList<>();
+            recetaSeleccionada = 0;
+            cantidadEmpanada = 0;
+            precioRecetaSeleccionada = 0.0;
+            subtotalEmpanada = 0.0;
+            nuevoCliente = false;
+            clienteNuevo = new clientes();
+            cargarRecetas();
+
+            // Auto-assign EP proposal for the new form (so UI can display nombreAsignadoAuto if desired)
+            try {
+         
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                SessionUserBean su = FacesContext.getCurrentInstance()
+                        .getApplication()
+                        .evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{sessionUser}", SessionUserBean.class);
+
+                if (su != null && su.isLogged() && su.getUsuario() != null) {
+                    usuarios u = su.getUsuario();
+                    ventaNueva.setIdUsuario(u.getIdUsu()); // asigna id del usuario en sesión
+                    ventaNueva.setNombreUsuario(u.getNombres() + " " + u.getApellidos());
+                    System.out.println("inicializarNuevaVenta: usuario en sesión asignado como registrador: " + u.getIdUsu());
+                } else {
+                    System.err.println("inicializarNuevaVenta: no se encontró sessionUser o no está logueado");
+                }
+            } catch (Exception e) {
+                System.err.println("inicializarNuevaVenta: error al obtener sessionUser via EL: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
-}
 
-
-
-public void actualizarPrecioReceta() {
-    if (recetaSeleccionada > 0) {
-        recetas receta = recetasDao.obtenerPorId(recetaSeleccionada);
-        if (receta != null) {
-            this.precioRecetaSeleccionada = receta.getPrecio();
+    public void actualizarPrecioReceta() {
+        if (recetaSeleccionada > 0) {
+            recetas receta = recetasDao.obtenerPorId(recetaSeleccionada);
+            if (receta != null) {
+                this.precioRecetaSeleccionada = receta.getPrecio();
+            } else {
+                this.precioRecetaSeleccionada = 0.0;
+            }
         } else {
             this.precioRecetaSeleccionada = 0.0;
         }
-    } else {
-        this.precioRecetaSeleccionada = 0.0;
+
+        // 🔹 Recalcula el subtotal cada vez que se actualiza el precio
+        calcularSubtotalEmpanada();
     }
 
-    // 🔹 Recalcula el subtotal cada vez que se actualiza el precio
-    calcularSubtotalEmpanada();
-}
-
-
-public void calcularSubtotalEmpanada() {
-    this.subtotalEmpanada = this.precioRecetaSeleccionada * this.cantidadEmpanada;
-}
-
-
-public void recalcularTotalVenta() {
-    double total = 0.0;
-    for (DetalleVenta det : detallesVenta) {
-        total += det.getSubtotal();
+    public void calcularSubtotalEmpanada() {
+        this.subtotalEmpanada = this.precioRecetaSeleccionada * this.cantidadEmpanada;
     }
-    ventaNueva.setTotal(total); // 🔹 Si la lista está vacía, total será 0
-}
 
-
-
-public List<usuarios> getListaUsuariosEP() {
-    if (listaUsuariosEP == null) {
-        listaUsuariosEP = listaUsuarios.stream()
-                                       .filter(u -> "EP".equals(u.getRol()))
-                                       .collect(Collectors.toList());
-    }
-    return listaUsuariosEP;
-}
-
-// Método que se llama desde <f:event type="preRenderView">
-
-
-public List<usuarios> listarUsuariosVenta() {
-    List<usuarios> lista = new ArrayList<>();
-    String sql = "SELECT * FROM usuarios WHERE (rol = 'EV' OR rol = 'A') AND estado = 'A'";
-
-    try (Connection cn = ConDB.conectar();
-         PreparedStatement ps = cn.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-
-        while (rs.next()) {
-            usuarios u = new usuarios();
-            u.setIdUsu(rs.getInt("id_usu"));
-            u.setNombres(rs.getString("nombres"));
-            u.setApellidos(rs.getString("apellidos"));
-            u.setRol(rs.getString("rol"));
-            lista.add(u);
+    public void recalcularTotalVenta() {
+        double total = 0.0;
+        for (DetalleVenta det : detallesVenta) {
+            total += det.getSubtotal();
         }
-
-        System.out.println("✅ Usuarios cargados para venta: " + lista.size());
-
-    } catch (SQLException e) {
-        System.out.println("❌ Error en listarUsuariosVenta(): " + e.getMessage());
+        ventaNueva.setTotal(total); // 🔹 Si la lista está vacía, total será 0
     }
 
-    return lista;
-}
-
-public String getNombreAsignado(ventas venta) {
-    if (venta.getIdAsignado() > 0) { // 0 significa que no está asignado
-        usuarios usuario = usuariosDao.obtenerPorId(venta.getIdAsignado());
-        if (usuario != null) {
-            return usuario.getNombres() + " " + usuario.getApellidos();
+    // Recalcula total de ventaSeleccionada usando detallesVentaActual (usado en editar)
+    private void recalcularTotalVentaSeleccionada() {
+        double total = 0.0;
+        if (detallesVentaActual != null) {
+            for (DetalleVenta det : detallesVentaActual) {
+                total += det.getSubtotal();
+            }
+        }
+        if (ventaSeleccionada != null) {
+            ventaSeleccionada.setTotal(total);
         }
     }
-    return "-"; // si no está asignado
-}
 
+    public List<usuarios> getListaUsuariosEP() {
+        if (listaUsuariosEP == null) {
+            listaUsuariosEP = listaUsuarios.stream()
+                                           .filter(u -> "EP".equals(u.getRol()))
+                                           .collect(Collectors.toList());
+        }
+        return listaUsuariosEP;
+    }
 
+    // Método que se llama desde <f:event type="preRenderView">
+    public List<usuarios> listarUsuariosVenta() {
+        List<usuarios> lista = new ArrayList<>();
+        String sql = "SELECT * FROM usuarios WHERE (rol = 'EV' OR rol = 'A') AND estado = 'A'";
+
+        try (Connection cn = ConDB.conectar();
+             PreparedStatement ps = cn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                usuarios u = new usuarios();
+                u.setIdUsu(rs.getInt("id_usu"));
+                u.setNombres(rs.getString("nombres"));
+                u.setApellidos(rs.getString("apellidos"));
+                u.setRol(rs.getString("rol"));
+                lista.add(u);
+            }
+
+            System.out.println("✅ Usuarios cargados para venta: " + lista.size());
+
+        } catch (SQLException e) {
+            System.out.println("❌ Error en listarUsuariosVenta(): " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    public String getNombreAsignado(ventas venta) {
+        if (venta.getIdAsignado() > 0) { // 0 significa que no está asignado
+            usuarios usuario = usuariosDao.obtenerPorId(venta.getIdAsignado());
+            if (usuario != null) {
+                return usuario.getNombres() + " " + usuario.getApellidos();
+            }
+        }
+        return "-"; // si no está asignado
+    }
 
 }
