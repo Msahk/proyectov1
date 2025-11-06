@@ -57,8 +57,7 @@ import java.util.List;
 import modelo.usuarios;
 import dao.pagoDao; // Asegúrate de importar tu DAO
 import modelo.pago;  // Si necesitas usar la clase pago
- // ajustar si tu ConDB está en otro paquete
-// si lo usas en exportarPDF
+ // si lo usas en exportarPDF
 
 @Named("ventasBean")
 @SessionScoped
@@ -114,6 +113,12 @@ public class ventasBean implements Serializable {
     // Auto-assignment display field
     private String nombreAsignadoAuto;
 
+    // Campos para proteger la edición: valores originales guardados al preparar edición
+    private String originalTipo;
+    private Date originalFecha;
+    private String originalEstado;
+    private Integer originalIdAsignado;
+
     private static final String EMAIL_REGEX = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
     private static final String PHONE_REGEX = "^\\d{7,15}$";
     private static final String NIT_REGEX = "^[0-9A-Za-z\\-]{3,20}$";
@@ -125,6 +130,15 @@ public class ventasBean implements Serializable {
     public int getOriginalIdCliente() { return originalIdCliente; }
     public void setOriginalIdCliente(int originalIdCliente) { this.originalIdCliente = originalIdCliente; }
 
+    public String getOriginalTipo() { return originalTipo; }
+    public void setOriginalTipo(String originalTipo) { this.originalTipo = originalTipo; }
+    public Date getOriginalFecha() { return originalFecha; }
+    public void setOriginalFecha(Date originalFecha) { this.originalFecha = originalFecha; }
+    public String getOriginalEstado() { return originalEstado; }
+    public void setOriginalEstado(String originalEstado) { this.originalEstado = originalEstado; }
+    public Integer getOriginalIdAsignado() { return originalIdAsignado; }
+    public void setOriginalIdAsignado(Integer originalIdAsignado) { this.originalIdAsignado = originalIdAsignado; }
+
     public Part getExcelVentas() {
         return excelVentas;
     }
@@ -132,8 +146,6 @@ public class ventasBean implements Serializable {
     public void setExcelVentas(Part excelVentas) {
         this.excelVentas = excelVentas;
     }
-    
-
 
     public String getNombreAsignadoAuto() { return nombreAsignadoAuto; }
     public void setNombreAsignadoAuto(String nombreAsignadoAuto) { this.nombreAsignadoAuto = nombreAsignadoAuto; }
@@ -352,11 +364,49 @@ public class ventasBean implements Serializable {
         this.filtroAsignado = filtroAsignado;
     }
 
+    // prepararEdicion: guardamos los valores originales para protegerlos al actualizar
     public String prepararEdicion(ventas v) {
         this.ventaSeleccionada = v;
 
-        this.originalIdUsuario = v.getIdUsuario();
-        this.originalIdCliente = v.getIdCliente();
+        if (v != null) {
+            try {
+                this.originalIdUsuario = v.getIdUsuario();
+            } catch (Exception ex) {
+                this.originalIdUsuario = 0;
+            }
+            try {
+                this.originalIdCliente = v.getIdCliente();
+            } catch (Exception ex) {
+                this.originalIdCliente = 0;
+            }
+
+            try {
+                this.originalTipo = v.getTipo();
+            } catch (Exception ex) {
+                this.originalTipo = null;
+            }
+
+            try {
+                this.originalFecha = v.getFecha();
+            } catch (Exception ex) {
+                this.originalFecha = null;
+            }
+
+            try {
+                this.originalEstado = v.getEstado();
+            } catch (Exception ex) {
+                this.originalEstado = null;
+            }
+
+            try {
+                // idAsignado puede ser null in some models; use Integer
+                Integer idAsig = v.getIdAsignado();
+                this.originalIdAsignado = idAsig != null ? idAsig : null;
+            } catch (Exception ex) {
+                this.originalIdAsignado = null;
+            }
+        }
+
         return "/views/Ventas/editarVentas.xhtml?faces-redirect=true";
     }
 
@@ -522,8 +572,6 @@ public class ventasBean implements Serializable {
         }
     }
 
-    
-
     public String guardarVenta() {
         try {
 
@@ -539,8 +587,6 @@ public class ventasBean implements Serializable {
                     return null;
                 }
             }
-
-            
 
             // Validate that an EP was assigned
             if (ventaNueva.getIdAsignado() <= 0) {
@@ -579,62 +625,57 @@ public class ventasBean implements Serializable {
         }
     }
 
-    public String actualizarVenta() {
-        if (ventaSeleccionada == null) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se ha seleccionado ninguna venta"));
-            return null;
-        }
-
-        try {
-
-            boolean isAdmin = false;
-            try {
-                if (sessionUser != null && sessionUser.isLogged() && sessionUser.getUsuario() != null) {
-                    isAdmin = "A".equals(sessionUser.getUsuario().getRol());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            if (!isAdmin) {
-                ventaSeleccionada.setIdUsuario(this.originalIdUsuario);
-                ventaSeleccionada.setIdCliente(this.originalIdCliente);
-
-            } else {
-
-                usuarios usuarioBD = usuariosDao.obtenerPorId(ventaSeleccionada.getIdUsuario());
-                if (usuarioBD == null) {
-                    FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El usuario seleccionado no existe"));
-                    return null;
-                }
-
-            }
-
-            // Recalculate total for ventaSeleccionada based on detallesVentaActual
-            recalcularTotalVentaSeleccionada();
-            boolean actualizado = ventasDao.actualizar(ventaSeleccionada);
-
-            if (!actualizado) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo actualizar la venta"));
-                return null;
-            }
-
-            cargarVentas();
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Venta actualizada correctamente"));
-
-            return "/views/Ventas/index.xhtml?faces-redirect=true";
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al actualizar venta: " + e.getMessage()));
-            return null;
-        }
+   public String actualizarVenta() {
+    if (ventaSeleccionada == null) {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se ha seleccionado ninguna venta"));
+        return null;
     }
+
+    try {
+        // Restauramos los valores originales (defensivo) por si alguien manipuló la petición.
+        // Estos campos no deben cambiar desde la UI: idUsuario, idCliente, tipo, fecha, estado, idAsignado.
+        // Si preparaste original values en prepararEdicion, úsalos; si no, intentamos no cambiarlos.
+        try { ventaSeleccionada.setIdUsuario(this.originalIdUsuario); } catch (Exception ignored) {}
+        try { ventaSeleccionada.setIdCliente(this.originalIdCliente); } catch (Exception ignored) {}
+        try { if (this.originalTipo != null) ventaSeleccionada.setTipo(this.originalTipo); } catch (Exception ignored) {}
+        try { if (this.originalFecha != null) ventaSeleccionada.setFecha(this.originalFecha); } catch (Exception ignored) {}
+        try { if (this.originalEstado != null) ventaSeleccionada.setEstado(this.originalEstado); } catch (Exception ignored) {}
+        try { if (this.originalIdAsignado != null) ventaSeleccionada.setIdAsignado(this.originalIdAsignado); } catch (Exception ignored) {}
+
+        // ÚNICOS campos permitidos a cambiar: observaciones
+        String nuevasObs = ventaSeleccionada.getObservaciones();
+
+        // (Opcional) Validación de longitud / contenido de observaciones
+        if (nuevasObs != null && nuevasObs.length() > 2000) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Las observaciones son demasiado largas (máx. 2000 caracteres)"));
+            return null;
+        }
+
+        // Llamamos al DAO que actualiza SOLO observaciones
+        boolean actualizado = ventasDao.actualizarObservaciones(ventaSeleccionada.getIdVen(), nuevasObs);
+
+        if (!actualizado) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo actualizar las observaciones"));
+            return null;
+        }
+
+        // Refrescar lista de ventas
+        cargarVentas();
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Observaciones actualizadas correctamente"));
+
+        return "/views/Ventas/index.xhtml?faces-redirect=true";
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al actualizar venta: " + e.getMessage()));
+        return null;
+    }
+}
 
     public void agregarDetalleEmpanada() {
         recetas receta = recetasDao.obtenerPorId(recetaSeleccionada);
@@ -729,7 +770,7 @@ public class ventasBean implements Serializable {
 
                 if (existente != null) {
                     // Reutilizar cliente existente
-                    ventaNueva.setIdCliente(existente.getId_Cliente());
+                    ventaNueva.setIdCliente(existente.getIdCliente());
                     ventaNueva.setNombreCliente(existente.getNombre());
                 } else {
                     // Insertar nuevo cliente (clientesDao.agregar devuelve id o -1 en fallo)
@@ -753,8 +794,6 @@ public class ventasBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El usuario seleccionado no existe"));
                 return null;
             }
-
-      
 
             if (ventaNueva.getIdAsignado() <= 0) {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -932,7 +971,7 @@ public class ventasBean implements Serializable {
 
             // Auto-assign EP proposal for the new form (so UI can display nombreAsignadoAuto if desired)
             try {
-         
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

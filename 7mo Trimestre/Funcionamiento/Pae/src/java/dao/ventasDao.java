@@ -17,6 +17,25 @@ public class ventasDao {
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
     }
+public boolean actualizarObservaciones(int idVen, String observaciones) {
+    String sql = "UPDATE ventas SET observaciones = ? WHERE id_ven = ?";
+    try (Connection con = getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        if (observaciones != null) {
+            ps.setString(1, observaciones);
+        } else {
+            ps.setNull(1, java.sql.Types.LONGVARCHAR);
+        }
+        ps.setInt(2, idVen);
+
+        int rows = ps.executeUpdate();
+        return rows > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 
    public List<ventas> listarProcesando() {
     List<ventas> lista = new ArrayList<>();

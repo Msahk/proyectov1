@@ -62,4 +62,8 @@ public class clientes implements Serializable {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
+
+    public int getIdCliente() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
