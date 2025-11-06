@@ -476,7 +476,31 @@ public List<usuarios> getListaUsuariosVenta() {
     return listaUsuariosVenta;
 }
 
+//  AJUSTE ESTEBAN
+   public void onClienteChange() {
+    try {
+        if (ventaNueva == null) {
+            System.out.println("onClienteChange: ventaNueva es null");
+            return;
+        }
 
+       
+        System.out.println("onClienteChange: idCliente = " + ventaNueva.getIdCliente());
+
+        if (ventaNueva.getIdCliente() > 0) {
+           
+            nuevoCliente = false;
+            clienteNuevo = new clientes(); 
+            System.out.println("onClienteChange: cliente seleccionado -> nuevoCliente forced false");
+        } else {
+          
+            clienteNuevo = new clientes();
+            System.out.println("onClienteChange: sin cliente seleccionado -> checkbox puede habilitarse");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
   public String guardarVenta() {
     try {
         // 🔹 0️⃣ Registrar cliente nuevo si aplica
@@ -636,15 +660,38 @@ public List<usuarios> getListaUsuariosVenta() {
 
 
 
-  public String registrarVenta() {
+public String registrarVenta() {
     try {
-        // 🔹 Validar usuario de venta (EV o A)
+        // 🔹 Fallback al inicio: verificar si idUsuario no está seteado
         if (ventaNueva.getIdUsuario() <= 0) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Debe seleccionar un usuario de venta (EV o A)"));
-            return null;
+            try {
+                // Intentar obtener desde el bean sessionUser si está disponible
+                if (sessionUser != null && sessionUser.isLogged() && sessionUser.getUsuario() != null) {
+                    ventaNueva.setIdUsuario(sessionUser.getUsuario().getIdUsu());
+                    ventaNueva.setNombreUsuario(sessionUser.getUsuario().getNombres() + " " + sessionUser.getUsuario().getApellidos());
+                    System.out.println("registrarVenta: idUsuario no estaba set, asignado desde sessionUser: " + ventaNueva.getIdUsuario());
+                } else {
+                    // Fallback adicional: intentar obtener el sessionUser manualmente desde FacesContext
+                    SessionUserBean su = FacesContext.getCurrentInstance()
+                            .getApplication()
+                            .evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{sessionUser}", SessionUserBean.class);
+
+                    if (su != null && su.isLogged() && su.getUsuario() != null) {
+                        usuarios u = su.getUsuario();
+                        ventaNueva.setIdUsuario(u.getIdUsu());
+                        ventaNueva.setNombreUsuario(u.getNombres() + " " + u.getApellidos());
+                        System.out.println("registrarVenta: idUsuario no estaba set, asignado desde fallback de FacesContext: " + ventaNueva.getIdUsuario());
+                    } else {
+                        System.err.println("registrarVenta: sessionUser no disponible como fallback");
+                    }
+                }
+            } catch (Exception ex) {
+                System.err.println("registrarVenta: error al obtener sessionUser para fallback: " + ex.getMessage());
+                ex.printStackTrace();
+            }
         }
 
+        // 🔹 Validar que el usuario exista en BD
         usuarios usuarioBD = usuariosDao.obtenerPorId(ventaNueva.getIdUsuario());
         if (usuarioBD == null) {
             FacesContext.getCurrentInstance().addMessage(null,
@@ -785,7 +832,7 @@ public void eliminarDetalle(DetalleVenta det) {
 
     
 public void inicializarNuevaVenta() {
-    // Solo limpiar si es una nueva visita, no en postbacks
+ 
     if (!FacesContext.getCurrentInstance().isPostback()) {
         ventaNueva = new ventas();
         detallesVenta = new ArrayList<>();
@@ -794,17 +841,26 @@ public void inicializarNuevaVenta() {
         precioRecetaSeleccionada = 0.0;
         subtotalEmpanada = 0.0;
         nuevoCliente = false;
-        clienteNuevo = new clientes(); // ✅ clase correcta
-        cargarRecetas(); // recarga lista actualizada
+        clienteNuevo = new clientes();
+        cargarRecetas(); 
 
-        // 🔹 Asignar usuario de sesión
-        if (sessionUser != null && sessionUser.isLogged()) {
-            usuarios u = sessionUser.getUsuario();
-            ventaNueva.setIdUsuario(u.getIdUsu());
-            ventaNueva.setNombreUsuario(u.getNombres() + " " + u.getApellidos());
-            System.out.println("Usuario en sesión inicializado: " + u.getIdUsu());
-        } else {
-            System.err.println("No hay usuario en sesión al inicializar nueva venta");
+   
+        try {
+            SessionUserBean su = FacesContext.getCurrentInstance()
+                    .getApplication()
+                    .evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{sessionUser}", SessionUserBean.class);
+
+            if (su != null && su.isLogged() && su.getUsuario() != null) {
+                usuarios u = su.getUsuario();
+                ventaNueva.setIdUsuario(u.getIdUsu()); // asigna id del usuario en sesión
+                ventaNueva.setNombreUsuario(u.getNombres() + " " + u.getApellidos());
+                System.out.println("inicializarNuevaVenta: usuario en sesión asignado como registrador: " + u.getIdUsu());
+            } else {
+                System.err.println("inicializarNuevaVenta: no se encontró sessionUser o no está logueado");
+            }
+        } catch (Exception e) {
+            System.err.println("inicializarNuevaVenta: error al obtener sessionUser via EL: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

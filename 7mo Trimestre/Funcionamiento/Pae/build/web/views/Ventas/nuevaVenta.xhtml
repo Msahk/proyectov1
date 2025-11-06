@@ -26,42 +26,20 @@
 
                 <h:messages globalOnly="true" layout="table" styleClass="alert alert-warning"/>
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <h:outputLabel for="cliente" value="Cliente existente:" styleClass="form-label" />
-        <p:selectOneMenu id="cliente"
-                         value="#{ventasBean.ventaNueva.idCliente}"
-                         styleClass="form-select"
-                         required="#{!ventasBean.nuevoCliente}"
-                         requiredMessage="Seleccione un cliente existente.">
-            <f:selectItem itemLabel="-- Selecciona --" itemValue="#{null}" noSelectionOption="true"/>
-            <f:selectItems value="#{ventasBean.listaClientes}" var="cliente"
-                           itemValue="#{cliente.id_Cliente}" itemLabel="#{cliente.nombre}" />
-        </p:selectOneMenu>
-        <h:message for="cliente" styleClass="text-danger" />
-    </div>
-</div>
 
 
                 <!-- USUARIO QUE REGISTRA -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <h:outputLabel for="usuarioVenta" value="Usuario que registra la venta:" styleClass="form-label" />
-                        <p:selectOneMenu id="usuarioVenta" value="#{ventasBean.ventaNueva.idUsuario}" 
-                                         styleClass="form-select" required="true" requiredMessage="Seleccione un usuario.">
-                            <f:selectItem itemLabel="-- Selecciona --" itemValue="#{null}" noSelectionOption="true"/>
-                            <f:selectItems value="#{ventasBean.listaUsuariosVenta}" var="u"
-                                           itemLabel="#{u.nombres} #{u.apellidos} (#{u.rol})"
-                                           itemValue="#{u.idUsu}" />
-                        </p:selectOneMenu>
-                        <h:message for="usuarioVenta" styleClass="text-danger" />
-                    </div>
-                    
-                    
-                </div>
+               <div class="row mb-3">
+    <div class="col-md-6">
+        <h:outputLabel for="usuarioVentaReadOnly" value="Usuario que registra la venta:" styleClass="form-label" />
+        <h:outputText id="usuarioVentaReadOnly" value="#{sessionUser.nombres} #{sessionUser.apellidos}" styleClass="form-control-plaintext" />
+        <h:inputHidden id="usuarioVenta" value="#{ventasBean.ventaNueva.idUsuario}" />
+        <h:message for="usuarioVenta" styleClass="text-danger" />
+    </div>
+</div>
 
                 
-                <p>${sessionUser.nombres} ${sessionUser.apellidos}  ${sessionUser.rol} #{sessionUser.idUsu}</p>
+               
                 <!-- USUARIO ASIGNADO -->
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -77,45 +55,66 @@
                     </div>
                 </div>
 
-                <!-- CLIENTE NUEVO -->
-                <div class="row mb-3">
-                    <div class="col-md-6 d-flex align-items-center">
-                        <h:outputLabel value="¿Registrar cliente nuevo?" styleClass="form-label me-2" />
-                        <p:selectBooleanCheckbox value="#{ventasBean.nuevoCliente}">
-    <p:ajax update="nuevoClientePanel cliente" />
-</p:selectBooleanCheckbox>
-                    </div>
-                </div>
+                <!-- ACA ESTA EL AJUSTE DE LAS VENTAS QUE HICE YO ESTEBAN -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <h:outputLabel for="clienteSelect" value="Cliente existente:" styleClass="form-label" />
+        <p:selectOneMenu id="clienteSelect"
+                 value="#{ventasBean.ventaNueva.idCliente}"
+                 styleClass="form-select"
+                 filter="true"
+                 filterMatchMode="contains"
+                 required="#{!ventasBean.nuevoCliente}"
+                 requiredMessage="Seleccione un cliente existente.">
+    <f:selectItem itemLabel="-- Selecciona --" itemValue="#{null}" noSelectionOption="true"/>
+    <f:selectItems value="#{ventasBean.listaClientes}" var="cliente"
+                   itemValue="#{cliente.id_Cliente}" itemLabel="#{cliente.nombre}" />
+    <p:ajax event="change" process="@this"
+            listener="#{ventasBean.onClienteChange}"
+            update=":formVentaCompleto:nuevoClientePanel :formVentaCompleto:chkNuevoCliente :formVentaCompleto:clienteSelect" />
+</p:selectOneMenu>
+        <h:message for="clienteSelect" styleClass="text-danger" />
+    </div>
+</div>
 
-                <h:panelGroup id="nuevoClientePanel">
-                    <h:panelGroup rendered="#{ventasBean.nuevoCliente}">
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <h:outputLabel value="Nombre:" styleClass="form-label" />
-                                <p:inputText value="#{ventasBean.clienteNuevo.nombre}" 
-                                             styleClass="form-control" required="true" />
-                            </div>
-                            <div class="col-md-4">
-                                <h:outputLabel value="Teléfono:" styleClass="form-label" />
-                                <p:inputText value="#{ventasBean.clienteNuevo.telefono}" 
-                                             styleClass="form-control" />
-                            </div>
-                            <div class="col-md-4">
-                                <h:outputLabel value="Correo:" styleClass="form-label" />
-                                <p:inputText value="#{ventasBean.clienteNuevo.correo}" 
-                                             styleClass="form-control" />
-                            </div>
-                            
-                            <div class="col-md-3">
-                                <h:outputLabel value="NIT:" styleClass="form-label" />
-                                <p:inputText value="#{ventasBean.clienteNuevo.nit}" 
-                                             styleClass="form-control"
-                                             required="true"
-                                             requiredMessage="El NIT es obligatorio para el cliente nuevo"/>
-                            </div>
-                        </div>
-                    </h:panelGroup>
-                </h:panelGroup>
+<!-- CLIENTE NUEVO (checkbox) -->
+<div class="row mb-3">
+    <div class="col-md-6 d-flex align-items-center">
+        <h:outputLabel value="¿Registrar cliente nuevo?" styleClass="form-label me-2" />
+        <p:selectBooleanCheckbox id="chkNuevoCliente"
+                                value="#{ventasBean.nuevoCliente}"
+                                disabled="#{ventasBean.ventaNueva.idCliente gt 0}">
+            <!-- actualizar el panel y el checkbox por id absoluto -->
+            <p:ajax process="@this" update=":formVentaCompleto:nuevoClientePanel :formVentaCompleto:chkNuevoCliente" />
+        </p:selectBooleanCheckbox>
+    </div>
+</div>
+
+<!-- Panel de cliente nuevo -->
+<h:panelGroup id="nuevoClientePanel">
+    <h:panelGroup rendered="#{ventasBean.nuevoCliente}">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <h:outputLabel value="Nombre:" styleClass="form-label" />
+                <p:inputText value="#{ventasBean.clienteNuevo.nombre}" styleClass="form-control" required="true" />
+            </div>
+            <div class="col-md-4">
+                <h:outputLabel value="Teléfono:" styleClass="form-label" />
+                <p:inputText value="#{ventasBean.clienteNuevo.telefono}" styleClass="form-control" />
+            </div>
+            <div class="col-md-4">
+                <h:outputLabel value="Correo:" styleClass="form-label" />
+                <p:inputText value="#{ventasBean.clienteNuevo.correo}" styleClass="form-control" />
+            </div>
+
+            <div class="col-md-3">
+                <h:outputLabel value="NIT:" styleClass="form-label" />
+                <p:inputText value="#{ventasBean.clienteNuevo.nit}" styleClass="form-control"
+                             required="true" requiredMessage="El NIT es obligatorio para el cliente nuevo"/>
+            </div>
+        </div>
+    </h:panelGroup>
+</h:panelGroup>
 
                 <!-- OBSERVACIONES -->
                 <div class="mb-3">
