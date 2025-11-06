@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Dashboard</title>
+    <h:outputStylesheet library="css" name="tablas.css"/>
+    <h:outputStylesheet library="css" name="navbar.css"/>
+    <h:outputStylesheet library="css" name="index.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" 
+          rel="stylesheet" />
+<link rel="stylesheet" 
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@6.0.0/primeicons.css" />
+
+    
+</h:head>
+    <h:body styleClass="body">
+        <f:metadata>
+  <f:event type="preRenderView" listener="#{sessionUser.checkLogin}" />
+</f:metadata>
+
+    <header class="header">
+        <div class="logo">Peguele a la empanada</div>
+    
+        
+        <h:form>
+        <p:menubar styleClass="navbar">
+           <p:submenu label="Administración" rendered="#{sessionUser.rol == 'A'}">
+
+
+                <p:menuitem value="Usuarios" outcome="/views/Usuarios/Index.xhtml"/>
+                <p:menuitem value="Ventas" outcome="/views/Ventas/index.xhtml"/>
+               
+
+                
+
+                <p:menuitem value="Recetas" outcome="/views/Recetas/recetas.xhtml"/>
+                <p:menuitem value="Inventario" outcome="/views/Insumos/insumos.xhtml"/>
+
+
+
+                <p:menuitem value="Producción" outcome="/views/Producciones/produccion.xhtml"/>
+
+
+            </p:submenu>
+
+            <p:submenu label="Productor" rendered="#{sessionUser.rol == 'EP'}">
+
+
+                <p:menuitem value="inventario" outcome="/views/Inventarios/inventario.xhtml"/>
+                
+            </p:submenu>
+
+            <p:submenu label="Vendedor" rendered="#{sessionUser.rol == 'EV'}">
+
+
+                <p:menuitem value="Ventas" outcome="/views/Ventas/index.xhtml"/>
+               
+            </p:submenu>
+            
+            
+            <p:submenu label="Perfil">
+                
+                <p:menuitem value="">
+                    
+                    <p> #{sessionUser.nombres} #{sessionUser.apellidos}</p>  
+                    <p><b>Tu rol:</b> #{sessionUser.rol eq 'A' ? 'Administrador' : (sessionUser.rol eq 'EP' ? 'Produccion' : (sessionUser.rol eq 'EV' ? 'Ventas' : Desconocido))}</p>
+                    
+                </p:menuitem>
+                
+
+            <p:menuitem value="‎ ­­Cerrar Sesión" action="#{sessionUser.logout}" ajax="false" icon="pi pi-sign-out"/>
+                
+            </p:submenu>
+            
+
+
+        </p:menubar>
+    </h:form>
+        </header>
+</h:body>
+</html>

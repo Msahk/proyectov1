@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <title>Gestionar Insumos</title>
+        <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+    </h:head>
+
+    <h:body styleClass="body">
+        <ui:include src="/views/Navbar.xhtml" />
+
+        <p:growl id="msj" showDetail="true" showSummary="true" />
+
+        <center>
+            <div class="container mt-5" style="max-width: 1200px">
+                <div class="card shadow p-3">
+                    <h1>Gestionar Insumos - Receta: #{receta_insumosBean.receta.nombre}</h1>
+
+                    <h:form id="formRecetaInsumos">
+                        <!-- FILA AGREGAR INSUMO -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <p:selectOneMenu id="insumoSelect"
+                                                 value="#{receta_insumosBean.recetaInsumo.id_ins}" 
+                                                 styleClass="form-control"
+                                                 filter="true" filterMatchMode="contains"
+                                                 required="true" requiredMessage="Seleccione un insumo">
+
+                                    <f:selectItem itemLabel="-- Seleccione Insumo --" itemValue="#{null}" />
+                                    <f:selectItems value="#{receta_insumosBean.lstInsumos}" var="i"
+                                                   itemLabel="#{i.nombre}" itemValue="#{i.id_ins}" />
+
+                                    <!-- 🔁 Ajax: cuando cambies de insumo, se actualiza la unidad -->
+                                    <p:ajax event="change"
+                                            listener="#{receta_insumosBean.actualizarUnidad}"
+                                            update="unidadInput"
+                                            process="@this" />
+                                </p:selectOneMenu>
+
+                            </div>
+                            <div class="col-md-2">
+                                <p:inputText value="#{receta_insumosBean.recetaInsumo.cantidad}" 
+                                             styleClass="form-control" placeholder="Cantidad" required="true" />
+                            </div>
+                            <div class="col-md-2">
+                                <p:inputText id="unidadInput"
+                                             value="#{receta_insumosBean.recetaInsumo.unidad}" 
+                                             styleClass="form-control"
+                                             placeholder="Unidad"
+                                             readonly="true" />
+                            </div>
+                            <div class="col-md-2">
+                                <p:commandButton value="Agregar" icon="pi pi-plus"
+                                                 action="#{receta_insumosBean.agregar}"
+                                                 update="tablaRecetaInsumos, msj"
+                                                 styleClass="btn btn-primary"/>
+                            </div>
+                            <div class="col-md-2 text-right">
+                                <p:commandButton value="Volver" icon="pi pi-arrow-left"
+                                                 action="/views/Recetas/recetas.xhtml?faces-redirect=true"
+                                                 styleClass="btn btn-outline-dark"/>
+                            </div>
+                        </div>
+
+                        <!-- TABLA DE INSUMOS -->
+                        <p:dataTable id="tablaRecetaInsumos" 
+                                     value="#{receta_insumosBean.lstRecetaInsumos}" 
+                                     var="ri"
+                                     emptyMessage="No hay insumos asignados a esta receta"
+                                     paginator="true" rows="5" 
+                                     rowsPerPageTemplate="5,10,20" 
+                                     styleClass="table table-bordered"
+                                     widgetVar="wtInsumos">
+
+                            <p:column headerText="ID">
+                                <h:outputText value="#{ri.id_rec_ins}" />
+                            </p:column>
+
+                            <p:column headerText="Insumo">
+                                <h:outputText value="#{ri.insumo.nombre}" />
+                            </p:column>
+
+                            <p:column headerText="Cantidad">
+                                <h:outputText value="#{ri.cantidad} #{ri.unidad}" />
+                            </p:column>
+
+                            <p:column headerText="Opciones" style="width:15rem">
+                                <!-- EDITAR -->
+                                <p:commandButton icon="pi pi-pencil"
+                                                 title="Editar Insumo"
+                                                 action="#{receta_insumosBean.editar(ri)}"
+                                                 update="formRecetaInsumos"
+                                                 styleClass="btn btn-sm btn-outline-success mx-1" />
+
+                                <!-- ELIMINAR -->
+                                <p:commandButton icon="pi pi-trash"
+                                                 title="Eliminar Insumo"
+                                                 action="#{receta_insumosBean.eliminar(ri)}"
+                                                 update="tablaRecetaInsumos, msj"
+                                                 onclick="return confirm('¿Está seguro de eliminar este insumo?');"
+                                                 styleClass="btn btn-sm btn-outline-danger mx-1" />
+
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:form>
+                </div>
+            </div>
+        </center>
+    </h:body>
+</html>

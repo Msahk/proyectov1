@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">  
+<h:head>
+    <title>Dashboard</title>
+    <!-- Bootstrap desde CDN -->
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+</h:head>
+<h:body styleClass="body">
+
+    <ui:include src="Navbar.xhtml" />
+    
+    
+
+    <div class="container mt-5">
+        <div class="card shadow p-4">
+            <h2 class="text-center">Bienvenido al Dashboard</h2>
+            <hr/>
+            <h4>
+  Hola, <strong>#{sessionUser.nombres} #{sessionUser.apellidos}</strong>
+</h4>
+
+
+<p>
+  Rol:
+  <strong>
+    <h:outputText value="#{sessionScope.sessionUser.rol == 'A' ? 'Administrador' :
+                       (sessionScope.sessionUser.rol == 'EP' ? 'Empleado Producción' :
+                       (sessionScope.sessionUser.rol == 'EV' ? 'Empleado Ventas' : 'Desconocido'))}" />
+  </strong>
+</p>
+
+
+        </div>
+    </div>
+
+</h:body>
+</html>

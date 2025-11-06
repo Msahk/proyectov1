@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Gestión de Usuarios</title>  
+    </h:head>
+    <h:body styleClass="body">
+        <ui:include src="/views/Navbar.xhtml" />
+        <f:event type="preRenderView" listener="#{usuariosBean.listar()}" />
+        <p:growl id="msj" showDetail="true" showSummary="true" />
+        <center>
+            <div class="container mt-5" style="max-width: 1600px">
+                <div class="card shadow p-3">
+                    <h1>Gestión de Usuarios</h1>
+
+                    <h:form>
+                        <h:commandButton value="Nuevo Usuario" action="nuevousu" styleClass="btn btn-primary"/>
+
+
+                        <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="btn btn-primary" actionListener="#{usuariosBean.exportarPDF}"/>
+                        <h:commandButton value="Enviar Correos"  style="margin-left: 10px" styleClass="btn btn-primary" action="correo"/>
+
+                        <h:commandButton value="Migrar" style="margin-left: 10px" styleClass="btn btn-primary" action="migrar"/>
+
+
+
+                        <br/><br/>
+                        <p:dataTable value="#{usuariosBean.lstUsu}" var="usu" class="table table-bordered" widgetVar="wtUsu"
+                                     emptyMessage="No se encontraron Registros en la Base de Datos" rows="5"
+                                     paginator="true" paginatorPosition="bottom" filteredValue="#{usuariosBean.lstUsuFiltrados}"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                                     rowsPerPageTemplate="5,10,{ShowAll|'Todos'}" filterEvent="keyup">
+                            <f:facet name="header">
+                                <div align="right">
+                                    <p:inputText id="globalFilter" onkeyup="PF('wtUsu').filter()" style="width:10rem"
+                                                 placeholder="Buscar ..." />                            
+                                </div>                        
+                            </f:facet>
+
+                            <p:column filterBy="#{usu.idUsu}" width="60" filterMatchMode="contains" sortBy="#{usu.idUsu}">
+                                <f:facet name="header">Id</f:facet>
+                                <p:outputLabel value="#{usu.idUsu}" />
+                            </p:column>
+
+                            <p:column filterBy="#{usu.documento}" filterMatchMode="contains" sortBy="#{usu.documento}">
+                                <f:facet name="header">Documento</f:facet>
+                                <p:outputLabel value="#{usu.documento}" />
+                            </p:column>
+
+                            <p:column filterBy="#{usu.nombres}" filterMatchMode="contains" sortBy="#{usu.nombres}">
+                                <f:facet name="header">Nombres</f:facet>
+                                <p:outputLabel value="#{usu.nombres}" />
+                            </p:column>
+
+                            <p:column filterBy="#{usu.apellidos}" filterMatchMode="contains" sortBy="#{usu.apellidos}">
+                                <f:facet name="header">Apellidos</f:facet>
+                                <p:outputLabel value="#{usu.apellidos}" />
+                            </p:column>
+
+                            <p:column filterBy="#{usu.telefono}" filterMatchMode="contains" sortBy="#{usu.telefono}">
+                                <f:facet name="header">Teléfono</f:facet>
+                                <p:outputLabel value="#{usu.telefono}" />
+                            </p:column>
+
+                            <p:column filterBy="#{usu.direccion}" filterMatchMode="contains" sortBy="#{usu.direccion}">
+                                <f:facet name="header">Dirección</f:facet>
+                                <p:outputLabel value="#{usu.direccion}" />
+                            </p:column>
+
+                            <p:column filterBy="#{usu.correo}" width="305" filterMatchMode="contains" sortBy="#{usu.correo}">
+                                <f:facet name="header">Correo</f:facet>
+                                <p:outputLabel value="#{usu.correo}" />
+                            </p:column>
+
+                            <p:column filterBy="#{usu.rol}" width="80" filterMatchMode="contains" sortBy="#{usu.rol}">
+                                <f:facet name="header">Rol</f:facet>
+                                <p:outputLabel value="#{usu.rol}" />
+                            </p:column>
+
+                            <p:column filterBy="#{usu.estado}"  width="105"  filterMatchMode="contains" sortBy="#{usu.estado}">
+                                <f:facet name="header">Estado</f:facet>
+                                <p:outputLabel value="#{usu.estado eq 'A' ? 'Activo' : (usu.estado eq 'I' ? 'Inactivo' : Desconocido)}" />
+                            </p:column>
+
+                            <p:column style="width:10rem">
+                                <f:facet name="header">Opciones</f:facet>
+                                <h:commandLink actionListener="#{usuariosBean.editar(usu)}" action="editarusu"
+                                               styleClass="btn btn-outline-success d-inline-flex align-items-center">
+                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                </h:commandLink>
+                                <h:commandLink actionListener="#{usuariosBean.cambiar(usu.idUsu)}"
+                                               onclick="return confirm('¿Está seguro de cambiar el estado del usuario?!!')"
+                                               styleClass="btn btn-outline-warning d-inline-flex align-items-center">
+                                    <i class="#{usu.estado == 'A' ? 'bi bi-person-dash' : (usu.estado == 'I' ? 'bi bi-person-plus' : 'bi bi-person')}" aria-hidden="true"></i>
+                                    <f:ajax execute="@this" render=":formUsuarios:tablaUsuarios :formUsuarios:growl"  />
+
+                                </h:commandLink>
+
+                                <h:commandLink actionListener="#{usuariosBean.eliminar(usu)}"
+                                               onclick="return confirm('¿Está seguro de ELIMINAR el usuario?!!')"
+                                               styleClass="btn btn-outline-danger d-inline-flex align-items-center">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                </h:commandLink>
+
+                            </p:column>
+                        </p:dataTable>
+                        <br/>
+                        <p:commandButton 
+                            value="Menu anterior" icon="pi pi-home" action="/views/Dashboard.xhtml?faces-redirect=true" />
+                    </h:form>
+                </div>
+            </div>
+        </center>
+    </h:body>
+
+</html>
