@@ -49,15 +49,17 @@
             </p:submenu>
 
             <p:submenu label="Productor" rendered="#{sessionUser.rol == 'EP'}">
-
-
-                <p:menuitem value="inventario" outcome="/views/Inventarios/inventario.xhtml"/>
+                
+                <p:menuitem value="Inventario" outcome="/views/Insumos/insumos.xhtml"/>
+                <p:menuitem value="Recetas" outcome="/views/Recetas/recetas.xhtml"/>
+                <p:menuitem value="Producción" outcome="/views/Producciones/produccion.xhtml"/>
+                
                 
             </p:submenu>
 
             <p:submenu label="Vendedor" rendered="#{sessionUser.rol == 'EV'}">
-
-
+                
+                
                 <p:menuitem value="Ventas" outcome="/views/Ventas/index.xhtml"/>
                
             </p:submenu>
