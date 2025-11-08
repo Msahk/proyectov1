@@ -1,0 +1,97 @@
+:root {
+    --color-principal: #8B0000;           
+    --color-principal-hover: #B22222;     
+    --fondo-principal: #121212;        
+    --fondo-secundario: #1E1E1E;       
+    --texto-principal: #ffffff;        
+    --texto-secundario: #e0e0e0;       
+    --color-borde: #2C2C2C;  
+  
+
+  /* Fondo general y contenedores */
+  --color-bg-body: #121a26;
+  --color-bg-card: #1f2d40;
+  --color-bg-table: #1f2d40;
+  --color-bg-hover-row: #2a3b52;
+  --color-border: #2c3e55;
+
+  /* Texto */
+  --color-text-primary: #e0e6ed;
+  --color-text-secondary: #a0b0c0;
+  --color-text-header: #f0f0f0;
+
+  /* Botones */
+  --color-btn-primary: #3b5a7f;
+  --color-btn-primary-hover: #4c6a90;
+  --color-btn-action: #e67e22;
+  --color-btn-danger: #c0392b;
+
+  /* Inputs y componentes */
+  --color-input-bg: #1f2d40;
+  --color-input-text: #e0e6ed;
+  --color-icon: #f0f0f0;
+}
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins",'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+
+
+.navbar .ui-menu,
+.navbar .ui-menu-child {
+  background: inherit !important;
+  background-image: none !important;
+  color: #fff !important;
+  border: none !important; 
+}
+
+.navbar .ui-menuitem-text {
+  color: #fff !important;
+  border: none !important; 
+}
+
+.ui-menu, 
+.ui-menu .ui-menu-child {
+  background: var(--fondo-secundario) !important;
+  background-image: none !important;
+  
+  border: none !important; 
+}
+
+.navbar .ui-widget-content {
+    border: none;
+}
+
+
+.navbar a:hover {
+    background-color: #dddbdb56;
+    border: none;
+}
+.ui-menubar, 
+.ui-menubar .ui-menu-child {
+  background: var(--fondo-secundario) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.ui-menubar .ui-menuitem-link {
+  background: transparent !important;
+  color: var(--texto-principal) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.ui-menubar .ui-menuitem-link:hover,
+.ui-menubar .ui-menuitem-active > .ui-menuitem-link {
+  background: var(--color-acento) !important;
+  color: var(--texto-principal) !important;
+  border: none !important;
+  box-shadow: none !important;
+}

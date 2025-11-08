@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <style>
+            *{
+                font-family: Arial;
+            }
+            h1{
+                color: blue;
+                text-align: center;
+            }
+        </style>
+        <title>Primer Ejemplo JSF</title>
+    </h:head>
+    <h:body>
+        <h1>Ingreso de Usuarios</h1>
+        <center>
+            <h:form>
+                <p:outputLabel value="Correo o Documento: " />
+                <p:inputText required="true" id="correoDoc" 
+                             value="#{usuariosBean.usuario.correo}"
+                             requiredMessage=" Debe escribir el correo o documento" />
+                <p:message for="correoDoc" style="color: red;" />
+
+                <br/><br/>
+
+                <p:outputLabel value="Contraseña: "/>                
+                <p:password required="true" id="PwUsr" value="#{usuariosBean.usuario.password}"
+                            requiredMessage=" Debe escribir la Contraseña" >
+                </p:password>
+                <p:message for="PwUsr" style="color: red;" />
+                <br/><br/>
+
+                <p:commandButton value="Aceptar" action="#{usuariosBean.autenticar}" update="msj" />
+
+
+                <br/><br/>
+                <p:commandLink value="Olvidé mi Contraseña"  style="margin-right: 15px;"/>
+                <p:commandLink value="Regístrate AQUI" />
+            </h:form>            
+        </center>  
+        <p:messages id="msj" showSummary="true" showDetail="false"  />
+    </h:body>
+</html>
