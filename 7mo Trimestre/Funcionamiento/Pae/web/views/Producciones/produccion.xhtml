@@ -79,8 +79,10 @@
 
                         <p:column filterBy="#{prod.nombreUsuario}" sortBy="#{prod.nombreUsuario}">
     <f:facet name="header">Asignado por:</f:facet>
-    <p:outputLabel value="#{prod.nombreUsuario}" />
+    <p:outputLabel 
+        value="#{empty prod.nombreUsuario ? 'Sin asignar' : prod.nombreUsuario.concat(' ').concat(prod.apellidoUsuario)}" />
 </p:column>
+
                         
                        <p:column filterBy="#{prod.nombreAsignado}" sortBy="#{prod.nombreAsignado}"
           rendered="#{sessionUser.rol eq 'A'}">
