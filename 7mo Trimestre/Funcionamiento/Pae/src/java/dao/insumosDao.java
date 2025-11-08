@@ -270,5 +270,19 @@ public class insumosDao {
     }
     return i;
 }
+    
+    public List<insumos> listarConStockReal() {
+    List<insumos> lista = listar(); // traemos todos los insumos
+    detalle_insumoDao daoDetalle = new detalle_insumoDao();
+
+    for (insumos i : lista) {
+        double stockReal = daoDetalle.calcularStockActual(i.getId_ins());
+        i.setStock_actual(stockReal); // actualizamos el stock_actual para la vista
+        i.recalcularEstado();         // recalculamos estado según stock real
+    }
+
+    return lista;
+}
+
 
 }

@@ -16,6 +16,8 @@ import net.sf.jasperreports.engine.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import java.io.File;
+import dao.detalle_insumoDao;
+
 
 @ManagedBean
 @SessionScoped
@@ -28,6 +30,8 @@ public class insumosBean implements Serializable {
     private List<insumos> lstFiltrados;
     private Part excel;
     private List<String> unidadesMedida;
+    private final detalle_insumoDao detalleDao = new detalle_insumoDao();
+
 
     @PostConstruct
     public void init() {
@@ -35,39 +39,26 @@ public class insumosBean implements Serializable {
         unidadesMedida = new ArrayList<>(Arrays.asList("g", "kg", "ml", "L", "u", "pz"));
     }
 
-    // 📋 Listar todos los insumos y recalcular estado
-    public void listar() {
-        try {
-            lstInsumos = dao.listar();
-            if (lstInsumos == null) lstInsumos = new ArrayList<>();
-            verificarStockYEstado();
-        } catch (Exception e) {
-            e.printStackTrace();
-            lstInsumos = new ArrayList<>();
-        }
-    }
+public void listar() {
+    try {
+        lstInsumos = dao.listar();
+        if (lstInsumos == null) lstInsumos = new ArrayList<>();
 
-    // ⚠️ Verificar stock y actualizar estado ("Stock insuficiente")
-    private void verificarStockYEstado() {
-        if (lstInsumos == null || lstInsumos.isEmpty()) return;
-
+        // 🔹 Actualizar stock actual desde detalle_insumo (solo activos)
         for (insumos i : lstInsumos) {
-            String nuevoEstado = i.getStock_actual() < i.getStock_min() ? "Stock insuficiente" : "Activo";
-
-            // 🔸 Actualizar solo si cambió
-            if (!nuevoEstado.equalsIgnoreCase(i.getEstado())) {
-                i.setEstado(nuevoEstado);
-                dao.actualizarEstado(i.getId_ins(), nuevoEstado);
-
-                if ("Stock insuficiente".equals(nuevoEstado)) {
-                    FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_WARN,
-                            "Stock bajo",
-                            "El insumo '" + i.getNombre() + "' tiene stock insuficiente."));
-                }
-            }
+            double stockReal = detalleDao.calcularStockActual(i.getId_ins());
+            i.setStock_actual(stockReal);
+            i.recalcularEstado();
         }
+
+        verificarStockYEstado();
+    } catch (Exception e) {
+        e.printStackTrace();
+        lstInsumos = new ArrayList<>();
     }
+}
+
+
 
     // ➕ Agregar nuevo insumo
     public void agregar() {
@@ -186,6 +177,29 @@ public class insumosBean implements Serializable {
                             "Error", "Error creando reporte"));
         }
     }
+    
+    // ⚠️ Verificar stock y actualizar estado ("Stock insuficiente")
+private void verificarStockYEstado() {
+    if (lstInsumos == null || lstInsumos.isEmpty()) return;
+
+    for (insumos i : lstInsumos) {
+        String nuevoEstado = i.getStock_actual() < i.getStock_min() ? "Stock insuficiente" : "Activo";
+
+        // 🔸 Actualizar solo si cambió
+        if (!nuevoEstado.equalsIgnoreCase(i.getEstado())) {
+            i.setEstado(nuevoEstado);
+            dao.actualizarEstado(i.getId_ins(), nuevoEstado);
+
+            if ("Stock insuficiente".equals(nuevoEstado)) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN,
+                        "Stock bajo",
+                        "El insumo '" + i.getNombre() + "' tiene stock insuficiente."));
+            }
+        }
+    }
+}
+
 
     // 🧩 Getters y Setters
     public insumos getInsumo() { return insumo; }

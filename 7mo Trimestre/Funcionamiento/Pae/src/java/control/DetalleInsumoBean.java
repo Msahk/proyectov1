@@ -60,29 +60,37 @@ public class DetalleInsumoBean implements Serializable {
     }
 
     public void agregar() {
-        detalle.setId_ins(insumoSeleccionadoId);  // ⚡ Asignar el insumo
-        boolean ok = dao.agregar(detalle);
-        if (ok) {
+    detalle.setId_ins(insumoSeleccionadoId);  // ⚡ Asignar el insumo
+
+    // 🔹 Calcular estado automáticamente antes de agregar
+    detalle.setEstado(dao.calcularEstado(detalle));
+
+    boolean ok = dao.agregar(detalle);
+    if (ok) {
+        // ➕ Solo actualizar stock si el lote está activo
+        if ("Activo".equalsIgnoreCase(detalle.getEstado())) {
             dao.actualizarStock(detalle.getId_ins(), detalle.getCantidad());
-
-            // ✅ Registrar historial como "Entrada"
-            historial h = new historial();
-            h.setAccion("Entrada"); // valor válido
-            h.setFecha(new Date());
-            h.setId_ins(detalle.getId_ins());
-            h.setId_detalle(detalle.getId_detalle());
-            h.setNovedad("Se agregó lote de " + detalle.getCantidad() + " unidades");
-            historialDao.agregar(h);
-
-            cargarLotesPorInsumo(insumoSeleccionadoId); // Refrescar lista
-            limpiar();
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Lote agregado correctamente"));
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo agregar el lote"));
         }
+
+        // ✅ Registrar historial como "Entrada"
+        historial h = new historial();
+        h.setAccion("Entrada"); // valor válido
+        h.setFecha(new Date());
+        h.setId_ins(detalle.getId_ins());
+        h.setId_detalle(detalle.getId_detalle());
+        h.setNovedad("Se agregó lote de " + detalle.getCantidad() + " unidades");
+        historialDao.agregar(h);
+
+        cargarLotesPorInsumo(insumoSeleccionadoId); // Refrescar lista
+        limpiar();
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Lote agregado correctamente"));
+    } else {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo agregar el lote"));
     }
+}
+
 
     // Cargar solo lotes eliminados de un insumo
     public void cargarEliminados() {
@@ -182,22 +190,25 @@ public void eliminarConMotivo() {
         return;
     }
 
+    // ⚡ Guardar estado actual antes de cambiarlo
+    String estadoAnterior = loteAEliminar.getEstado();
+
     // Cambiar estado del lote a "Eliminado" en lugar de eliminarlo físicamente
     loteAEliminar.setEstado("Eliminado");
     boolean okActualizar = dao.actualizar(loteAEliminar); // Usar método actualizar
     if (okActualizar) {
-        // ⚡ Restar la cantidad del lote eliminado del stock del insumo
-        dao.actualizarStock(loteAEliminar.getId_ins(), -loteAEliminar.getCantidad());
+        // ⚡ Restar la cantidad del lote eliminado del stock solo si estaba activo
+        if ("Activo".equalsIgnoreCase(estadoAnterior)) {
+            dao.actualizarStock(loteAEliminar.getId_ins(), -loteAEliminar.getCantidad());
+        }
 
-        // ⚡ Recargar historial para que se vea inmediatamente en la tabla
+        // ⚡ Recargar historial y tabla de lotes activos
         cargarHistorial(loteAEliminar.getId_ins());
-
-        // ⚡ Refrescar tabla de lotes activos
         cargarLotesPorInsumo(insumoSeleccionadoId);
 
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_WARN, "Lote eliminado",
-                        "El lote fue marcado como eliminado, registrado en historial y descontado del stock"));
+                        "El lote fue marcado como eliminado, registrado en historial y descontado del stock si estaba activo"));
 
         // Limpiar variables temporales
         loteAEliminar = null;
@@ -207,7 +218,6 @@ public void eliminarConMotivo() {
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo marcar el lote como eliminado"));
     }
 }
-
 
 
 // Cargar historial de un insumo

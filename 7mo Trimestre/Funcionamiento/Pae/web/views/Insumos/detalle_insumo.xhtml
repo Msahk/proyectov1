@@ -119,11 +119,12 @@
 
                             <!-- Editar lote -->
                             <p:commandButton icon="pi pi-pencil"
-                                             title="Editar"
-                                             update=":formLotes:tablaLotes"
-                                             actionListener="#{detalleInsumoBean.editar(lote)}"
-                                             oncomplete="PF('dlgEditarLote').show()"
-                                             styleClass="btn btn-outline-success btn-sm" />
+                 title="Editar"
+                 actionListener="#{detalleInsumoBean.editar(lote)}"
+                 update=":frmEditarLote" 
+                 oncomplete="PF('dlgEditarLote').show()"
+                 styleClass="btn btn-outline-success btn-sm" />
+
 
                           <p:commandButton icon="pi pi-trash"
                  title="Eliminar"

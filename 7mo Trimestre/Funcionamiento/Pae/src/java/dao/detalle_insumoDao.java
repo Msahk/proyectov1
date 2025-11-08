@@ -12,61 +12,57 @@ public class detalle_insumoDao {
     PreparedStatement ps;
     ResultSet rs;
 
-    // 📋 Listar todos los detalles de insumos
-    public List<detalle_insumo> listar() {
-        List<detalle_insumo> lista = new ArrayList<>();
-        String sql = "SELECT di.*, i.nombre AS nombre_insumo "
-                + "FROM detalle_insumo di "
-                + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
-                + // ⚠ corregido
-                "ORDER BY di.id_detalle DESC";
+   public List<detalle_insumo> listar() {
+    List<detalle_insumo> lista = new ArrayList<>();
+    String sql = "SELECT di.*, i.nombre AS nombre_insumo "
+               + "FROM detalle_insumo di "
+               + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
+               + "ORDER BY di.id_detalle DESC";
 
-        try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+    try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                detalle_insumo d = new detalle_insumo();
-                d.setId_detalle(rs.getInt("id_detalle"));
-                d.setId_ins(rs.getInt("id_ins"));
-                d.setCantidad(rs.getDouble("cantidad"));
-                d.setFecha_ingreso(rs.getTimestamp("fecha_ingreso"));
-                d.setFecha_vencimiento(rs.getDate("fecha_vencimiento"));
-                d.setEstado(rs.getString("estado"));
-                d.setNombre_insumo(rs.getString("nombre_insumo"));
+        while (rs.next()) {
+            detalle_insumo d = new detalle_insumo();
+            d.setId_detalle(rs.getInt("id_detalle"));
+            d.setId_ins(rs.getInt("id_ins"));
+            d.setCantidad(rs.getDouble("cantidad"));
+            d.setFecha_ingreso(rs.getTimestamp("fecha_ingreso"));
+            d.setFecha_vencimiento(rs.getDate("fecha_vencimiento"));
+            d.setEstado(rs.getString("estado"));
+            d.setNombre_insumo(rs.getString("nombre_insumo"));
 
-                lista.add(d);
-            }
+            // 🔹 Actualizar estado automáticamente
+            d.setEstado(calcularEstado(d));
 
-        } catch (SQLException e) {
-            System.out.println("Error en listar(): " + e.getMessage());
-            e.printStackTrace();
+            lista.add(d);
         }
 
-        return lista;
+    } catch (SQLException e) {
+        System.out.println("Error en listar(): " + e.getMessage());
+        e.printStackTrace();
     }
 
+    return lista;
+}
+  
+
     // ➕ Agregar nuevo detalle de insumo
-    // ➕ Agregar nuevo detalle de insumo
-    public boolean agregar(detalle_insumo d) {
+public boolean agregar(detalle_insumo d) {
     String sql = "INSERT INTO detalle_insumo (id_ins, cantidad, fecha_ingreso, fecha_vencimiento, estado) VALUES (?, ?, ?, ?, ?)";
     try (Connection con = ConDB.conectar(); 
          PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
         if (d.getFecha_ingreso() == null) {
-            d.setFecha_ingreso(new java.util.Date()); // usa la fecha y hora actual
+            d.setFecha_ingreso(new java.util.Date()); // fecha actual
         }
-        if (d.getEstado() == null) {
-            d.setEstado("Activo");
-        }
+
+        // 🔹 Calcular estado automáticamente
+        d.setEstado(calcularEstado(d));
 
         ps.setInt(1, d.getId_ins());
         ps.setDouble(2, d.getCantidad());
-
-        // 🕒 CAMBIO CLAVE → usar Timestamp para conservar hora exacta
         ps.setTimestamp(3, new java.sql.Timestamp(d.getFecha_ingreso().getTime()));
-
-        // fecha de vencimiento sigue siendo tipo DATE
         ps.setDate(4, new java.sql.Date(d.getFecha_vencimiento().getTime()));
-
         ps.setString(5, d.getEstado());
 
         ps.executeUpdate();
@@ -75,6 +71,11 @@ public class detalle_insumoDao {
             if (generatedKeys.next()) {
                 d.setId_detalle(generatedKeys.getInt(1));
             }
+        }
+
+        // 🔹 Actualizar stock solo si el lote está Activo
+        if ("Activo".equalsIgnoreCase(d.getEstado())) {
+            actualizarStock(d.getId_ins(), d.getCantidad());
         }
 
         FacesContext.getCurrentInstance().addMessage(null,
@@ -91,45 +92,61 @@ public class detalle_insumoDao {
 }
 
 
-    // ✏️ Actualizar detalle de insumo
-    public boolean actualizar(detalle_insumo d) {
-        String sql = "UPDATE detalle_insumo SET id_ins=?, cantidad=?, fecha_ingreso=?, fecha_vencimiento=?, estado=? WHERE id_detalle=?";
-        try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, d.getId_ins());
-            ps.setDouble(2, d.getCantidad());
-            ps.setTimestamp(3, new java.sql.Timestamp(d.getFecha_ingreso().getTime()));
-            ps.setDate(4, new java.sql.Date(d.getFecha_vencimiento().getTime()));
-            ps.setString(5, d.getEstado());
 
-            ps.setInt(7, d.getId_detalle());
 
-            ps.executeUpdate();
+    // ✏️ Actualizar detalle de insumo con cálculo automático de estado y ajuste de stock
+public boolean actualizar(detalle_insumo d) {
+    String sql = "UPDATE detalle_insumo SET id_ins=?, cantidad=?, fecha_ingreso=?, fecha_vencimiento=?, estado=? WHERE id_detalle=?";
+    try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Detalle de insumo actualizado correctamente"));
-            return true;
+        // 🔹 Obtener cantidad anterior para ajustar stock
+        detalle_insumo detalleAnterior = obtenerPorId(d.getId_detalle());
+        double cantidadAnterior = detalleAnterior.getCantidad();
 
-        } catch (SQLException e) {
-            System.out.println("Error en actualizar(): " + e.getMessage());
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo actualizar el detalle"));
+        // 🔹 Calcular estado automáticamente antes de actualizar
+        d.setEstado(calcularEstado(d));
+
+        ps.setInt(1, d.getId_ins());
+        ps.setDouble(2, d.getCantidad());
+        ps.setTimestamp(3, new java.sql.Timestamp(d.getFecha_ingreso().getTime()));
+        ps.setDate(4, new java.sql.Date(d.getFecha_vencimiento().getTime()));
+        ps.setString(5, d.getEstado());
+        ps.setInt(6, d.getId_detalle());
+
+        ps.executeUpdate();
+
+        // 🔹 Ajustar stock solo si el lote está activo
+        if ("Activo".equalsIgnoreCase(d.getEstado())) {
+            double diferencia = d.getCantidad() - cantidadAnterior;
+            actualizarStock(d.getId_ins(), diferencia);
         }
-        return false;
+
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Detalle de insumo actualizado correctamente"));
+        return true;
+
+    } catch (SQLException e) {
+        System.out.println("Error en actualizar(): " + e.getMessage());
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo actualizar el detalle"));
+        e.printStackTrace();
     }
+    return false;
+}
+
 
     // 🔍 Obtener detalle por ID
-    public detalle_insumo obtenerPorId(int id) {
-        detalle_insumo d = null;
-        String sql = "SELECT di.*, i.nombre AS nombre_insumo "
-                + "FROM detalle_insumo di "
-                + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
-                + // ✅ columna corregida
-                "WHERE di.id_detalle=?";
-        try {
-            ps = ConDB.conectar().prepareStatement(sql);
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
+    // 🔍 Obtener detalle por ID con cálculo automático de estado
+public detalle_insumo obtenerPorId(int id) {
+    detalle_insumo d = null;
+    String sql = "SELECT di.*, i.nombre AS nombre_insumo "
+               + "FROM detalle_insumo di "
+               + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
+               + "WHERE di.id_detalle=?";
+    try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, id);
+        try (ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 d = new detalle_insumo();
                 d.setId_detalle(rs.getInt("id_detalle"));
@@ -140,13 +157,16 @@ public class detalle_insumoDao {
                 d.setEstado(rs.getString("estado"));
                 d.setNombre_insumo(rs.getString("nombre_insumo"));
 
+                // 🔹 Calcular estado automáticamente
+                d.setEstado(calcularEstado(d));
             }
-        } catch (SQLException e) {
-            System.out.println("Error en obtenerPorId(): " + e.getMessage());
-            e.printStackTrace();
         }
-        return d;
+    } catch (SQLException e) {
+        System.out.println("Error en obtenerPorId(): " + e.getMessage());
+        e.printStackTrace();
     }
+    return d;
+}
 
     // 🗑️ Eliminar detalle
     public boolean eliminar(detalle_insumo d) {
@@ -218,125 +238,141 @@ public class detalle_insumoDao {
 
     // dentro de detalle_insumoDao.java
     public List<detalle_insumo> listarPorInsumo(int id_insumo) {
-        List<detalle_insumo> lista = new ArrayList<>();
-        String sql = "SELECT di.*, i.nombre AS nombre_insumo "
-                + "FROM detalle_insumo di "
-                + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
-                + "WHERE di.id_ins = ? "
-                + "ORDER BY di.fecha_ingreso ASC";
+    List<detalle_insumo> lista = new ArrayList<>();
+    String sql = "SELECT di.*, i.nombre AS nombre_insumo "
+               + "FROM detalle_insumo di "
+               + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
+               + "WHERE di.id_ins = ? "
+               + "ORDER BY di.fecha_ingreso ASC";
 
-        try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id_insumo);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    detalle_insumo d = new detalle_insumo();
-                    d.setId_detalle(rs.getInt("id_detalle"));
-                    d.setId_ins(rs.getInt("id_ins"));
-                    d.setCantidad(rs.getDouble("cantidad"));
-                    d.setFecha_ingreso(rs.getTimestamp("fecha_ingreso"));
-                    d.setFecha_vencimiento(rs.getDate("fecha_vencimiento"));
-                    d.setEstado(rs.getString("estado"));
-                    d.setNombre_insumo(rs.getString("nombre_insumo"));
+    try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, id_insumo);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                detalle_insumo d = new detalle_insumo();
+                d.setId_detalle(rs.getInt("id_detalle"));
+                d.setId_ins(rs.getInt("id_ins"));
+                d.setCantidad(rs.getDouble("cantidad"));
+                d.setFecha_ingreso(rs.getTimestamp("fecha_ingreso"));
+                d.setFecha_vencimiento(rs.getDate("fecha_vencimiento"));
+                d.setEstado(rs.getString("estado"));
+                d.setNombre_insumo(rs.getString("nombre_insumo"));
 
-                    lista.add(d);
-                }
+                // 🔹 Actualizar estado automáticamente
+                d.setEstado(calcularEstado(d));
+
+                lista.add(d);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return lista;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return lista;
+}
+
 
 // dentro de detalle_insumoDao.java
     public List<detalle_insumo> listarPorEstado(String estado) {
-        List<detalle_insumo> lista = new ArrayList<>();
-        String sql = "SELECT di.*, i.nombre AS nombre_insumo "
-                + "FROM detalle_insumo di "
-                + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
-                + "WHERE di.estado = ? "
-                + "ORDER BY di.fecha_ingreso ASC";
+    List<detalle_insumo> lista = new ArrayList<>();
+    String sql = "SELECT di.*, i.nombre AS nombre_insumo "
+               + "FROM detalle_insumo di "
+               + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
+               + "WHERE di.estado = ? "
+               + "ORDER BY di.fecha_ingreso ASC";
 
-        try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, estado);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    detalle_insumo d = new detalle_insumo();
-                    d.setId_detalle(rs.getInt("id_detalle"));
-                    d.setId_ins(rs.getInt("id_ins"));
-                    d.setCantidad(rs.getDouble("cantidad"));
-                    d.setFecha_ingreso(rs.getTimestamp("fecha_ingreso"));
-                    d.setFecha_vencimiento(rs.getDate("fecha_vencimiento"));
-                    d.setEstado(rs.getString("estado"));
-                    d.setNombre_insumo(rs.getString("nombre_insumo"));
+    try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, estado);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                detalle_insumo d = new detalle_insumo();
+                d.setId_detalle(rs.getInt("id_detalle"));
+                d.setId_ins(rs.getInt("id_ins"));
+                d.setCantidad(rs.getDouble("cantidad"));
+                d.setFecha_ingreso(rs.getTimestamp("fecha_ingreso"));
+                d.setFecha_vencimiento(rs.getDate("fecha_vencimiento"));
+                d.setEstado(rs.getString("estado"));
+                d.setNombre_insumo(rs.getString("nombre_insumo"));
 
-                    lista.add(d);
-                }
+                // 🔹 Actualizar estado automáticamente
+                d.setEstado(calcularEstado(d));
+
+                lista.add(d);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return lista;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return lista;
+}
 
-    public List<detalle_insumo> listarPorInsumoYEstado(int id_insumo, String estados) {
-        List<detalle_insumo> lista = new ArrayList<>();
-        String sql = "SELECT di.*, i.nombre AS nombre_insumo "
-                + "FROM detalle_insumo di "
-                + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
-                + "WHERE di.id_ins = ? AND di.estado IN (" + estadosString(estados) + ")"
-                + " ORDER BY di.fecha_ingreso ASC";
 
-        try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id_insumo);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    detalle_insumo d = new detalle_insumo();
-                    d.setId_detalle(rs.getInt("id_detalle"));
-                    d.setId_ins(rs.getInt("id_ins"));
-                    d.setCantidad(rs.getDouble("cantidad"));
-                    d.setFecha_ingreso(rs.getTimestamp("fecha_ingreso"));
-                    d.setFecha_vencimiento(rs.getDate("fecha_vencimiento"));
-                    d.setEstado(rs.getString("estado"));
-                    d.setNombre_insumo(rs.getString("nombre_insumo"));
+   public List<detalle_insumo> listarPorInsumoYEstado(int id_insumo, String estados) {
+    List<detalle_insumo> lista = new ArrayList<>();
+    String sql = "SELECT di.*, i.nombre AS nombre_insumo "
+               + "FROM detalle_insumo di "
+               + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
+               + "WHERE di.id_ins = ? AND di.estado IN (" + estadosString(estados) + ")"
+               + " ORDER BY di.fecha_ingreso ASC";
 
-                    lista.add(d);
-                }
+    try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, id_insumo);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                detalle_insumo d = new detalle_insumo();
+                d.setId_detalle(rs.getInt("id_detalle"));
+                d.setId_ins(rs.getInt("id_ins"));
+                d.setCantidad(rs.getDouble("cantidad"));
+                d.setFecha_ingreso(rs.getTimestamp("fecha_ingreso"));
+                d.setFecha_vencimiento(rs.getDate("fecha_vencimiento"));
+                d.setEstado(rs.getString("estado"));
+                d.setNombre_insumo(rs.getString("nombre_insumo"));
+
+                // 🔹 Actualizar estado automáticamente
+                d.setEstado(calcularEstado(d));
+
+                lista.add(d);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return lista;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return lista;
+}
+
 
     public List<detalle_insumo> listarEliminadosPorInsumo(int id_insumo) {
-        List<detalle_insumo> lista = new ArrayList<>();
-        String sql = "SELECT di.*, i.nombre AS nombre_insumo "
-                + "FROM detalle_insumo di "
-                + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
-                + "WHERE di.id_ins = ? AND di.estado = 'Eliminado' "
-                + "ORDER BY di.fecha_ingreso ASC";
+    List<detalle_insumo> lista = new ArrayList<>();
+    String sql = "SELECT di.*, i.nombre AS nombre_insumo "
+               + "FROM detalle_insumo di "
+               + "LEFT JOIN insumos i ON di.id_ins = i.id_ins "
+               + "WHERE di.id_ins = ? AND di.estado = 'Eliminado' "
+               + "ORDER BY di.fecha_ingreso ASC";
 
-        try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id_insumo);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    detalle_insumo d = new detalle_insumo();
-                    d.setId_detalle(rs.getInt("id_detalle"));
-                    d.setId_ins(rs.getInt("id_ins"));
-                    d.setCantidad(rs.getDouble("cantidad"));
-                    d.setFecha_ingreso(rs.getTimestamp("fecha_ingreso"));
-                    d.setFecha_vencimiento(rs.getDate("fecha_vencimiento"));
-                    d.setEstado(rs.getString("estado"));
-                    d.setNombre_insumo(rs.getString("nombre_insumo"));
+    try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, id_insumo);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                detalle_insumo d = new detalle_insumo();
+                d.setId_detalle(rs.getInt("id_detalle"));
+                d.setId_ins(rs.getInt("id_ins"));
+                d.setCantidad(rs.getDouble("cantidad"));
+                d.setFecha_ingreso(rs.getTimestamp("fecha_ingreso"));
+                d.setFecha_vencimiento(rs.getDate("fecha_vencimiento"));
+                d.setEstado(rs.getString("estado"));
+                d.setNombre_insumo(rs.getString("nombre_insumo"));
 
-                    lista.add(d);
-                }
+                // 🔹 Aunque esté eliminado, recalcular por seguridad (opcional)
+                d.setEstado(calcularEstado(d));
+
+                lista.add(d);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return lista;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return lista;
+}
+
 
 // Convierte "Activo,Vencido" a "'Activo','Vencido'" para SQL
     private String estadosString(String estados) {
@@ -475,6 +511,33 @@ public class detalle_insumoDao {
         e.printStackTrace();
         return false;
     }
+}
+
+// ⚡ Actualiza automáticamente el estado de un lote según su fecha de vencimiento
+public String calcularEstado(detalle_insumo d) {
+    if ("Agotado".equalsIgnoreCase(d.getEstado()) || "Eliminado".equalsIgnoreCase(d.getEstado())) {
+        return d.getEstado(); // no se cambia
+    }
+    java.util.Date hoy = new java.util.Date();
+    if (d.getFecha_vencimiento() != null && d.getFecha_vencimiento().before(hoy)) {
+        return "Vencido";
+    }
+    return "Activo";
+}
+
+public double calcularStockActual(int id_insumo) {
+    double stock = 0;
+    String sql = "SELECT SUM(cantidad) AS total FROM detalle_insumo WHERE id_ins=? AND estado='Activo'";
+    try (Connection con = ConDB.conectar();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, id_insumo);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) stock = rs.getDouble("total");
+        }
+    } catch (SQLException e) { 
+        e.printStackTrace(); 
+    }
+    return stock;
 }
 
 
