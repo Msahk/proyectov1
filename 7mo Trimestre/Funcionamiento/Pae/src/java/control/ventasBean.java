@@ -242,6 +242,7 @@ public class ventasBean implements Serializable {
         cargarUsuarios();
         cargarClientes();
         cargarRecetas();
+        
 
         // ✅ Asignar correctamente la lista de usuarios de venta
         listaUsuariosVenta = listarUsuariosVenta();
@@ -1072,15 +1073,23 @@ public class ventasBean implements Serializable {
 
         return lista;
     }
+    
+    public int conteo(int id) {
+        int conteo = ventasDao.obtenerConteoProduccion(id);
+        return conteo;
+    }
 
     public String getNombreAsignado(ventas venta) {
-        if (venta.getIdAsignado() > 0) { // 0 significa que no está asignado
+        if (venta.getIdAsignado() > 0) {
             usuarios usuario = usuariosDao.obtenerPorId(venta.getIdAsignado());
             if (usuario != null) {
                 return usuario.getNombres() + " " + usuario.getApellidos();
             }
         }
-        return "-"; // si no está asignado
+        return "-";
     }
+    
+    
+   
 
 }

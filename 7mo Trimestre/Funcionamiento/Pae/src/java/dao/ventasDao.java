@@ -438,5 +438,34 @@ public boolean actualizarObservaciones(int idVen, String observaciones) {
             System.out.println("❌ Error al actualizar estado del pedido asociado: " + e.getMessage());
         }
     }
+    
+    
+    public int obtenerConteoProduccion(int id) {
+    String sql =
+        "select count(*) as conteo from produccion where id_asignado = ?";
+
+    int conteo = 0;
+
+    try (Connection con = ConDB.conectar();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, id);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                conteo = rs.getInt("conteo");
+                
+            } else {
+                System.out.println(" obtenerPorId(): no se encontró la venta con id = " + id);
+            }
+        }
+
+    } catch (SQLException e) {
+        System.out.println(" Error en obtenerPorId(): " + e.getMessage());
+        e.printStackTrace();
+    }
+
+    return conteo;
+}
 
 }

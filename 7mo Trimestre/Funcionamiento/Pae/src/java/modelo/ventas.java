@@ -21,10 +21,17 @@ public class ventas implements Serializable {
     private Date fecha;
     private String observaciones;
     private String apellidoUsuario;
+    private int numeroProduccion;
+    
+    
 
+    public int getNumeroProduccion() {
+        return numeroProduccion;
+    }
 
-
-    // 🔹 Getters y Setters
+    public void setNumeroProduccion(int numeroProduccion) {
+        this.numeroProduccion = numeroProduccion;
+    }
 
     public int getIdVen() {
         return idVen;
