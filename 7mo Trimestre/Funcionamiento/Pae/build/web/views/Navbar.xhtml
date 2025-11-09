@@ -2,87 +2,136 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
-<h:head>
-    <title>Dashboard</title>
-    <h:outputStylesheet library="css" name="tablas.css"/>
-    <h:outputStylesheet library="css" name="navbar.css"/>
-    <h:outputStylesheet library="css" name="index.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
-      rel="stylesheet"/>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" 
-          rel="stylesheet" />
-<link rel="stylesheet" 
-              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@6.0.0/primeicons.css" />
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      >
+    <h:head>
+        <title>Dashboard</title>
 
-    
-</h:head>
-    <h:body styleClass="body">
-        <f:metadata>
-  <f:event type="preRenderView" listener="#{sessionUser.checkLogin}" />
-</f:metadata>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+              rel="stylesheet"/>
+        <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"/>
 
-    <header class="header">
-        <div class="logo">Peguele a la empanada</div>
-    
+        <h:outputStylesheet library="css" name="navbar.css" />
+        <h:outputStylesheet library="css" name="estilos.css" />
+
         
-        <h:form>
-        <p:menubar styleClass="navbar">
-           <p:submenu label="Administración" rendered="#{sessionUser.rol == 'A'}">
+        <link rel="favicon" href="/assets/img/logo.png"/>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{sessionUser.checkLogin}" />
+        </f:metadata>
 
 
-                <p:menuitem value="Usuarios" outcome="/views/Usuarios/Index.xhtml"/>
-                <p:menuitem value="Ventas" outcome="/views/Ventas/index.xhtml"/>
-               
+        <nav class="sidebar">
+                <header>
+                    <div class="image-text">
+                        <span class="image"><img src="#{request.contextPath}/assets/img/logo.png" alt="logo"/></span>
+                        <div class="text header-text"><span class="name">PAE</span></div>
+                    </div>
+                    <i class="bx bx-chevron-right toggle"></i>
+                </header>
 
-                
+                <div class="menu-bar">
+                    <div class="menu">
 
-                <p:menuitem value="Recetas" outcome="/views/Recetas/recetas.xhtml"/>
-                <p:menuitem value="Inventario" outcome="/views/Insumos/insumos.xhtml"/>
+            <h:form>
 
+                        <ul class="menu-links">
+                            <li class="nav-link">
 
+                                <h:outputLink value="#{request.contextPath}/views/Dashboard.xhtml" styleClass="nav-anchor">
+                                    <i class="bx bx-home-alt icon"></i>
+                                    <span class="text nav-text">Inicio</span>
+                                </h:outputLink>
 
-                <p:menuitem value="Producción" outcome="/views/Producciones/produccion.xhtml"/>
+                            </li>
+                            <ui:fragment rendered="#{sessionUser.rol == 'A'}">
+                                <li class="nav-link">
+                                    <h:link outcome="/views/Usuarios/Index.xhtml" styleClass="nav-anchor">
+                                        <i class="bx bx-user icon"></i>
+                                        <span class="text nav-text">Usuarios</span>
+                                    </h:link>
 
+                                </li>
+                            </ui:fragment>
 
-            </p:submenu>
+                            <ui:fragment rendered="#{sessionUser.rol == 'A' or sessionUser.rol == 'EV'}">
+                                <li class="nav-link">
 
-            <p:submenu label="Productor" rendered="#{sessionUser.rol == 'EP'}">
-                
-                <p:menuitem value="Inventario" outcome="/views/Insumos/insumos.xhtml"/>
-                <p:menuitem value="Recetas" outcome="/views/Recetas/recetas.xhtml"/>
-                <p:menuitem value="Producción" outcome="/views/Producciones/produccion.xhtml"/>
-                
-                
-            </p:submenu>
+                                    <h:link outcome="/views/Ventas/index.xhtml" styleClass="nav-anchor">
+                                        <i class="bx bx-department-store icon"></i>
+                                        <span class="text nav-text">Ventas</span>
+                                    </h:link>
 
-            <p:submenu label="Vendedor" rendered="#{sessionUser.rol == 'EV'}">
-                
-                
-                <p:menuitem value="Ventas" outcome="/views/Ventas/index.xhtml"/>
-               
-            </p:submenu>
+                                </li>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{sessionUser.rol == 'A' or sessionUser.rol == 'EP'}">
+                                <li class="nav-link">
+
+                                    <h:link outcome="/views/Recetas/recetas.xhtml" styleClass="nav-anchor">
+                                        <i class="bx bx-price-tag icon"></i>
+                                        <span class="text nav-text">Recetas</span>
+                                    </h:link>
+
+                                </li>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{sessionUser.rol == 'A' or sessionUser.rol == 'EP'}">
+                                <li class="nav-link">
+
+                                    <h:link outcome="/views/Insumos/insumos.xhtml" styleClass="nav-anchor">
+                                        <i class="bx bx-groceries icon"></i>
+                                        <span class="text nav-text">Inventario</span>
+                                    </h:link>
+
+                                </li>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{sessionUser.rol == 'A' or sessionUser.rol == 'EP'}">
+                                <li class="nav-link">
+
+                                    <h:link outcome="/views/Producciones/produccion.xhtml" styleClass="nav-anchor">
+                                        <i class="bx bx-store-alt-2 icon"></i>
+                                        <span class="text nav-text">Producción</span>
+                                    </h:link>
+
+                                </li>
+                            </ui:fragment>
+                        </ul>
+                </h:form>
+                    </div>
+
+                    <div class="bottom-content">
+                        <h:form>
+                        <ui:fragment rendered="#{sessionUser.rol == 'A' or sessionUser.rol == 'EP' or sessionUser.rol == 'EV'}">
+                            <li>
+
+                                <h:commandLink action="#{sessionUser.logout}" >
+                                    <i class="bx bx-arrow-out-left-square-half icon"></i>
+                                    <span class="text nav-text">Cerrar Sesión</span>
+                                </h:commandLink>
+
+                            </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{sessionUser.rol == 'A' or sessionUser.rol == 'EP' or sessionUser.rol == 'EV'}">
+                            <li class="mode">
+                                <div class="moon-sun">
+                                    <i class="bx bx-moon icon moon"></i>
+                                    <i class="bx bx-sun icon sun"></i>
+                                </div>
+                                <span class="mode-text text">Oscuro</span>
+                                <div class="toggle-switch"><span class="switch"></span></div>
+                            </li>
+                        </ui:fragment>
+                            </h:form>
+                    </div>
+                </div>
             
-            
-            <p:submenu label="Perfil">
-                
-                <p:menuitem value="">
-                    
-                    <p> #{sessionUser.nombres} #{sessionUser.apellidos}</p>  
-                    <p><b>Tu rol:</b> #{sessionUser.rol eq 'A' ? 'Administrador' : (sessionUser.rol eq 'EP' ? 'Produccion' : (sessionUser.rol eq 'EV' ? 'Ventas' : Desconocido))}</p>
-                    
-                </p:menuitem>
-                
-
-            <p:menuitem value="‎ ­­Cerrar Sesión" action="#{sessionUser.logout}" ajax="false" icon="pi pi-sign-out"/>
-                
-            </p:submenu>
-            
+        </nav>
 
 
-        </p:menubar>
-    </h:form>
-        </header>
-</h:body>
+        <script src="#{request.contextPath}/assets/js/nav.js"></script>
+        <script src="#{request.contextPath}/assets/js/tabla.js"></script>
+    </h:body>
 </html>

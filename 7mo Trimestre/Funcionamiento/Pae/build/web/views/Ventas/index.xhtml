@@ -4,138 +4,98 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-<h:head>
-    <title>Gestión de Ventas</title>
-    <link rel="stylesheet" 
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-</h:head>
+    <h:head>
+        <title>Gestión de Ventas</title>
+    </h:head>
 
-<h:body class="body">
-    <f:event type="preRenderView" listener="#{ventasBean.cargarVentas()}" />
-    <ui:include src="/views/Navbar.xhtml" />
+    <h:body>
+        <ui:include src="/views/Navbar.xhtml" />
+        <f:event type="preRenderView" listener="#{ventasBean.cargarVentas()}" />    
+        <p:growl id="msj" showDetail="true" showSummary="true" />
 
-    <center>
-        <div class="container mt-5" style="max-width: 1600px">
-            <div class="card shadow p-3">
-                <h1>Gestión de Ventas</h1>
+        <section class="home">
+            <div class="contenedor">
+                <div class="tabla">
+                    <section class="card">
+                        <h:form>
+                            <div class="encabezado">
+                                <h2><i class='bx  bx-bar-chart-big'></i> Gestión de Ventas</h2>
+                                <div>
 
-                <h:form id="filtroVentasForm">
-                    
-                    <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
-                        <h:commandButton value="Reporte PDF"
-                                         styleClass="btn btn-primary"
-                                         actionListener="#{ventasBean.exportarPDF}" />
-                        <h:commandButton value="Nueva Venta"
-                                         styleClass="btn btn-primary"
-                                         action="nuevaVenta.xhtml?faces-redirect=true" />
-                        <h:commandButton value="Gestionar Clientes"
-                                         styleClass="btn btn-primary"
-                                         action="/views/Clientes/Index.xhtml?faces-redirect=true" />
-                        <h:commandButton value="Migrar"
-                                         styleClass="btn btn-primary"
-                                         action="/views/Ventas/migrarVentas.xhtml?faces-redirect=true" />
-                        
-                    </div>
+                                    <h:commandButton value="Nueva Venta"  styleClass="export-btn" style="margin-left: 10px" action="nuevaVenta.xhtml?faces-redirect=true" />
+                                    <h:commandButton value="Reporte PDF"  styleClass="export-btn" style="margin-left: 10px" actionListener="#{ventasBean.exportarPDF}" />
+                                    <h:commandButton value="Gestionar Clientes" styleClass="export-btn" style="margin-left: 10px" action="/views/Clientes/Index.xhtml?faces-redirect=true" />
+                                    <h:commandButton value="Migrar" styleClass="export-btn" style="margin-left: 10px" action="/views/Ventas/migrarVentas.xhtml?faces-redirect=true" />
+                                </div>
 
-                    
-                    <p:dataTable value="#{ventasBean.listaVentas}" var="venta"
-                                 widgetVar="wtVentas"
-                                 paginator="true" rows="5"
-                                 paginatorPosition="bottom"
-                                 filteredValue="#{ventasBean.listaVentasFiltradas}"
-                                 emptyMessage="No se encontraron registros"
-                                 filterEvent="keyup"
-                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
-                                 rowsPerPageTemplate="5,10,{ShowAll|'Todos'}">
-
-                        <f:facet name="header">
-                            <div align="right">
-                                <p:inputText id="globalFilter" onkeyup="PF('wtVentas').filter()"
-                                             style="width:10rem" placeholder="Buscar ..." />
                             </div>
-                        </f:facet>
 
-                        <p:column headerText="ID" sortBy="#{venta.idVen}" filterBy="#{venta.idVen}">
-                            <h:outputText value="#{venta.idVen}" />
-                        </p:column>
 
-                        <p:column headerText="Tipo" sortBy="#{venta.tipo}" filterBy="#{venta.tipo}">
-                            <h:outputText value="#{venta.tipo}" />
-                        </p:column>
+                            <h:panelGroup id="tablaUsuariosWrapper">
+                                <div class="wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Id <span class="draggable" onmousedown="initResize(0)"></span></th>
+                                                <th>Tipo <span class="draggable" onmousedown="initResize(1)"></span></th>
+                                                <th>Cliente <span class="draggable" onmousedown="initResize(2)"></span></th>
+                                                <th>Registrada por <span class="draggable" onmousedown="initResize(3)"></span></th>
+                                                <th>Asignado A <span class="draggable" onmousedown="initResize(4)"></span></th>
+                                                <th>Total <span class="draggable" onmousedown="initResize(5)"></span></th>
+                                                <th>Estado  <span class="draggable" onmousedown="initResize(6)"></span></th>
+                                                <th>Observaciones <span class="draggable" onmousedown="initResize(7)"></span></th>
+                                                <th style="width:5rem">Opciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <ui:repeat value="#{ventasBean.listaVentas}" var="venta">
+                                                <tr>
+                                                    <td><span class="cell-content"><h:outputText value="#{venta.idVen}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{venta.tipo}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{venta.nombreCliente}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{venta.nombreUsuario}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{ventasBean.getNombreAsignado(venta)}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{venta.total}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{venta.estado}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{venta.observaciones}" /></span></td>
+                                                    <td>
+                                                        <h:commandLink action="editarVentas"
+                                                                       actionListener="#{ventasBean.prepararEdicion(venta)}"
+                                                                       styleClass="btn btn-outline-success ">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </h:commandLink>
 
-                        <p:column headerText="Cliente" sortBy="#{venta.nombreCliente}" filterBy="#{venta.nombreCliente}">
-                            <h:outputText value="#{venta.nombreCliente}" />
-                        </p:column>
+                                                        <h:commandLink onclick="return confirm('¿Está seguro de eliminar la venta?')"
+                                                                       actionListener="#{ventasBean.eliminarVenta(venta.idVen)}"
+                                                                       styleClass="btn btn-outline-danger btn-sm">
+                                                            <i class="bi bi-trash"></i>
+                                                        </h:commandLink>
 
-                        <p:column headerText="Registrada por" sortBy="#{venta.nombreUsuario}" filterBy="#{venta.nombreUsuario}">
-                            <h:outputText value="#{venta.nombreUsuario}" />
-                        </p:column>
+                                                        <h:link outcome="/views/Ventas/gestionarrecetas.xhtml"
+                                                                styleClass="btn btn-outline-warning">
+                                                            <f:param name="idVenta" value="#{venta.idVen}" />
+                                                            <i class="bi bi-eye"></i>
+                                                        </h:link>
 
-                       
-                        <p:column headerText="Asignado a"
-                                  filterBy="#{ventasBean.getNombreAsignado(venta)}"
-                                  sortBy="#{ventasBean.getNombreAsignado(venta)}"
-                                  filterMatchMode="contains">
-                            <h:outputText value="#{ventasBean.getNombreAsignado(venta)}" />
-                        </p:column>
-
-                        <p:column headerText="Total" sortBy="#{venta.total}" filterBy="#{venta.total}">
-                            <h:outputText value="#{venta.total}" />
-                        </p:column>
-
-                        <p:column headerText="Estado" sortBy="#{venta.estado}" filterBy="#{venta.estado}">
-                            <h:outputText value="#{venta.estado}" />
-                        </p:column>
-
-                        <p:column headerText="Observaciones" sortBy="#{venta.observaciones}" filterBy="#{venta.observaciones}">
-                            <h:outputText value="#{venta.observaciones}" />
-                        </p:column>
-
-                       
-                       <p:column headerText="Opciones" style="width: 220px; text-align: center;">
-    <div class="d-flex justify-content-center gap-2">
-        <h:commandLink action="editarVentas"
-                       actionListener="#{ventasBean.prepararEdicion(venta)}"
-                       styleClass="btn btn-outline-warning btn-sm"
-                       title="Editar">
-            <i class="bi bi-pencil"></i>
-        </h:commandLink>
-
-        <h:commandLink onclick="return confirm('¿Está seguro de eliminar la venta?')"
-                       actionListener="#{ventasBean.eliminarVenta(venta.idVen)}"
-                       styleClass="btn btn-outline-danger btn-sm"
-                       title="Eliminar">
-            <i class="bi bi-trash"></i>
-        </h:commandLink>
-
-        <h:link outcome="/views/Ventas/gestionarrecetas.xhtml"
-                styleClass="btn btn-outline-primary btn-sm"
-                title="Ver detalle">
-            <f:param name="idVenta" value="#{venta.idVen}" />
-            <i class="bi bi-eye"></i>
-        </h:link>
-
-        <h:link outcome="/views/Ventas/pago.xhtml?faces-redirect=true"
-                styleClass="btn btn-outline-success btn-sm"
-                title="Gestionar pagos">
-            <f:param name="idVenta" value="#{venta.idVen}" />
-            <i class="bi bi-receipt"></i>
-        </h:link>
-    </div>
-</p:column>
-                    </p:dataTable>
-                </h:form>
-
-                <br/>
-                <h:form>
-                    <p:commandButton value="Menú anterior"
-                                     icon="pi pi-home"
-                                     action="/views/Dashboard.xhtml?faces-redirect=true"
-                                     styleClass="btn btn-secondary" />
-                </h:form>
+                                                        <h:link outcome="/views/Ventas/pago.xhtml?faces-redirect=true"
+                                                                styleClass="btn btn-outline-success btn-sm"
+                                                                title="Gestionar pagos">
+                                                            <f:param name="idVenta" value="#{venta.idVen}" />
+                                                            <i class="bi bi-receipt"></i>
+                                                        </h:link>
+                                                    </td>
+                                                </tr>
+                                            </ui:repeat>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </h:panelGroup>
+                            <h:commandLink styleClass="btn-back" action="/views/Dashboard.xhtml?faces-redirect=true"><i class='bx  bx-chevron-left'></i> Volver</h:commandLink>
+                        </h:form>
+                    </section>         
+                </div>
             </div>
-        </div>
-    </center>
-</h:body>
+        </section>
+        <script type="text/javascript" src="/assets/js/tabla.js"></script>
+    </h:body>
 </html>

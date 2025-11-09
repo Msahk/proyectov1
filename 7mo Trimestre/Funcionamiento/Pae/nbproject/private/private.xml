@@ -3,14 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Producciones/produccion.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/produccionDao.java</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/detalle_insumoDao.java</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/DetalleInsumoBean.java</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/insumosDao.java</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/modelo/insumos.java</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/insumosBean.java</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Insumos/insumos.xhtml</file>
+            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/src/java/modelo/ventas.java</file>
+            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/ventasBean.java</file>
+            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/ventasDao.java</file>
+            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/nuevaVenta.xhtml</file>
         </group>
     </open-files>
 </project-private>

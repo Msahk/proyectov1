@@ -5,234 +5,165 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 
-<h:head>
-    <title>Registrar Nueva Venta</title>
-    <link rel="stylesheet" 
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-</h:head>
+    <h:head>
+        <title>Registrar Nueva Venta</title>
+        <h:outputStylesheet library="css" name="formularios.css"/>
+    </h:head>
 
-<h:body class="bg-light">
+    <h:body>
+        <ui:include src="/views/Navbar.xhtml" />
+        <f:event type="preRenderView" listener="#{ventasBean.inicializarNuevaVenta}" />
 
-    <ui:include src="/views/Navbar.xhtml" />
-    <f:event type="preRenderView" listener="#{ventasBean.inicializarNuevaVenta}" />
+        <section class="home">
+            <div class="card-form">
+                <div class="formulario">
+                    <h2>Registrar Nueva Venta</h2>
+                    <h:form id="formVentaCompleto">
 
-    <div class="container mt-5">
-        <div class="card shadow p-4">
-            <h2 class="text-center mb-4">Registrar Nueva Venta</h2>
-            <hr/>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cliente">Cliente existente</label>
+                                <h:selectOneMenu id="cliente"
+                                                 value="#{ventasBean.ventaNueva.idCliente}"
+                                                 styleClass="select"
+                                                 required="#{!ventasBean.nuevoCliente}"
+                                                 requiredMessage="Seleccione un cliente existente.">
+                                    <f:selectItem itemLabel="-- Seleccione --" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{ventasBean.listaClientes}" var="cliente"
+                                                   itemValue="#{cliente.id_Cliente}" itemLabel="#{cliente.nombre}" />
+                                </h:selectOneMenu>
+                                <h:message for="cliente" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;"/>
+                            </div>
+                        </div>
 
-            <h:form id="formVentaCompleto">
-                <p:growl id="msg" showDetail="true" life="4000" />
+                        <div class="form-row">
+                            <div class="form-group full">
+                                <label for="usuarioVenta">Usuario que registra la venta</label>
+                                <h:inputText id="usuarioVenta"
+                                             value="#{sessionUser.nombres} #{sessionUser.apellidos} (#{sessionUser.rol})"
+                                             disabled="true"
+                                             styleClass="input" />
+                                <h:inputHidden value="#{sessionUser.idUsu}" />
+                            </div>
 
-                <h:messages globalOnly="true" layout="table" styleClass="alert alert-warning"/>
 
 
+                            <div class="form-group">
+                                <label for="idAsignado">Asignado a (EP)</label>
+                                <h:selectOneMenu id="idAsignado"
+                                                 value="#{ventasBean.ventaNueva.idAsignado}"
+                                                 styleClass="select"
+                                                 required="true"
+                                                 requiredMessage="Seleccione el empleado.">
+                                    <f:selectItem itemLabel="-- Seleccione --" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{ventasBean.listaUsuariosEP}" var="usuario"
+                                                   itemValue="#{usuario.idUsu}" 
+                                                   itemLabel="#{usuario.nombres} #{usuario.apellidos} #{ventasBean.conteo(usuario.idUsu)}" />
+                                </h:selectOneMenu>
+                                <h:message for="idAsignado" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;"/>
+                            </div>
+                        </div>
 
-                <!-- USUARIO QUE REGISTRA -->
-               <div class="row mb-3">
-    <div class="col-md-6">
-        <h:outputLabel for="usuarioVentaReadOnly" value="Usuario que registra la venta:" styleClass="form-label" />
-        <h:outputText id="usuarioVentaReadOnly" value="#{sessionUser.nombres} #{sessionUser.apellidos}" styleClass="form-control-plaintext" />
-        <h:inputHidden id="usuarioVenta" value="#{ventasBean.ventaNueva.idUsuario}" />
-        <h:message for="usuarioVenta" styleClass="text-danger" />
-    </div>
-</div>
+                        <div class="form-group full">
+                            <label>¿Registrar cliente nuevo?</label>
+                            <h:selectBooleanCheckbox id="chkNuevoCliente" value="#{ventasBean.nuevoCliente}">
+                                <f:ajax render="panelNuevoCliente cliente" />
+                            </h:selectBooleanCheckbox>
+                        </div>
 
-                
-               
-                <!-- USUARIO ASIGNADO -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <h:outputLabel for="idAsignado" value="Asignado a (EP):" styleClass="form-label" />
-                        <p:selectOneMenu id="idAsignado" value="#{ventasBean.ventaNueva.idAsignado}" 
-                                         styleClass="form-select" required="true" requiredMessage="Seleccione el empleado.">
-                            <f:selectItem itemLabel="-- Selecciona --" itemValue="#{null}" noSelectionOption="true"/>
-                            <f:selectItems value="#{ventasBean.listaUsuariosEP}" var="usuario"
-                                           itemValue="#{usuario.idUsu}" 
-                                           itemLabel="#{usuario.nombres} #{usuario.apellidos} - #{ventasBean.conteo(usuario.idUsu)}" />
-                        </p:selectOneMenu>
-                        <h:message for="idAsignado" styleClass="text-danger"/>
-                    </div>
+                        <h:panelGroup id="panelNuevoCliente">
+                            <h:panelGroup rendered="#{ventasBean.nuevoCliente}">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Nombre</label>
+                                        <h:inputText value="#{ventasBean.clienteNuevo.nombre}" styleClass="input" required="true"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Teléfono</label>
+                                        <h:inputText value="#{ventasBean.clienteNuevo.telefono}" styleClass="input"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Correo</label>
+                                        <h:inputText value="#{ventasBean.clienteNuevo.correo}" styleClass="input"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>NIT</label>
+                                        <h:inputText value="#{ventasBean.clienteNuevo.nit}" styleClass="input" required="true"
+                                                     requiredMessage="El NIT es obligatorio para el cliente nuevo"/>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+
+                        <div class="form-group full">
+                            <label>Observaciones</label>
+                            <h:inputTextarea value="#{ventasBean.ventaNueva.observaciones}" styleClass="input" rows="3"/>
+                        </div>
+
+                        <hr/>
+                        <h3>Detalle de Empanadas</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="receta">Selecciona la empanada</label>
+                                <h:selectOneMenu id="receta" value="#{ventasBean.recetaSeleccionada}" styleClass="select">
+                                    <f:selectItem itemLabel="-- Selecciona --" itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{ventasBean.listaRecetas}" var="r"
+                                                   itemValue="#{r.id_rec}" itemLabel="#{r.nombre}" />
+                                    <f:ajax listener="#{ventasBean.actualizarPrecioReceta}" render="precioEmpanada subtotalEmpanada"/>
+                                </h:selectOneMenu>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Precio unitario</label>
+                                <h:outputText id="precioEmpanada" value="#{ventasBean.precioRecetaSeleccionada}">
+                                    <f:convertNumber type="currency" currencySymbol="$"/>
+                                </h:outputText>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Cantidad</label>
+                                <h:inputText id="cantidad" value="#{ventasBean.cantidadEmpanada}" styleClass="input">
+                                    <f:ajax event="keyup" listener="#{ventasBean.calcularSubtotalEmpanada}" render="subtotalEmpanada"/>
+                                </h:inputText>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Subtotal</label>
+                                <h:outputText id="subtotalEmpanada" value="#{ventasBean.subtotalEmpanada}">
+                                    <f:convertNumber type="currency" currencySymbol="$"/>
+                                </h:outputText>
+                            </div>
+
+                            <div class="form-group">
+                                <h:commandButton value="Agregar al carrito"
+                                                 action="#{ventasBean.agregarDetalleEmpanada}"
+                                                 styleClass="btn-outline-danger" />
+                            </div>
+                        </div>
+
+                        <div class="form-group full text-right">
+                            <h4>Total de la venta: 
+                                <h:outputText id="totalVenta" value="#{ventasBean.ventaNueva.total}">
+                                    <f:convertNumber type="currency" currencySymbol="$"/>
+                                </h:outputText>
+                            </h4>
+                        </div>
+
+                        <div class="botones">
+                                <h:commandButton value="Registrar Venta"
+                                                 action="#{ventasBean.registrarVenta}"
+                                                 styleClass="btn-primario"/>
+                                <h:commandButton value="Volver"
+                                                 action="#{ventasBean.volverALaLista}"
+                                                 immediate="true"
+                                                 styleClass="btn-secundario"/>
+                        </div>
+
+                    </h:form>
                 </div>
-
-                <!-- ACA ESTA EL AJUSTE DE LAS VENTAS QUE HICE YO ESTEBAN -->
-<div class="row mb-3">
-    <div class="col-md-6">
-        <h:outputLabel for="clienteSelect" value="Cliente existente:" styleClass="form-label" />
-        <p:selectOneMenu id="clienteSelect"
-                 value="#{ventasBean.ventaNueva.idCliente}"
-                 styleClass="form-select"
-                 filter="true"
-                 filterMatchMode="contains"
-                 required="#{!ventasBean.nuevoCliente}"
-                 requiredMessage="Seleccione un cliente existente.">
-    <f:selectItem itemLabel="-- Selecciona --" itemValue="#{null}" noSelectionOption="true"/>
-    <f:selectItems value="#{ventasBean.listaClientes}" var="cliente"
-                   itemValue="#{cliente.id_Cliente}" itemLabel="#{cliente.nombre}" />
-    <p:ajax event="change" process="@this"
-            listener="#{ventasBean.onClienteChange}"
-            update=":formVentaCompleto:nuevoClientePanel :formVentaCompleto:chkNuevoCliente :formVentaCompleto:clienteSelect" />
-</p:selectOneMenu>
-        <h:message for="clienteSelect" styleClass="text-danger" />
-    </div>
-</div>
-
-<!-- CLIENTE NUEVO (checkbox) -->
-<div class="row mb-3">
-    <div class="col-md-6 d-flex align-items-center">
-        <h:outputLabel value="¿Registrar cliente nuevo?" styleClass="form-label me-2" />
-        <p:selectBooleanCheckbox id="chkNuevoCliente"
-                                value="#{ventasBean.nuevoCliente}"
-                                disabled="#{ventasBean.ventaNueva.idCliente gt 0}">
-            <!-- actualizar el panel y el checkbox por id absoluto -->
-            <p:ajax process="@this" update=":formVentaCompleto:nuevoClientePanel :formVentaCompleto:chkNuevoCliente" />
-        </p:selectBooleanCheckbox>
-    </div>
-</div>
-
-<!-- Panel de cliente nuevo -->
-<h:panelGroup id="nuevoClientePanel">
-    <h:panelGroup rendered="#{ventasBean.nuevoCliente}">
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <h:outputLabel value="Nombre:" styleClass="form-label" />
-                <p:inputText value="#{ventasBean.clienteNuevo.nombre}" styleClass="form-control" required="true" />
             </div>
-            <div class="col-md-4">
-                <h:outputLabel value="Teléfono:" styleClass="form-label" />
-                <p:inputText value="#{ventasBean.clienteNuevo.telefono}" styleClass="form-control" />
-            </div>
-            <div class="col-md-4">
-                <h:outputLabel value="Correo:" styleClass="form-label" />
-                <p:inputText value="#{ventasBean.clienteNuevo.correo}" styleClass="form-control" />
-            </div>
-
-            <div class="col-md-3">
-                <h:outputLabel value="NIT:" styleClass="form-label" />
-                <p:inputText value="#{ventasBean.clienteNuevo.nit}" styleClass="form-control"
-                             required="true" requiredMessage="El NIT es obligatorio para el cliente nuevo"/>
-            </div>
-        </div>
-    </h:panelGroup>
-</h:panelGroup>
-
-                <!-- OBSERVACIONES -->
-                <div class="mb-3">
-                    <h:outputLabel value="Observaciones:" styleClass="form-label" />
-                    <p:inputTextarea value="#{ventasBean.ventaNueva.observaciones}" 
-                                     autoResize="true" styleClass="form-control" />
-                </div>
-
-                <hr/>
-                <h3 class="text-center mb-3">Detalle de Empanadas</h3>
-
-                <!-- EMPANADA -->
-                <div class="card p-3 mb-4 bg-light">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-4">
-                            <h:outputLabel for="receta" value="Selecciona la empanada:" styleClass="form-label" />
-                            <p:selectOneMenu id="receta" value="#{ventasBean.recetaSeleccionada}" styleClass="form-select">
-                                <f:selectItem itemLabel="-- Selecciona --" itemValue="#{null}" noSelectionOption="true" />
-                                <f:selectItems value="#{ventasBean.listaRecetas}" var="r"
-                                               itemValue="#{r.id_rec}" itemLabel="#{r.nombre}" />
-                                <p:ajax listener="#{ventasBean.actualizarPrecioReceta}" 
-                                        update="precioEmpanada subtotalEmpanada" />
-                            </p:selectOneMenu>
-                        </div>
-
-                        <div class="col-md-2">
-                            <h:outputLabel value="Precio unitario:" styleClass="form-label" />
-                            <h:outputText id="precioEmpanada" value="#{ventasBean.precioRecetaSeleccionada}">
-                                <f:convertNumber type="currency" currencySymbol="$" />
-                            </h:outputText>
-                        </div>
-
-                        <div class="col-md-2">
-                            <h:outputLabel value="Cantidad:" styleClass="form-label" />
-                            <p:inputText id="cantidad" value="#{ventasBean.cantidadEmpanada}" styleClass="form-control">
-                                <p:ajax event="keyup" listener="#{ventasBean.calcularSubtotalEmpanada}" 
-                                        update="subtotalEmpanada" />
-                            </p:inputText>
-                        </div>
-
-                        <div class="col-md-2">
-                            <h:outputLabel value="Subtotal:" styleClass="form-label" />
-                            <h:outputText id="subtotalEmpanada" value="#{ventasBean.subtotalEmpanada}">
-                                <f:convertNumber type="currency" currencySymbol="$" />
-                            </h:outputText>
-                        </div>
-
-                        <div class="col-md-2 text-center">
-                            <p:commandButton value="Agregar al carrito"
-                                             action="#{ventasBean.agregarDetalleEmpanada}"
-                                             update="tablaEmpanadas totalVenta msg"
-                                             icon="pi pi-plus"
-                                             styleClass="btn btn-primary w-100" />
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TABLA DETALLES -->
-               <p:dataTable id="tablaEmpanadas" 
-             value="#{ventasBean.detallesVenta}" 
-             var="det"
-             widgetVar="tablaEmpanadasWidget"
-             styleClass="table table-bordered text-center"
-             emptyMessage="No hay empanadas agregadas">
-
-    <p:column headerText="Empanada">
-        <h:outputText value="#{det.nombreEmpanada}" />
-    </p:column>
-
-    <p:column headerText="Cantidad">
-        <h:outputText value="#{det.cantidad}" />
-    </p:column>
-
-    <p:column headerText="Precio Unitario">
-        <h:outputText value="#{det.precioUnitario}">
-            <f:convertNumber type="currency" currencySymbol="$" />
-        </h:outputText>
-    </p:column>
-
-    <p:column headerText="Subtotal">
-        <h:outputText value="#{det.subtotal}">
-            <f:convertNumber type="currency" currencySymbol="$" />
-        </h:outputText>
-    </p:column>
-
-    <p:column headerText="Acción">
-        <p:commandButton value="Eliminar" icon="pi pi-trash" 
-                         action="#{ventasBean.eliminarDetalle(det)}"
-                         update=":formVentaCompleto:tablaEmpanadas :formVentaCompleto:totalVenta :formVentaCompleto:msg"
-                         styleClass="ui-button-danger btn-sm" />
-    </p:column>
-</p:dataTable>
-
-<div class="text-end mt-3">
-    <h4>Total de la venta: 
-        <h:outputText id="totalVenta" value="#{ventasBean.ventaNueva.total}">
-            <f:convertNumber type="currency" currencySymbol="$" />
-        </h:outputText>
-    </h4>
-</div>
-
-                
-                <div class="mt-4 text-center">
-                    <p:commandButton value="Registrar Venta"
-                                     action="#{ventasBean.registrarVenta}"
-                                     update="@form msg"
-                                     icon="pi pi-check"
-                                     styleClass="ui-button-success px-4" />
-
-                    <p:commandButton value="Volver"
-                                     action="#{ventasBean.volverALaLista}"
-                                     immediate="true"
-                                     icon="pi pi-arrow-left"
-                                     styleClass="ui-button-secondary ms-3 px-4" />
-                </div>
-
-            </h:form>
-        </div>
-    </div>
-</h:body>
+        </section>
+    </h:body>
 </html>
