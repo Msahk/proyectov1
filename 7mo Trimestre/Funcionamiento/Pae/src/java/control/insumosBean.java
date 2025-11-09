@@ -41,22 +41,29 @@ public class insumosBean implements Serializable {
 
 public void listar() {
     try {
+        // 🔹 Traer todos los insumos
         lstInsumos = dao.listar();
         if (lstInsumos == null) lstInsumos = new ArrayList<>();
 
-        // 🔹 Actualizar stock actual desde detalle_insumo (solo activos)
+        // 🔹 Actualizar stock y estado según los lotes de detalle_insumo
         for (insumos i : lstInsumos) {
+            // Calcular stock real usando solo lotes activos
             double stockReal = detalleDao.calcularStockActual(i.getId_ins());
             i.setStock_actual(stockReal);
+
+            // Recalcular estado según stock real
             i.recalcularEstado();
+
+            // 🔹 Sincronizar en la base de datos
+            dao.actualizar(i);
         }
 
-        verificarStockYEstado();
     } catch (Exception e) {
         e.printStackTrace();
         lstInsumos = new ArrayList<>();
     }
 }
+
 
 
 
