@@ -147,8 +147,6 @@ public class usuariosBean implements Serializable {
         this.lstUsuFiltrados = lstUsuFiltrados;
     }
 
-    
-    
     public void autenticar() {
     boolean logged = false;
     String message = null;

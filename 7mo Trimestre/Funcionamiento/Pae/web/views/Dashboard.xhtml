@@ -30,33 +30,67 @@
                             </button>
                         </div>
                     </section>
-                    
+
                     <section class="cards">
-                    <article class=" cards__card">
-                        <div class="card__texto">
-                            <span class="card-numeros">3.5 litros</span>
-                            <span class="card-nombre">Agua</span>
-                        </div>
-                        <div class="card__icono">
-                            <i class="bi bi-speedometer2"></i>
-                        </div>
+                        <article class=" cards__card">
+                            <div class="card__texto">
+                                <span class="card-numeros">#{dashboardBean.conteoUsuarios()}</span>
+                                <span class="card-nombre">Usuarios Registrados</span>
+                            </div>
+                            <div class="card__icono">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                        </article>
+                        <article class="cards__card">
+                            <div class="card__texto">
+                                <span class="card-numeros">#{dashboardBean.conteoProduccion()}</span>
+                                <span class="card-nombre">Producciones Realizadas</span>
+                            </div>
+                            <div class="card__icono">
+                                <i class="bx bx-store-alt-2 icon"></i>
+                            </div>
+                        </article>
+                        <article class=" cards__card">
+                            <div class="card__texto">
+                                <span class="card-numeros">#{dashboardBean.conteoVentas()}</span>
+                                <span class="card-nombre">Ventas que se han realizado</span>
+                            </div>
+                            <div class="card__icono">
+                                <i class="bx bx-department-store icon"></i>
+                            </div>
+                        </article>
+                    </section>
+                    <section class="graficos">
+                    <article class="graficos__frecuencia">
+                        <h3>Frecuencia Cardiaca</h3>
+                        <canvas id="frecuenciaCardiacaChart"></canvas>
                     </article>
-                    <article class="cards__card">
-                        <div class="card__texto">
-                            <span class="card-numeros">7.5 horas</span>
-                            <span class="card-nombre">Sueño</span>
+                    <article class="graficos__workout">
+                        <div class="workout__titulo">
+                            <div class="titulo_box">
+                                <h3>Gestion de</h3>
+                                <h2>Producciones</h2>
+                            </div>
+                            <div class="titulo__icono">
+                                <i class="bx bx-store-alt-2 icon"></i>
+                            </div>
                         </div>
-                        <div class="card__icono">
-                            <i class="bi bi-speedometer2"></i>
-                        </div>
-                    </article>
-                    <article class=" cards__card">
-                        <div class="card__texto">
-                            <span class="card-numeros">2353 pasos</span>
-                            <span class="card-nombre">Caminata</span>
-                        </div>
-                        <div class="card__icono">
-                            <i class="bi bi-speedometer2"></i>
+                        <div class="workout__info-box">
+                            <div>
+                                <i class="bi bi-pencil-square"></i>
+                                <h4>#{dashboardBean.conteoProduccionPendiente()}</h4>
+                                <p>Pendientes</p>
+                            </div>
+                            <div>
+                                <i class="bi bi-clipboard-check"></i>
+                                <h4>#{dashboardBean.conteoProduccionAceptada()}</h4>
+                                <p>Aceptadas</p>
+                            </div>
+                            <div>
+                                <i class="bi bi-check2-circle"></i>
+                                <h4>#{dashboardBean.conteoProduccionFinalizada()}</h4>
+                                <p>Finalizadas</p>
+                            </div>
                         </div>
                     </article>
                 </section>
@@ -117,29 +151,6 @@
                                 <div class="barra-progreso__numero barra-progreso-3"></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="usuario__actividades">
-                        <h3>Actividades Pendientes</h3>
-                        <div class="actividades__card">
-                            <div class="card__texto">
-                                <h3>Cardio</h3>
-                                <p>22-04-2024 | 8:00 am</p>
-                            </div>
-
-                            <label for="" class="actividades__checkbox">
-                                <span class="check"></span>
-                            </label>
-                        </div>
-                        <div class="actividades__card">
-                            <div class="card__texto">
-                                <h3>Natacion</h3>
-                                <p>21-05-2024 | 10:00 am</p>
-                            </div>
-
-                            <label for="" class="actividades__checkbox">
-                            </label>
-                        </div>
-                        <button class="btn">Registrar Nueva Actividad</button>
                     </div>
                 </aside>
             </div>

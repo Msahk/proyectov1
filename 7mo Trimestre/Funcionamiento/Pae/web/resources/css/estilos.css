@@ -11,7 +11,7 @@
     --gris-claro: #e3e3e3;
     --azul-oscuro: #6f1919;
     --azul: #fa4138;
-    --azul-claro: #bcc9ff;
+    --azul-claro: #ffbcbc;
 
     --tran-02: all 0.2s ease;
     --tran-03: all 0.3s ease;
@@ -172,7 +172,9 @@ body.dark {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
+    transition: var(--tran-04);
 }
+
 
 .graficos article h3{
     font-size: 1em;
@@ -252,13 +254,11 @@ body.dark {
     padding-bottom: 80px;
 }
 
-.dark .card {
+.dark .card, .dark .graficos article, .dark .usuario  {
     background: var(--sidebar-color);
 }
 
-.dark .card table .cell-content, .dark .card h2 {
-    color: #ccc;
-}
+
 
 .dark .card table :is(th, td) {
     border: 1px solid var(--primary-color);
@@ -401,7 +401,7 @@ body.dark {
 
 .usuario {
     width: 370px;
-    height: 100%;
+    height: calc(100% - 40px);
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -410,6 +410,7 @@ body.dark {
     border-radius: 8px;
     box-shadow: var(--sombra);
     background-color: var(--blanco);
+    transition: var(--tran-04);
 }
 
 .usuario__perfil {
@@ -706,4 +707,10 @@ ease-in-out;
 .sidebar.close ~ .home {
     left: 88px;
     width: calc(100% - 88px);
+}
+
+.dark .card table .cell-content, .dark .card h2, .dark .topbar__texto h2,
+.dark .graficos article h3, .dark .graficos article, .dark .workout__info-box div h4,
+.dark .workout__info-box div p, .dark h3, .dark h4, .dark p{
+    color: #ccc;
 }
