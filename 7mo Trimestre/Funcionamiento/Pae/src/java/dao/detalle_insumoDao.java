@@ -540,6 +540,19 @@ public double calcularStockActual(int id_insumo) {
     return stock;
 }
 
+// Dentro de detalle_insumoDao.java
+public boolean actualizarEstadoInsumo(int id_insumo, String nuevoEstado) {
+    String sql = "UPDATE insumos SET estado = ? WHERE id_ins = ?";
+    try (Connection con = ConDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, nuevoEstado);
+        ps.setInt(2, id_insumo);
+        ps.executeUpdate();
+        return true;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 
 
 }
