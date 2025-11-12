@@ -10,9 +10,6 @@
 
 
         <style>
-            .barra-progreso-1 {
-                width: #{dashboardBean.porcentajeInactivas()}%;
-            }
 
         </style>
     </h:head>
@@ -230,7 +227,7 @@
                                 <p>#{dashboardBean.conteoRecetasInactivas()} <span>/ #{dashboardBean.conteoRecetasTotales()}</span></p>
                             </div>
                             <div class="item-objetivo__barra-progreso">
-                                <div class="barra-progreso__numero barra-progreso-1"></div>
+                                <div class="barra-progreso__numero barra-progreso-1" style="width: #{dashboardBean.porcentajeInactivas()}%;"></div>
                             </div>
                         </div>
                         <!--
