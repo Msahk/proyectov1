@@ -38,13 +38,19 @@
 
                         <div class="form-row">
                             <div class="form-group full">
-                                <label for="usuarioVenta">Usuario que registra la venta</label>
-                                <h:inputText id="usuarioVenta"
-                                             value="#{sessionUser.nombres} #{sessionUser.apellidos} (#{sessionUser.rol})"
-                                             disabled="true"
-                                             styleClass="input" />
-                                <h:inputHidden value="#{sessionUser.idUsu}" />
-                            </div>
+    <label for="usuarioVenta">Usuario que registra la venta</label>
+    
+    <!-- Mostrar el usuario en una línea nueva debajo del label con espacio abajo -->
+    <div style="margin-top:4px; margin-bottom:8px;">
+        <h:outputText id="usuarioVenta"
+                      value="#{sessionUser.nombres} #{sessionUser.apellidos} (#{sessionUser.rol})"
+                      styleClass="input" />
+    </div>
+    
+    <!-- Pasar el ID del usuario al bean de ventas sin tocar sessionUser -->
+    <h:inputHidden value="#{ventasBean.ventaNueva.idUsuario}" />
+</div>
+
 
 
 

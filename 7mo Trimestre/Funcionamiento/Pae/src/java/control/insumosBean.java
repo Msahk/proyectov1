@@ -17,10 +17,13 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import java.io.File;
 import dao.detalle_insumoDao;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import java.io.Serializable;
 
 
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class insumosBean implements Serializable {
     private static final long serialVersionUID = 1L;
 

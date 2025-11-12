@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -7,125 +8,121 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
-    <title>Gestión de Recetas</title>
-    <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+    <title>Gestión de Recetas</title>  
 </h:head>
 
-<h:body styleClass="body">
+<h:body>
     <ui:include src="/views/Navbar.xhtml" />
-
     <f:event type="preRenderView" listener="#{recetasBean.listar}" />
-
     <p:growl id="msj" showDetail="true" showSummary="true" />
 
-    <center>
-        <div class="container mt-5" style="max-width: 1600px">
-            <div class="card shadow p-3">
-                <h1>Gestión de Recetas</h1>
+    <section class="home">
+        <div class="contenedor">
+            <div class="tabla">
+                <section class="card">
+                    <h:form id="formRecetas">
 
-                <!-- BOTONES SUPERIORES -->
-                <h:form id="formBotones">
-                    <p:commandButton value="Nueva Receta" icon="pi pi-plus"
-                                     action="#{recetasBean.irANuevaReceta}" 
-                                     styleClass="btn btn-primary" />
-                    <p:commandButton value="Reporte PDF" icon="pi pi-file-pdf"
-                                     actionListener="#{recetasBean.exportarPDF}" 
-                                     update="@form" styleClass="btn btn-primary ml-2" />
-                    <p:commandButton value="Migrar Excel" icon="pi pi-upload"
-                                     action="/views/Recetas/migrar.xhtml?faces-redirect=true" 
-                                     styleClass="btn btn-primary ml-2" />
-                </h:form>
+                        <!-- ENCABEZADO -->
+                        <div class="encabezado">
+                            <h2><i class='bx bx-receipt'></i> Gestión de Recetas</h2>
+                            <div>
+                                <h:commandButton value="Nueva Receta"
+                                                 action="nuevareceta"
+                                                 styleClass="export-btn" />
 
-                <br/><br/>
+                                <h:commandButton value="Reporte PDF"
+                                                 style="margin-left: 10px"
+                                                 styleClass="export-btn"
+                                                 actionListener="#{recetasBean.exportarPDF}" />
 
-                <!-- TABLA DE RECETAS -->
-                <h:form id="formTablaRecetas">
-                    <p:dataTable id="tablaRecetas"
-                                 value="#{recetasBean.lstRecetas}" 
-                                 var="r"
-                                 class="table table-bordered"
-                                 widgetVar="wtRecetas"
-                                 emptyMessage="No se encontraron recetas"
-                                 rows="5"
-                                 paginator="true"
-                                 paginatorPosition="bottom"
-                                 filteredValue="#{recetasBean.lstFiltradas}"
-                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
-                                 rowsPerPageTemplate="5,10,{ShowAll|'Todos'}"
-                                 filterEvent="keyup">
-
-                        <f:facet name="header">
-                            <div align="right">
-                                <p:inputText id="globalFilter" onkeyup="PF('wtRecetas').filter()" 
-                                             style="width:10rem" placeholder="Buscar..." />                            
+                                <h:commandButton value="Migrar Excel"
+                                                 style="margin-left: 10px"
+                                                 styleClass="export-btn"
+                                                 action="migrarrecetas" />
                             </div>
-                        </f:facet>
+                        </div>
 
-                        <p:column filterBy="#{r.id_rec}" width="60" filterMatchMode="contains" sortBy="#{r.id_rec}">
-                            <f:facet name="header">ID</f:facet>
-                            <p:outputLabel value="#{r.id_rec}" />
-                        </p:column>
+                        <!-- TABLA DE RECETAS -->
+                        <h:panelGroup id="tablaRecetasWrapper">
+                            <div class="wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID <span class="draggable" onmousedown="initResize(0)"></span></th>
+                                            <th>Nombre <span class="draggable" onmousedown="initResize(1)"></span></th>
+                                            <th>Descripción <span class="draggable" onmousedown="initResize(2)"></span></th>
+                                            <th>Precio <span class="draggable" onmousedown="initResize(3)"></span></th>
+                                            <th>Estado <span class="draggable" onmousedown="initResize(4)"></span></th>
+                                            <th style="width:12rem">Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ui:repeat value="#{recetasBean.lstRecetas}" var="r">
+                                            <tr>
+                                                <td><span class="cell-content"><h:outputText value="#{r.id_rec}" /></span></td>
+                                                <td><span class="cell-content"><h:outputText value="#{r.nombre}" /></span></td>
+                                                <td><span class="cell-content"><h:outputText value="#{r.descripcion}" /></span></td>
+                                                <td>
+                                                    <span class="cell-content">
+                                                        <h:outputText value="#{r.precio}">
+                                                            <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" />
+                                                        </h:outputText>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="cell-content">
+                                                        <h:outputText value="#{r.estado eq 'Activo' ? 'Activo' : 'Inactivo'}"
+                                                                      style="font-weight:bold; color:#{r.estado eq 'Activo' ? 'green' : 'red'};" />
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div style="display:flex; gap:6px; justify-content:center;">
 
-                        <p:column filterBy="#{r.nombre}" filterMatchMode="contains" sortBy="#{r.nombre}">
-                            <f:facet name="header">Nombre</f:facet>
-                            <p:outputLabel value="#{r.nombre}" />
-                        </p:column>
+                                                        <!-- Editar -->
+                                                        <h:commandLink actionListener="#{recetasBean.irAEditar(r)}"
+                                                                       action="editarreceta"
+                                                                       styleClass="btn btn-outline-success"
+                                                                       title="Editar Receta">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </h:commandLink>
 
-                        <p:column filterBy="#{r.descripcion}" filterMatchMode="contains" sortBy="#{r.descripcion}">
-                            <f:facet name="header">Descripción</f:facet>
-                            <p:outputLabel value="#{r.descripcion}" />
-                        </p:column>
+                                                        <!-- Gestionar Insumos -->
+                                                        <h:commandLink action="#{recetasBean.irAGestionarInsumos(r)}"
+                                                                       styleClass="btn btn-outline-primary"
+                                                                       title="Gestionar Insumos">
+                                                            <i class="bi bi-box"></i>
+                                                        </h:commandLink>
 
-                        <!-- 💲 NUEVA COLUMNA: PRECIO -->
-                        <p:column filterBy="#{r.precio}" filterMatchMode="contains" sortBy="#{r.precio}" width="120">
-                            <f:facet name="header">Precio</f:facet>
-                            <p:outputLabel value="#{r.precio}">
-                                <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" />
-                            </p:outputLabel>
-                        </p:column>
+                                                        <!-- Eliminar -->
+                                                        <h:commandLink actionListener="#{recetasBean.eliminar(r)}"
+                                                                       styleClass="btn btn-outline-danger"
+                                                                       title="Eliminar Receta"
+                                                                       onclick="return confirm('¿Está seguro de eliminar esta receta?');">
+                                                            <i class="bi bi-trash"></i>
+                                                            <f:ajax execute="@this" render="tablaRecetasWrapper msj" />
+                                                        </h:commandLink>
 
-                        <p:column filterBy="#{r.estado}" width="110" filterMatchMode="contains" sortBy="#{r.estado}">
-                            <f:facet name="header">Estado</f:facet>
-                            <p:outputLabel value="#{r.estado eq 'Activo' ? 'Activo' : 'Inactivo'}"
-                                           style="font-weight:bold; color:#{r.estado eq 'Activo' ? 'green' : 'red'};" />
-                        </p:column>
-
-                        <p:column style="width:15rem">
-                            <f:facet name="header">Opciones</f:facet>
-
-                            <div class="d-flex justify-content-start flex-wrap">
-                                <!-- EDITAR -->
-                                <p:commandButton action="#{recetasBean.irAEditar(r)}" icon="pi pi-pencil"
-                                                 title="Editar"
-                                                 styleClass="btn btn-sm btn-outline-success me-1" />
-
-                                <!-- GESTIONAR -->
-                                <p:commandButton icon="pi pi-box"
-                                                 title="Gestionar Insumos"
-                                                 action="#{recetasBean.irAGestionarInsumos(r)}"
-                                                 styleClass="btn btn-sm btn-outline-primary me-1"
-                                                 ajax="false" />
-
-                                <!-- ELIMINAR -->
-                                <p:commandButton actionListener="#{recetasBean.eliminar(r)}" icon="pi pi-trash"
-                                                 title="Eliminar"
-                                                 update="tablaRecetas" 
-                                                 oncomplete="PF('wtRecetas').clearFilters()" 
-                                                 onclick="return confirm('¿Está seguro de ELIMINAR esta receta?');"
-                                                 styleClass="btn btn-sm btn-outline-danger" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </ui:repeat>
+                                    </tbody>
+                                </table>
                             </div>
-                        </p:column>
+                        </h:panelGroup>
 
-                    </p:dataTable>
+                        <!-- BOTÓN VOLVER -->
+                        <h:commandLink styleClass="btn-back" 
+                                       action="/views/Dashboard.xhtml?faces-redirect=true">
+                            <i class='bx bx-chevron-left'></i> Volver
+                        </h:commandLink>
 
-                    <br/>
-                    <p:commandButton value="Menú anterior" icon="pi pi-home" 
-                                     action="/views/Dashboard.xhtml?faces-redirect=true" />
-                </h:form>
-
+                    </h:form>
+                </section>
             </div>
         </div>
-    </center>
+    </section>
+
+    <script type="text/javascript" src="/assets/js/tabla.js"></script>
 </h:body>
 </html>

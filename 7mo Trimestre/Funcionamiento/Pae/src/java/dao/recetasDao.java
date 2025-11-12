@@ -209,4 +209,27 @@ public class recetasDao {
 
         return lista;
     }
+    
+    // 🔄 Sincronizar estados de recetas según insumos agotados
+public void sincronizarEstadosRecetas() {
+    String sql = "UPDATE recetas r " +
+                 "SET r.estado = CASE " +
+                 "WHEN EXISTS ( " +
+                 "   SELECT 1 FROM receta_insumos ri " +
+                 "   WHERE ri.id_rec = r.id_rec " +
+                 "   AND ri.estado = 'Agotado' " +
+                 ") THEN 'Inactivo' ELSE 'Activo' END";
+
+    try (Connection con = ConDB.conectar();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        int filas = ps.executeUpdate();
+        System.out.println("🔄 Sincronización de recetas completada: " + filas + " recetas actualizadas.");
+
+    } catch (SQLException e) {
+        System.err.println("❌ Error al sincronizar estados de recetas: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+
 }

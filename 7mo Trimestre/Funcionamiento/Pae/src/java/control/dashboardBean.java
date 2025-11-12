@@ -45,4 +45,44 @@ public class dashboardBean {
         int conteo = dDao.conteoProduccionesFinalizada();
         return conteo;
     }
+    
+    //TODO LO QUE SEA VENTAS
+    
+    public int conteoVentasPagoPendiente() {
+        int conteo = dDao.conteoVentasPagoPendiente();
+        return conteo;
+    }
+    
+    public int conteoVentaPagoCompleto() {
+        int conteo = dDao.conteoVentasPagoCompleto();
+        return conteo;
+    }
+    
+    public int conteoVentaProcesando() {
+        int conteo = dDao.conteoVentasProcesando();
+        return conteo;
+    }
+    
+    public int conteoVentaCompletada() {
+        int conteo = dDao.conteoVentasCompletado();
+        return conteo;
+    }
+    
+    
+    //TODO LO DE RECETAS
+    
+    public int conteoRecetasTotales() {
+        int conteo = dDao.conteoRecetasTotales();
+        return conteo;
+    }
+    
+    public int conteoRecetasInactivas() {
+        int conteo = dDao.conteoRecetasInactivas();
+        return conteo;
+    }
+    
+    public double porcentajeInactivas() {
+        double porcentaje = (dDao.conteoRecetasInactivas()*100)/dDao.conteoRecetasTotales();
+        return porcentaje;
+    }
 }

@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-11-2025 a las 20:34:12
--- Versión del servidor: 10.4.32-MariaDB
+-- Tiempo de generación: 11-11-2025 a las 03:20:09
+-- Versión del servidor: 10.11.15-MariaDB
 -- Versión de PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -33,7 +33,7 @@ CREATE TABLE `clientes` (
   `nit` varchar(20) NOT NULL,
   `telefono` varchar(20) NOT NULL,
   `correo` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Volcado de datos para la tabla `clientes`
@@ -78,8 +78,8 @@ INSERT INTO `detalle_insumo` (`id_detalle`, `id_ins`, `cantidad`, `fecha_ingreso
 (3, 3, 10.00, '2025-11-05 00:00:00', '2025-11-30', 'Activo'),
 (4, 3, 10.00, '2025-11-05 00:00:00', '2025-11-30', 'Eliminado'),
 (5, 3, 10.00, '2025-11-05 00:00:00', '2025-11-30', 'Eliminado'),
-(6, 47, 10.00, '2025-11-05 00:00:00', '2025-11-25', 'Activo'),
-(7, 47, 20.00, '2025-11-05 00:00:00', '2025-11-30', 'Activo'),
+(6, 47, 0.00, '2025-11-05 00:00:00', '2025-11-25', 'Agotado'),
+(7, 47, 19.00, '2025-11-05 00:00:00', '2025-11-30', 'Activo'),
 (8, 46, 12.00, '2025-11-05 00:00:00', '2025-11-30', 'Activo'),
 (9, 3, 2.00, '2025-11-05 00:00:00', '2025-11-29', 'Eliminado'),
 (10, 52, 10.00, '2025-11-06 00:00:00', '2025-11-30', 'Eliminado'),
@@ -92,11 +92,20 @@ INSERT INTO `detalle_insumo` (`id_detalle`, `id_ins`, `cantidad`, `fecha_ingreso
 (17, 52, 10.00, '2025-11-06 13:48:35', '2025-11-30', 'Activo'),
 (18, 52, 10.00, '2025-11-06 13:48:58', '2025-11-24', 'Activo'),
 (19, 53, 0.00, '2025-11-06 14:19:04', '2025-11-23', 'Agotado'),
-(20, 53, 6.00, '2025-11-06 14:19:17', '2025-11-30', 'Activo'),
-(21, 54, 20.00, '2025-11-06 17:19:39', '2025-11-30', 'Activo'),
-(22, 54, 6.00, '2025-11-06 17:20:11', '2025-11-07', 'Activo'),
-(23, 54, 5.00, '2025-11-06 17:25:26', '2025-11-08', 'Activo'),
-(24, 53, 0.00, '2025-11-06 20:27:13', '2025-11-08', 'Agotado');
+(20, 53, 4.00, '2025-11-06 14:19:17', '2025-11-11', 'Activo'),
+(21, 54, 6.00, '2025-11-06 17:19:39', '2025-11-30', 'Activo'),
+(22, 54, 5.00, '2025-11-06 17:20:11', '2025-11-07', 'Vencido'),
+(23, 54, 5.00, '2025-11-06 17:25:26', '2025-11-08', 'Vencido'),
+(24, 53, 0.00, '2025-11-06 20:27:13', '2025-11-08', 'Agotado'),
+(25, 55, 0.00, '2025-11-08 14:58:11', '2025-11-10', 'Agotado'),
+(26, 55, 0.00, '2025-11-08 14:58:21', '2025-11-04', 'Vencido'),
+(27, 55, 0.00, '2025-11-08 15:02:24', '2025-11-09', 'Agotado'),
+(28, 55, 5.00, '2025-11-08 15:19:46', '2025-11-06', 'Vencido'),
+(29, 55, 1.00, '2025-11-08 15:34:27', '2025-11-06', 'Eliminado'),
+(30, 55, 0.00, '2025-11-08 16:50:52', '2025-11-04', 'Vencido'),
+(31, 55, 1.00, '2025-11-08 16:51:06', '2025-11-04', 'Vencido'),
+(32, 53, 10.00, '2025-11-10 16:42:16', '2025-11-18', 'Eliminado'),
+(33, 53, 10.00, '2025-11-10 17:33:55', '2025-11-19', 'Activo');
 
 -- --------------------------------------------------------
 
@@ -150,7 +159,18 @@ INSERT INTO `historial` (`idHist`, `fecha`, `accion`, `novedad`, `id_ins`, `id_d
 (30, '2025-11-06 17:19:39', 'Entrada', 'Se agregó lote de 20.0 unidades', 54, 21),
 (31, '2025-11-06 17:20:11', 'Entrada', 'Se agregó lote de 10.0 unidades', 54, 22),
 (32, '2025-11-06 17:25:26', 'Entrada', 'Se agregó lote de 5.0 unidades', 54, 23),
-(33, '2025-11-06 20:27:13', 'Entrada', 'Se agregó lote de 10.0 unidades', 53, 24);
+(33, '2025-11-06 20:27:13', 'Entrada', 'Se agregó lote de 10.0 unidades', 53, 24),
+(34, '2025-11-08 14:58:11', 'Entrada', 'Se agregó lote de 10.0 unidades', 55, 25),
+(35, '2025-11-08 14:58:21', 'Entrada', 'Se agregó lote de 10.0 unidades', 55, 26),
+(36, '2025-11-08 15:02:24', 'Entrada', 'Se agregó lote de 1.0 unidades', 55, 27),
+(37, '2025-11-08 15:19:46', 'Entrada', 'Se agregó lote de 10.0 unidades', 55, 28),
+(38, '2025-11-08 15:34:27', 'Entrada', 'Se agregó lote de 1.0 unidades', 55, 29),
+(39, '2025-11-08 16:50:52', 'Entrada', 'Se agregó lote de 1.0 unidades', 55, 30),
+(40, '2025-11-08 16:51:06', 'Entrada', 'Se agregó lote de 1.0 unidades', 55, 31),
+(41, '2025-11-08 16:51:30', 'Salida', 'se vencio', 55, 29),
+(42, '2025-11-10 16:42:16', 'Entrada', 'Se agregó lote de 10.0 unidades', 53, 32),
+(43, '2025-11-10 17:33:03', 'Salida', 'chao', 53, 32),
+(44, '2025-11-10 17:33:55', 'Entrada', 'Se agregó lote de 10.0 unidades', 53, 33);
 
 -- --------------------------------------------------------
 
@@ -165,34 +185,35 @@ CREATE TABLE `insumos` (
   `stock_min` decimal(10,2) NOT NULL,
   `stock_actual` decimal(10,2) DEFAULT 0.00,
   `estado` enum('Activo','Inactivo','Stock insuficiente') NOT NULL DEFAULT 'Activo'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Volcado de datos para la tabla `insumos`
 --
 
 INSERT INTO `insumos` (`id_ins`, `nombre`, `unidad_medida`, `stock_min`, `stock_actual`, `estado`) VALUES
-(3, 'Azúcar', 'kg', 25.00, 83.00, 'Activo'),
-(4, 'Sal', 'kg', 10.00, 20.00, 'Activo'),
+(3, 'Azúcar', 'kg', 25.00, 51.00, 'Activo'),
+(4, 'Sal', 'kg', 10.00, 0.00, 'Stock insuficiente'),
 (17, 'chorizo', 'kg', 20.00, 0.00, 'Stock insuficiente'),
 (23, 'Queso', 'kg', 1.00, 0.00, 'Stock insuficiente'),
-(26, 'Pollo desmechado', 'kg', 20.00, 30.00, 'Activo'),
+(26, 'Pollo desmechado', 'kg', 20.00, 0.00, 'Stock insuficiente'),
 (38, 'Pan', 'kg', 5.00, 0.00, 'Stock insuficiente'),
 (39, 'Tomate', 'kg', 15.00, 0.00, 'Stock insuficiente'),
-(40, 'Cebolla', 'kg', 10.00, 25.00, 'Activo'),
-(42, 'Carne desmecha\'', 'ml', 1.00, 1.00, 'Activo'),
-(43, 'Carnita', 'g', 10.00, 20.00, 'Activo'),
-(44, 'Huevo', 'unidad', 10.00, 1.00, 'Stock insuficiente'),
-(45, 'Panela', 'g', 10.00, 40.00, 'Activo'),
-(46, 'Cardamomo', 'g', 5.00, 16.00, 'Activo'),
-(47, 'Bechamel', 'g', 10.00, 35.00, 'Activo'),
-(48, 'peperoni', 'g', 15.00, 10.00, 'Stock insuficiente'),
-(49, 'Espaguetti', 'g', 50.00, 98.00, 'Activo'),
-(50, 'Piña', 'g', 40.00, 38.00, 'Stock insuficiente'),
+(40, 'Cebolla', 'kg', 10.00, 0.00, 'Stock insuficiente'),
+(42, 'Carne desmecha\'', 'ml', 1.00, 0.00, 'Stock insuficiente'),
+(43, 'Carnita', 'g', 10.00, 0.00, 'Stock insuficiente'),
+(44, 'Huevo', 'unidad', 10.00, 0.00, 'Stock insuficiente'),
+(45, 'Panela', 'g', 10.00, 0.00, 'Stock insuficiente'),
+(46, 'Cardamomo', 'g', 5.00, 12.00, 'Activo'),
+(47, 'Bechamel', 'g', 10.00, 19.00, 'Activo'),
+(48, 'peperoni', 'g', 15.00, 0.00, 'Stock insuficiente'),
+(49, 'Espaguetti', 'g', 50.00, 0.00, 'Stock insuficiente'),
+(50, 'Piña', 'g', 40.00, 0.00, 'Stock insuficiente'),
 (51, 'quesito', 'g', 50.00, 0.00, 'Stock insuficiente'),
-(52, 'carnesita', 'g', 10.00, 16.00, 'Activo'),
-(53, 'Baguet', 'g', 10.00, 4.00, 'Stock insuficiente'),
-(54, 'aniz', 'g', 10.00, 31.00, 'Activo');
+(52, 'carnesita', 'g', 10.00, 20.00, 'Activo'),
+(53, 'Baguet', 'g', 10.00, 14.00, 'Activo'),
+(54, 'aniz', 'g', 10.00, 6.00, 'Stock insuficiente'),
+(55, 'Maiz', 'g', 10.00, 0.00, 'Stock insuficiente');
 
 -- --------------------------------------------------------
 
@@ -243,7 +264,16 @@ INSERT INTO `pago` (`id_pago`, `id_ven`, `fecha_pago`, `monto`, `tipo_pago`) VAL
 (49, 96, '2025-11-08 10:25:17', 1000.00, 'total'),
 (50, 97, '2025-11-08 11:52:35', 1000.00, 'abono'),
 (51, 98, '2025-11-08 12:15:57', 1000.00, 'total'),
-(52, 99, '2025-11-08 13:34:22', 1000.00, 'total');
+(52, 99, '2025-11-08 13:34:22', 1000.00, 'total'),
+(53, 100, '2025-11-08 14:40:25', 1000.00, 'total'),
+(54, 101, '2025-11-08 15:01:09', 6000.00, 'total'),
+(55, 102, '2025-11-08 15:03:21', 1000.00, 'total'),
+(56, 103, '2025-11-08 17:13:16', 1000.00, 'total'),
+(57, 104, '2025-11-10 20:28:29', 3000.00, 'total'),
+(58, 105, '2025-11-10 20:30:15', 1500.00, 'total'),
+(59, 106, '2025-11-10 20:32:47', 6000.00, 'abono'),
+(60, 106, '2025-11-10 20:33:06', 6000.00, 'abono'),
+(61, 107, '2025-11-10 20:37:14', 2000.00, 'total');
 
 -- --------------------------------------------------------
 
@@ -259,7 +289,7 @@ CREATE TABLE `produccion` (
   `fecha_finalizacion` datetime DEFAULT NULL,
   `id_usu` int(11) NOT NULL,
   `id_asignado` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Volcado de datos para la tabla `produccion`
@@ -322,7 +352,15 @@ INSERT INTO `produccion` (`id_proc`, `estado`, `fecha_hora`, `fecha_aceptacion`,
 (129, 'Finalizada', '2025-11-08 10:25:17', '2025-11-08 10:43:36', '2025-11-08 10:43:38', 1, NULL),
 (130, 'Finalizada', '2025-11-08 11:52:35', '2025-11-08 11:52:45', '2025-11-08 11:52:47', 1, NULL),
 (131, 'Finalizada', '2025-11-08 12:15:57', '2025-11-08 12:16:02', '2025-11-08 12:16:03', 1, 3),
-(132, 'Pendiente', '2025-11-08 13:34:22', NULL, NULL, 1, 2);
+(132, 'Pendiente', '2025-11-08 13:34:22', NULL, NULL, 1, 2),
+(133, 'Finalizada', '2025-11-08 14:40:25', '2025-11-08 14:40:51', '2025-11-08 14:40:53', 14, 2),
+(134, 'Finalizada', '2025-11-08 15:01:09', '2025-11-08 15:01:17', '2025-11-08 15:01:19', 1, 2),
+(135, 'Finalizada', '2025-11-08 15:03:21', '2025-11-08 15:03:35', '2025-11-08 15:03:36', 1, 2),
+(136, 'Finalizada', '2025-11-08 17:13:16', '2025-11-08 17:13:23', '2025-11-08 17:13:25', 1, 2),
+(137, 'Finalizada', '2025-11-10 20:28:29', '2025-11-10 20:28:51', '2025-11-10 20:28:55', 1, 2),
+(138, 'Finalizada', '2025-11-10 20:30:15', '2025-11-10 20:30:24', '2025-11-10 20:30:27', 1, 2),
+(139, 'Finalizada', '2025-11-10 20:33:06', '2025-11-10 20:33:17', '2025-11-10 20:33:21', 14, 2),
+(140, 'Finalizada', '2025-11-10 20:37:14', '2025-11-10 20:37:31', '2025-11-10 20:37:36', 14, 3);
 
 -- --------------------------------------------------------
 
@@ -361,7 +399,15 @@ INSERT INTO `produccion_recetas` (`id_detalle`, `id_produccion`, `id_rec`, `cant
 (112, 129, 47, 1),
 (113, 130, 47, 1),
 (114, 131, 47, 1),
-(115, 132, 47, 1);
+(115, 132, 47, 1),
+(116, 133, 47, 1),
+(117, 134, 49, 6),
+(118, 135, 49, 1),
+(119, 136, 49, 1),
+(120, 137, 50, 2),
+(121, 138, 50, 1),
+(122, 139, 50, 8),
+(123, 140, 48, 2);
 
 -- --------------------------------------------------------
 
@@ -387,7 +433,9 @@ INSERT INTO `recetas` (`id_rec`, `nombre`, `descripcion`, `precio`, `estado`) VA
 (45, 'carnesita', 'wena mi loco', 2000.00, 'Activo'),
 (46, 'Azucar de', 'ojala', 1200.00, 'Activo'),
 (47, 'Baguete', 'Chamo', 1000.00, 'Activo'),
-(48, 'Empanada de Anis', 'deliciosa', 1000.00, 'Activo');
+(48, 'Empanada de Anis', 'deliciosa', 1000.00, 'Inactivo'),
+(49, 'Empanda de Maiz', 'Prueba esta empanada', 1000.00, 'Inactivo'),
+(50, 'Bechanis', 'Combinacion', 1500.00, 'Inactivo');
 
 -- --------------------------------------------------------
 
@@ -400,19 +448,23 @@ CREATE TABLE `receta_insumos` (
   `id_rec` int(11) NOT NULL,
   `id_ins` int(11) NOT NULL,
   `cantidad` decimal(10,2) NOT NULL,
-  `unidad` varchar(20) NOT NULL
+  `unidad` varchar(20) NOT NULL,
+  `estado` enum('Activo','Agotado') NOT NULL DEFAULT 'Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `receta_insumos`
 --
 
-INSERT INTO `receta_insumos` (`id_rec_ins`, `id_rec`, `id_ins`, `cantidad`, `unidad`) VALUES
-(88, 43, 3, 2.00, 'kg'),
-(89, 46, 3, 2.00, 'kg'),
-(90, 45, 52, 2.00, 'g'),
-(91, 47, 53, 2.00, 'g'),
-(92, 48, 54, 2.00, 'g');
+INSERT INTO `receta_insumos` (`id_rec_ins`, `id_rec`, `id_ins`, `cantidad`, `unidad`, `estado`) VALUES
+(88, 43, 3, 2.00, 'kg', 'Activo'),
+(89, 46, 3, 2.00, 'kg', 'Activo'),
+(90, 45, 52, 2.00, 'g', 'Activo'),
+(91, 47, 53, 2.00, 'g', 'Activo'),
+(92, 48, 54, 2.00, 'g', 'Agotado'),
+(93, 49, 55, 2.00, 'g', 'Agotado'),
+(94, 50, 47, 1.00, 'g', 'Activo'),
+(95, 50, 54, 1.00, 'g', 'Agotado');
 
 -- --------------------------------------------------------
 
@@ -431,7 +483,7 @@ CREATE TABLE `usuarios` (
   `rol` enum('A','EP','EV') NOT NULL,
   `estado` enum('A','I') NOT NULL,
   `password` varchar(256) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
@@ -471,7 +523,7 @@ CREATE TABLE `ventas` (
   `total` decimal(10,2) NOT NULL,
   `estado` enum('Pago pendiente','Procesando','Pago completo','Completada') NOT NULL DEFAULT 'Pago pendiente',
   `observaciones` longtext DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Volcado de datos para la tabla `ventas`
@@ -531,7 +583,15 @@ INSERT INTO `ventas` (`id_ven`, `Tipo`, `fecha`, `id_usu`, `id_asignado`, `id_Cl
 (96, 'pedido', '2025-11-08 20:24:53', 1, 3, 2, 1000.00, 'Completada', 'esperemos'),
 (97, 'pedido', '2025-11-08 21:52:25', 1, 2, 1, 1000.00, 'Completada', 'ooo'),
 (98, 'pedido', '2025-11-08 22:15:48', 1, 3, 2, 1000.00, 'Completada', 'ñ'),
-(99, 'pedido', '2025-11-08 23:34:14', 1, 2, 1, 1000.00, 'Pago completo', 'wena');
+(99, 'pedido', '2025-11-08 23:34:14', 1, 2, 1, 1000.00, 'Pago completo', 'wena'),
+(100, 'pedido', '2025-11-09 00:38:47', 14, 2, 10, 1000.00, 'Completada', 'wena'),
+(101, 'pedido', '2025-11-09 01:00:55', 1, 2, 2, 6000.00, 'Completada', 'ojala'),
+(102, 'pedido', '2025-11-09 01:03:01', 1, 2, 2, 1000.00, 'Completada', 'prueba 2'),
+(103, 'pedido', '2025-11-09 03:13:04', 1, 2, 1, 1000.00, 'Completada', 'a'),
+(104, 'pedido', '2025-11-11 06:28:05', 1, 2, 1, 3000.00, 'Completada', 'Combinacion'),
+(105, 'pedido', '2025-11-11 06:30:05', 1, 2, 2, 1500.00, 'Completada', 'hola'),
+(106, 'pedido', '2025-11-11 11:32:25', 14, 2, 2, 12000.00, 'Completada', 'wena'),
+(107, 'pedido', '2025-11-11 06:37:02', 14, 3, 1, 2000.00, 'Completada', 'wena');
 
 -- --------------------------------------------------------
 
@@ -544,7 +604,7 @@ CREATE TABLE `venta_produccion` (
   `id_venta` int(11) NOT NULL,
   `id_produccion` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Volcado de datos para la tabla `venta_produccion`
@@ -592,7 +652,15 @@ INSERT INTO `venta_produccion` (`id_ven_prod`, `id_venta`, `id_produccion`, `can
 (60, 96, 129, 0),
 (61, 97, 130, 0),
 (62, 98, 131, 0),
-(63, 99, 132, 0);
+(63, 99, 132, 0),
+(64, 100, 133, 0),
+(65, 101, 134, 0),
+(66, 102, 135, 0),
+(67, 103, 136, 0),
+(68, 104, 137, 0),
+(69, 105, 138, 0),
+(70, 106, 139, 0),
+(71, 107, 140, 0);
 
 -- --------------------------------------------------------
 
@@ -607,7 +675,7 @@ CREATE TABLE `venta_recetas` (
   `cantidad` int(11) NOT NULL,
   `precio` decimal(10,2) NOT NULL DEFAULT 0.00,
   `subtotal` decimal(10,2) NOT NULL DEFAULT 0.00
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Volcado de datos para la tabla `venta_recetas`
@@ -650,7 +718,15 @@ INSERT INTO `venta_recetas` (`id_venta_receta`, `id_venta`, `id_receta`, `cantid
 (89, 96, 47, 1, 1000.00, 1000.00),
 (90, 97, 47, 1, 1000.00, 1000.00),
 (91, 98, 47, 1, 1000.00, 1000.00),
-(92, 99, 47, 1, 1000.00, 1000.00);
+(92, 99, 47, 1, 1000.00, 1000.00),
+(93, 100, 47, 1, 1000.00, 1000.00),
+(94, 101, 49, 6, 1000.00, 6000.00),
+(95, 102, 49, 1, 1000.00, 1000.00),
+(96, 103, 49, 1, 1000.00, 1000.00),
+(97, 104, 50, 2, 1500.00, 3000.00),
+(98, 105, 50, 1, 1500.00, 1500.00),
+(99, 106, 50, 8, 1500.00, 12000.00),
+(100, 107, 48, 2, 1000.00, 2000.00);
 
 --
 -- Índices para tablas volcadas
@@ -769,49 +845,49 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de la tabla `detalle_insumo`
 --
 ALTER TABLE `detalle_insumo`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `historial`
 --
 ALTER TABLE `historial`
-  MODIFY `idHist` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `idHist` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id_ins` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id_ins` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT de la tabla `produccion`
 --
 ALTER TABLE `produccion`
-  MODIFY `id_proc` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador de la prduccion', AUTO_INCREMENT=133;
+  MODIFY `id_proc` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador de la prduccion', AUTO_INCREMENT=141;
 
 --
 -- AUTO_INCREMENT de la tabla `produccion_recetas`
 --
 ALTER TABLE `produccion_recetas`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
 
 --
 -- AUTO_INCREMENT de la tabla `recetas`
 --
 ALTER TABLE `recetas`
-  MODIFY `id_rec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id_rec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT de la tabla `receta_insumos`
 --
 ALTER TABLE `receta_insumos`
-  MODIFY `id_rec_ins` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `id_rec_ins` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -823,19 +899,19 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id_ven` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificacion de la venta', AUTO_INCREMENT=100;
+  MODIFY `id_ven` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificacion de la venta', AUTO_INCREMENT=108;
 
 --
 -- AUTO_INCREMENT de la tabla `venta_produccion`
 --
 ALTER TABLE `venta_produccion`
-  MODIFY `id_ven_prod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id_ven_prod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT de la tabla `venta_recetas`
 --
 ALTER TABLE `venta_recetas`
-  MODIFY `id_venta_receta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `id_venta_receta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
 -- Restricciones para tablas volcadas

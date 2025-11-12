@@ -32,48 +32,71 @@ public class receta_insumosBean implements Serializable {
     private List<recetas> lstRecetas;
     private List<insumos> lstInsumos;
 
-    private recetas receta; // Receta actual para gestionar
+    private recetas receta; // Receta actual seleccionada
 
-    
     @PostConstruct
-public void init() {
-    // Recuperar receta seleccionada de la sesión
-    receta = (recetas) FacesContext.getCurrentInstance()
+    public void init() {
+        // 🔹 Recuperar receta seleccionada desde la sesión
+        receta = (recetas) FacesContext.getCurrentInstance()
                 .getExternalContext().getSessionMap().get("recetaSeleccionada");
 
-    cargarRecetas();  // Cargar todas las recetas (para dropdown si lo necesitas)
-    cargarInsumos();  // Cargar insumos disponibles
-    listar();         // Listar los insumos de la receta actual
-}
+        cargarRecetas();
+        cargarInsumos();
+        listar();
+    }
 
+    // 🔹 Listar los insumos asociados a la receta actual y actualizar sus estados
+// 🔹 Listar los insumos asociados a la receta actual y actualizar sus estados
+public void listar() {
+    if (receta != null) {
+        try {
+            // 🔁 1️⃣ Sincroniza los estados de receta_insumos según los insumos
+            dao.sincronizarEstadosPorInsumo();
 
-    // 🔹 Listar registros de la receta seleccionada
-    public void listar() {
-        if (receta != null) {
+            // 🔁 2️⃣ Sincroniza el estado general de las recetas (Activo/Inactivo)
+            rDao.sincronizarEstadosRecetas();
+
+            // 🔹 3️⃣ Obtiene los registros actualizados de receta_insumos para la receta actual
             lstRecetaInsumos = dao.buscarPorReceta(receta.getId_rec());
+
+            // 🔹 4️⃣ Carga los objetos relacionados (receta e insumo)
             for (receta_insumos ri : lstRecetaInsumos) {
                 ri.setReceta(rDao.obtenerPorId(ri.getId_rec()));
                 ri.setInsumo(iDao.obtenerPorId(ri.getId_ins()));
             }
-        }
-    }
 
-    // 🔹 Cargar recetas disponibles
+            // 🔄 5️⃣ Actualiza la tabla en la vista JSF
+            PrimeFaces.current().ajax().update("formRecetaInsumos:tablaRecetaInsumos");
+
+            System.out.println("✅ Listado actualizado y estados sincronizados para la receta: " + receta.getNombre());
+
+        } catch (Exception e) {
+            System.err.println("⚠️ Error al listar receta_insumos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    } else {
+        System.err.println("⚠️ No hay receta seleccionada para listar sus insumos.");
+    }
+}
+
+
+
+
+    // 🔹 Cargar todas las recetas (para uso en selectOneMenu si se requiere)
     private void cargarRecetas() {
         lstRecetas = rDao.listar();
     }
 
-    // 🔹 Cargar insumos disponibles
-private void cargarInsumos() {
-    lstInsumos = iDao.listarInsumosActivos();
-}
-
+    // 🔹 Cargar insumos activos disponibles
+    private void cargarInsumos() {
+        lstInsumos = iDao.listarInsumosActivos();
+    }
 
     // ➕ Agregar nuevo insumo a la receta
     public void agregar() {
         if (receta == null) {
             FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "No hay receta seleccionada"));
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "No hay receta seleccionada"));
             return;
         }
 
@@ -81,24 +104,25 @@ private void cargarInsumos() {
 
         if (dao.existeRelacion(recetaInsumo.getId_rec(), recetaInsumo.getId_ins())) {
             FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_WARN, "Duplicado", "Este insumo ya está asignado a la receta"));
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Duplicado", "Este insumo ya está asignado a la receta"));
             return;
         }
 
         if (dao.agregar(recetaInsumo)) {
+               dao.sincronizarEstadosPorInsumo(); // 🔁 sincroniza después de agregar
             rDao.actualizarEstado(receta.getId_rec());
             FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Insumo agregado correctamente"));
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Insumo agregado correctamente"));
             listar();
             limpiar();
-            PrimeFaces.current().ajax().update("formRecetaInsumos:tablaRecetaInsumos, formRecetaInsumos:msj");
+            PrimeFaces.current().ajax().update("formRecetaInsumos:tablaRecetaInsumos", "formRecetaInsumos:msj");
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo agregar el registro"));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo agregar el registro"));
         }
     }
 
-    // ✏️ Preparar registro para edición
+    // ✏️ Cargar datos para edición
     public void editar(receta_insumos ri) {
         this.recetaInsumo = dao.obtenerPorId(ri.getId_rec_ins());
         this.recetaInsumo.setReceta(rDao.obtenerPorId(recetaInsumo.getId_rec()));
@@ -108,29 +132,31 @@ private void cargarInsumos() {
     // 💾 Actualizar registro
     public void actualizar() {
         if (dao.actualizar(recetaInsumo)) {
+               dao.sincronizarEstadosPorInsumo(); // 🔁 sincroniza después de agregar
             rDao.actualizarEstado(receta.getId_rec());
             FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualizado", "Registro modificado correctamente"));
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualizado", "Registro modificado correctamente"));
             listar();
             limpiar();
-            PrimeFaces.current().ajax().update("formRecetaInsumos:tablaRecetaInsumos, formRecetaInsumos:msj");
+            PrimeFaces.current().ajax().update("formRecetaInsumos:tablaRecetaInsumos", "formRecetaInsumos:msj");
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo actualizar el registro"));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo actualizar el registro"));
         }
     }
 
     // ❌ Eliminar registro
     public void eliminar(receta_insumos ri) {
         dao.eliminar(ri);
+         dao.sincronizarEstadosPorInsumo(); // 🔁 sincroniza después de eliminar
         rDao.actualizarEstado(receta.getId_rec());
         FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_INFO, "Eliminado", "Registro eliminado correctamente"));
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Eliminado", "Registro eliminado correctamente"));
         listar();
-        PrimeFaces.current().ajax().update("formRecetaInsumos:tablaRecetaInsumos, formRecetaInsumos:msj");
+        PrimeFaces.current().ajax().update("formRecetaInsumos:tablaRecetaInsumos", "formRecetaInsumos:msj");
     }
 
-    // 🔍 Buscar insumos por receta
+    // 🔍 Buscar insumos por receta específica
     public void buscarPorReceta(int id_rec) {
         receta = rDao.obtenerPorId(id_rec);
         lstRecetaInsumos = dao.buscarPorReceta(id_rec);
@@ -141,17 +167,17 @@ private void cargarInsumos() {
 
         if (lstRecetaInsumos.isEmpty()) {
             FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_WARN, "Sin resultados", "Esta receta no tiene insumos asignados"));
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Sin resultados", "Esta receta no tiene insumos asignados"));
         }
     }
-    
-    // 🔁 Actualiza la unidad de medida automáticamente al seleccionar un insumo
-public void actualizarUnidad() {
-    if (recetaInsumo != null && recetaInsumo.getId_ins() > 0 && lstInsumos != null) {
+
+    // 🔁 Actualizar automáticamente la unidad de medida al seleccionar un insumo
+   public void actualizarUnidad() {
+    if (recetaInsumo != null && lstInsumos != null && recetaInsumo.getId_ins() > 0) {
         for (insumos i : lstInsumos) {
             if (i.getId_ins() == recetaInsumo.getId_ins()) {
                 recetaInsumo.setUnidad(i.getUnidad_medida());
-                break;
+                return;
             }
         }
     } else {
@@ -160,9 +186,17 @@ public void actualizarUnidad() {
 }
 
 
+
     // 🧹 Limpiar formulario
     public void limpiar() {
         recetaInsumo = new receta_insumos();
+    }
+
+    // 🔄 Refrescar la lista completa (para botón “Recargar” o al volver)
+    public void refrescar() {
+        cargarInsumos();
+        listar();
+        PrimeFaces.current().ajax().update("formRecetaInsumos:tablaRecetaInsumos", "formRecetaInsumos:msj");
     }
 
     // ✅ Getters y Setters

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -7,6 +8,13 @@
     <h:head>
         <title>Dashboard</title>
 
+        
+        <style>
+            .barra-progreso-1 {
+                width: #{dashboardBean.porcentajeInactivas()}%;
+            }
+            
+        </style>
     </h:head>
     <h:body>
 
@@ -61,9 +69,38 @@
                         </article>
                     </section>
                     <section class="graficos">
-                    <article class="graficos__frecuencia">
-                        <h3>Frecuencia Cardiaca</h3>
-                        <canvas id="frecuenciaCardiacaChart"></canvas>
+                    <article class="graficos__workout">
+                        <div class="workout__titulo">
+                            <div class="titulo_box">
+                                <h3>Gestion de</h3>
+                                <h2>Ventas</h2>
+                            </div>
+                            <div class="titulo__icono">
+                                <i class="bx bx-store-alt-2 icon"></i>
+                            </div>
+                        </div>
+                        <div class="workout__info-box">
+                            <div>
+                                <i class="bi bi-hourglass-split"></i>
+                                <h4>#{dashboardBean.conteoVentasPagoPendiente()}</h4>
+                                <p>Pago Pendiente</p>
+                            </div>
+                            <div>
+                                <i class="bi bi-pencil-square"></i>
+                                <h4>#{dashboardBean.conteoVentaPagoCompleto()}</h4>
+                                <p>Pago Completo</p>
+                            </div>
+                            <div>
+                                <i class="bi bi-stopwatch"></i>
+                                <h4>#{dashboardBean.conteoVentaProcesando()}</h4>
+                                <p>Procesando</p>
+                            </div>
+                            <div>
+                                <i class="bi bi-check2-circle"></i>
+                                <h4>#{dashboardBean.conteoVentaCompletada()}</h4>
+                                <p>Completada</p>
+                            </div>
+                        </div>
                     </article>
                     <article class="graficos__workout">
                         <div class="workout__titulo">
@@ -123,11 +160,11 @@
                         </div>
                     </div>
                     <div class="usuario__objetivos">
-                        <h3>Objetivos Mensuales</h3>
+                        <h3>Resumen</h3>
                         <div class="objetivos__item-objetivo">
                             <div class="item_objetivo__label">
-                                <p>Running</p>
-                                <p>7km <span>/ 10km</span></p>
+                                <p>Recetas</p>
+                                <p>#{dashboardBean.conteoRecetasInactivas()} <span>/ #{dashboardBean.conteoRecetasTotales()}</span></p>
                             </div>
                             <div class="item-objetivo__barra-progreso">
                                 <div class="barra-progreso__numero barra-progreso-1"></div>

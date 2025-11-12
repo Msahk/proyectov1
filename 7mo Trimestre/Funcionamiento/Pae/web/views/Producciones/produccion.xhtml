@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -7,199 +8,189 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
-    <title>Gestión de Producciones</title>
-    <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+    <title>Gestión de Producciones</title>  
 </h:head>
 
-<h:body styleClass="body">
+<h:body>
     <ui:include src="/views/Navbar.xhtml" />
-
-    <p:growl id="msj" showDetail="true" showSummary="true" life="8000" />
-
     <f:event type="preRenderView" listener="#{produccionBean.listar}" />
+    <p:growl id="msj" showDetail="true" showSummary="true" />
 
-    <center>
-        <div class="container mt-5" style="max-width: 1600px">
-            <div class="card shadow p-3">
-                <h1 class="mb-4">Gestión de Producciones</h1>
+    <section class="home">
+        <div class="contenedor">
+            <div class="tabla">
+                <section class="card">
+                    <h:form id="formProduccion">
 
-                <!-- BOTONES SUPERIORES -->
-                <h:form id="formBotones">
-                    <div class="d-flex justify-content-center mb-4" style="gap: 10px;">
-                        <p:commandButton value="Nueva Producción"
-                                         icon="pi pi-plus"
-                                         styleClass="btn btn-primary"
-                                         ajax="false"
-                                         action="nuevaproduccion?faces-redirect=true"/>
-
-                        <p:commandButton value="Exportar Excel"
-                                         icon="pi pi-file-excel"
-                                         styleClass="btn btn-success"
-                                         actionListener="#{produccionBean.exportarExcel}" />
-
-                        <p:commandButton value="Generar PDF"
-                                         icon="pi pi-file-pdf"
-                                         styleClass="btn btn-danger"
-                                         actionListener="#{produccionBean.generarReportePDF}" />
-                    </div>
-                </h:form>
-
-                <!-- TABLA DE PRODUCCIONES -->
-                <h:form id="formTablaProducciones">
-                    <p:dataTable id="tablaProducciones"
-                                 value="#{produccionBean.lstProduccion}" var="prod"
-                                 class="table table-bordered" widgetVar="wtProduccion"
-                                 rows="10" paginator="true"
-                                 filteredValue="#{produccionBean.lstProduccionFiltrados}"
-                                 emptyMessage="No se encontraron producciones"
-                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
-                                 rowsPerPageTemplate="10,20,50" filterEvent="keyup">
-
-                        <!-- FILTRO GLOBAL -->
-                        <f:facet name="header">
-                            <div class="d-flex justify-content-end mb-2">
-                                <p:inputText id="globalFilter" onkeyup="PF('wtProduccion').filter()"
-                                             style="width:12rem" placeholder="Buscar..." />
+                        <!-- ENCABEZADO -->
+                        <div class="encabezado">
+                            <h2><i class='bx bx-cog'></i> Gestión de Producciones</h2>
+                            <div>
+                                <h:commandButton value="Nueva Producción"
+                                                 action="nuevaproduccion?faces-redirect=true"
+                                                 styleClass="export-btn" />
+                                <h:commandButton value="Exportar Excel"
+                                                 style="margin-left: 10px"
+                                                 styleClass="export-btn"
+                                                 actionListener="#{produccionBean.exportarExcel}" />
+                                <h:commandButton value="Generar PDF"
+                                                 style="margin-left: 10px"
+                                                 styleClass="export-btn"
+                                                 actionListener="#{produccionBean.generarReportePDF}" />
                             </div>
-                        </f:facet>
+                        </div>
 
-                        <!-- COLUMNAS -->
-                        <p:column filterBy="#{prod.id_proc}" sortBy="#{prod.id_proc}" width="60">
-                            <f:facet name="header">ID</f:facet>
-                            <p:outputLabel value="#{prod.id_proc}" />
-                        </p:column>
+                        <!-- TABLA -->
+                        <h:panelGroup id="tablaProduccionWrapper">
+                            <div class="wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID <span class="draggable" onmousedown="initResize(0)"></span></th>
+                                            <th>Fecha Registro <span class="draggable" onmousedown="initResize(1)"></span></th>
+                                            <th>Asignado por <span class="draggable" onmousedown="initResize(2)"></span></th>
+                                            <th>Asignado a <span class="draggable" onmousedown="initResize(3)"></span></th>
+                                            <th>Estado <span class="draggable" onmousedown="initResize(4)"></span></th>
+                                            <th style="width:13rem">Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ui:repeat value="#{produccionBean.lstProduccion}" var="prod">
+                                            <tr>
+                                                <td><span class="cell-content"><h:outputText value="#{prod.id_proc}" /></span></td>
 
-                        <p:column filterBy="#{prod.fecha_hora}" sortBy="#{prod.fecha_hora}">
-                            <f:facet name="header">Fecha Registro</f:facet>
-                            <p:outputLabel value="#{prod.fecha_hora}">
-                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-                            </p:outputLabel>
-                        </p:column>
+                                                <td>
+                                                    <span class="cell-content">
+                                                        <h:outputText value="#{prod.fecha_hora}">
+                                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                                                        </h:outputText>
+                                                    </span>
+                                                </td>
 
-                        <p:column filterBy="#{prod.nombreUsuario}" sortBy="#{prod.nombreUsuario}">
-    <f:facet name="header">Asignado por:</f:facet>
-    <p:outputLabel 
-        value="#{empty prod.nombreUsuario ? 'Sin asignar' : prod.nombreUsuario.concat(' ').concat(prod.apellidoUsuario)}" />
-</p:column>
+                                                <td>
+                                                    <span class="cell-content">
+                                                        <h:outputText 
+                                                            value="#{empty prod.nombreUsuario ? 'Sin asignar' : prod.nombreUsuario.concat(' ').concat(prod.apellidoUsuario)}" />
+                                                    </span>
+                                                </td>
 
-                        
-                       <p:column filterBy="#{prod.nombreAsignado}" sortBy="#{prod.nombreAsignado}"
-          rendered="#{sessionUser.rol eq 'A'}">
-    <f:facet name="header">Asignado a:</f:facet>
-    <p:outputLabel 
-        value="#{empty prod.nombreAsignado ? 'Sin asignar' : prod.nombreAsignado.concat(' ').concat(prod.apellidoAsignado)}" />
-</p:column>
+                                                <td>
+                                                    <span class="cell-content">
+                                                        <h:outputText 
+                                                            value="#{empty prod.nombreAsignado ? 'Sin asignar' : prod.nombreAsignado.concat(' ').concat(prod.apellidoAsignado)}" />
+                                                    </span>
+                                                </td>
 
+                                                <td>
+                                                    <span class="cell-content">
+                                                        <h:outputText 
+                                                            value="#{prod.estado}" 
+                                                            style="font-weight:bold; color:
+                                                                   #{prod.estado eq 'Pendiente' ? 'orange' :
+                                                                     prod.estado eq 'Aceptada' ? 'blue' : 'green'};" />
+                                                    </span>
+                                                </td>
 
+                                                <td>
+                                                    <!-- OPCIONES -->
+                                                    <div style="display:flex; gap:6px; justify-content:center;">
+                                                        
+                                                        <!-- Aceptar -->
+                                                        <h:panelGroup rendered="#{prod.estado eq 'Pendiente'}">
+                                                            <h:commandLink title="Aceptar producción"
+                                                                           styleClass="btn btn-outline-primary">
+                                                                <i class="bi bi-check"></i>
+                                                                <f:ajax execute="@this" render="tablaProduccionWrapper msj"
+                                                                        listener="#{produccionBean.cambiarEstadoCiclo(prod)}" />
+                                                            </h:commandLink>
+                                                        </h:panelGroup>
 
-                        <p:column filterBy="#{prod.estado}" sortBy="#{prod.estado}" width="130">
-                            <f:facet name="header">Estado</f:facet>
-                            <h:outputText value="#{prod.estado}"
-                                style="font-weight:bold; color:
-                                    #{prod.estado eq 'Pendiente' ? 'orange' :
-                                      prod.estado eq 'Aceptada' ? 'blue' : 'green'};" />
-                        </p:column>
+                                                        <!-- Finalizar -->
+                                                        <h:panelGroup rendered="#{prod.estado eq 'Aceptada'}">
+                                                            <h:commandLink title="Finalizar producción"
+                                                                           styleClass="btn btn-outline-success">
+                                                                <i class="bi bi-flag"></i>
+                                                                <f:ajax execute="@this" render="tablaProduccionWrapper msj"
+                                                                        listener="#{produccionBean.cambiarEstadoCiclo(prod)}" />
+                                                            </h:commandLink>
+                                                        </h:panelGroup>
 
-                        <!-- OPCIONES -->
-                        <p:column style="width:15rem;">
-                            <f:facet name="header">Opciones</f:facet>
-                            <div class="d-flex justify-content-center" style="gap:6px;">
+                                                        <!-- Fechas -->
+                                                        <h:commandLink title="Ver trazabilidad de fechas"
+                                                                       styleClass="btn btn-outline-warning"
+                                                                       onclick="PF('dlgFechas').show(); return false;">
+                                                            <i class="bi bi-clock"></i>
+                                                            <f:setPropertyActionListener target="#{produccionBean.produccionSeleccionada}" value="#{prod}" />
+                                                        </h:commandLink>
 
-                                <!-- 🔁 Cambiar estado -->
-                                <h:panelGroup rendered="#{prod.estado eq 'Pendiente'}">
-                                    <p:commandButton icon="pi pi-check"
-                                                     title="Aceptar producción"
-                                                     styleClass="btn btn-outline-primary btn-sm"
-                                                     actionListener="#{produccionBean.cambiarEstadoCiclo(prod)}"
-                                                     update="msj tablaProducciones"
-                                                     process="@this"
-                                                     onclick="return confirm('¿Desea aceptar esta producción?');" />
-                                </h:panelGroup>
+                                                        <!-- Ver recetas -->
+                                                        <h:commandLink title="Ver recetas"
+                                                                       styleClass="btn btn-outline-info"
+                                                                       action="#{produccionBean.verRecetas(prod)}"
+                                                                       immediate="true">
+                                                            <i class="bi bi-eye"></i>
+                                                        </h:commandLink>
 
-                                <h:panelGroup rendered="#{prod.estado eq 'Aceptada'}">
-                                    <p:commandButton icon="pi pi-flag"
-                                                     title="Finalizar producción"
-                                                     styleClass="btn btn-outline-success btn-sm"
-                                                     actionListener="#{produccionBean.cambiarEstadoCiclo(prod)}"
-                                                     update="msj tablaProducciones"
-                                                     process="@this"
-                                                     onclick="return confirm('¿Desea marcar esta producción como finalizada?');" />
-                                </h:panelGroup>
-
-                                <!-- ⏰ Ver Fechas -->
-                                <p:commandButton icon="pi pi-clock"
-                                                 title="Ver trazabilidad de fechas"
-                                                 styleClass="btn btn-outline-warning btn-sm"
-                                                 update=":dialogFechas"
-                                                 oncomplete="PF('dlgFechas').show()">
-                                    <f:setPropertyActionListener target="#{produccionBean.produccionSeleccionada}" value="#{prod}" />
-                                </p:commandButton>
-
-                              <!-- 👁️ Ver Recetas -->
-<p:commandButton icon="pi pi-eye"
-                 
-                 title="Ver recetas"
-                 styleClass="btn btn-outline-info btn-sm"
-                 action="#{produccionBean.verRecetas(prod)}"
-                 ajax="false" />
-
-
-                                <!-- 🗑️ Eliminar -->
-                                <p:commandButton icon="pi pi-trash"
-                                                 title="Eliminar producción"
-                                                 styleClass="btn btn-outline-danger btn-sm"
-                                                 onclick="return confirm('¿Está seguro de eliminar esta producción?');"
-                                                 actionListener="#{produccionBean.eliminar(prod)}"
-                                                 update="msj tablaProducciones" />
+                                                        <!-- Eliminar -->
+                                                        <h:commandLink title="Eliminar"
+                                                                       styleClass="btn btn-outline-danger"
+                                                                       onclick="return confirm('¿Está seguro de eliminar esta producción?');">
+                                                            <i class="bi bi-trash"></i>
+                                                            <f:ajax execute="@this" render="tablaProduccionWrapper msj"
+                                                                    listener="#{produccionBean.eliminar(prod)}" />
+                                                        </h:commandLink>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </ui:repeat>
+                                    </tbody>
+                                </table>
                             </div>
-                        </p:column>
+                        </h:panelGroup>
 
-                    </p:dataTable>
+                        <!-- BOTÓN VOLVER -->
+                        <h:commandLink styleClass="btn-back" 
+                                       action="/views/Dashboard.xhtml?faces-redirect=true">
+                            <i class='bx bx-chevron-left'></i> Volver
+                        </h:commandLink>
 
-                    <br/>
-                    <p:commandButton value="Menú anterior" icon="pi pi-home" 
-                                     styleClass="btn btn-secondary"
-                                     action="/views/Dashboard.xhtml?faces-redirect=true" />
-                </h:form>
+                    </h:form>
+                </section>
             </div>
         </div>
-    </center>
+    </section>
 
-   <!-- 🕓 DIÁLOGO DE TRAZABILIDAD DE FECHAS -->
-<p:dialog id="dialogFechas" widgetVar="dlgFechas" modal="true" 
-          header="Trazabilidad de Producción"
-          showEffect="fade" hideEffect="fade" closable="true" 
-          resizable="false" width="600">
+    <!-- DIALOGO DE FECHAS -->
+    <p:dialog id="dialogFechas" widgetVar="dlgFechas" modal="true" 
+              header="Trazabilidad de Producción"
+              showEffect="fade" hideEffect="fade" closable="true" 
+              resizable="false" width="600">
+        <h:panelGrid columns="2" cellpadding="10" columnClasses="col1,col2" style="width:100%">
+            <h:outputText value="📅 Fecha de creación:" style="font-weight:bold;"/>
+            <h:outputText value="#{produccionBean.produccionSeleccionada.fecha_hora}">
+                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+            </h:outputText>
 
-    <h:panelGrid columns="2" cellpadding="10" columnClasses="col1,col2" style="width:100%">
-        <h:outputText value="📅 Fecha de creación:" style="font-weight:bold; width:200px;"/>
-        <h:outputText value="#{produccionBean.produccionSeleccionada.fecha_hora}">
-            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-        </h:outputText>
+            <h:outputText value="✅ Fecha de aceptación:" style="font-weight:bold;"/>
+            <h:outputText value="#{produccionBean.produccionSeleccionada.fecha_aceptacion != null ? 
+                                   produccionBean.produccionSeleccionada.fecha_aceptacion : 'Pendiente'}">
+                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+            </h:outputText>
 
-        <h:outputText value="✅ Fecha de aceptación:" style="font-weight:bold; width:200px;"/>
-        <h:outputText value="#{produccionBean.produccionSeleccionada.fecha_aceptacion != null ? 
-                              produccionBean.produccionSeleccionada.fecha_aceptacion : 'Pendiente'}"
-                      style="color:#{produccionBean.produccionSeleccionada.fecha_aceptacion != null ? 'black':'gray'}">
-            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-        </h:outputText>
+            <h:outputText value="🏁 Fecha de finalización:" style="font-weight:bold;"/>
+            <h:outputText value="#{produccionBean.produccionSeleccionada.fecha_finalizacion != null ? 
+                                   produccionBean.produccionSeleccionada.fecha_finalizacion : 'Pendiente'}">
+                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+            </h:outputText>
+        </h:panelGrid>
 
-        <h:outputText value="🏁 Fecha de finalización:" style="font-weight:bold; width:200px;"/>
-        <h:outputText value="#{produccionBean.produccionSeleccionada.fecha_finalizacion != null ? 
-                              produccionBean.produccionSeleccionada.fecha_finalizacion : 'Pendiente'}"
-                      style="color:#{produccionBean.produccionSeleccionada.fecha_finalizacion != null ? 'black':'gray'}">
-            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-        </h:outputText>
-    </h:panelGrid>
+        <f:facet name="footer">
+            <p:commandButton value="Cerrar" icon="pi pi-times" 
+                             onclick="PF('dlgFechas').hide()" 
+                             styleClass="btn btn-secondary" />
+        </f:facet>
+    </p:dialog>
 
-    <f:facet name="footer">
-        <p:commandButton value="Cerrar" icon="pi pi-times" 
-                         onclick="PF('dlgFechas').hide()" 
-                         styleClass="btn btn-secondary" />
-    </f:facet>
-</p:dialog>
-
-
+    <script type="text/javascript" src="/assets/js/tabla.js"></script>
 </h:body>
 </html>

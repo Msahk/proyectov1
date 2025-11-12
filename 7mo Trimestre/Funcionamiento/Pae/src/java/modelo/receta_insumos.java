@@ -6,27 +6,32 @@ public class receta_insumos implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    // 🔹 Atributos principales
     private int id_rec_ins;
     private int id_rec;
-    private Integer id_ins;
+    private int id_ins;
     private double cantidad;
     private String unidad;
+    private String estado; // ENUM('Activo', 'Agotado')
 
+    // 🔹 Relaciones (opcional para mostrar nombres o datos relacionados)
     private recetas receta;
     private insumos insumo;
 
+    // 🔹 Constructores
     public receta_insumos() {
     }
 
-    public receta_insumos(int id_rec_ins, int id_rec, Integer id_ins, double cantidad, String unidad) {
+    public receta_insumos(int id_rec_ins, int id_rec, int id_ins, double cantidad, String unidad, String estado) {
         this.id_rec_ins = id_rec_ins;
         this.id_rec = id_rec;
         this.id_ins = id_ins;
         this.cantidad = cantidad;
         this.unidad = unidad;
+        this.estado = estado;
     }
 
-    // Getters y Setters existentes
+    // 🔹 Getters y Setters
     public int getId_rec_ins() {
         return id_rec_ins;
     }
@@ -43,11 +48,11 @@ public class receta_insumos implements Serializable {
         this.id_rec = id_rec;
     }
 
-    public Integer getId_ins() {
+    public int getId_ins() {
         return id_ins;
     }
 
-    public void setId_ins(Integer id_ins) {
+    public void setId_ins(int id_ins) {
         this.id_ins = id_ins;
     }
 
@@ -67,7 +72,14 @@ public class receta_insumos implements Serializable {
         this.unidad = unidad;
     }
 
-    // 🔹 Getters y Setters nuevos
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     public recetas getReceta() {
         return receta;
     }

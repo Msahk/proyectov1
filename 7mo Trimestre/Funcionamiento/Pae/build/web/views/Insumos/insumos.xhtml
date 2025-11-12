@@ -6,141 +6,117 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    
+    <h:head>
+        <title>Gestión de Insumos</title>  
+    </h:head>
+    
+    <h:body>
+        <!-- Barra de navegación -->
+        <ui:include src="/views/Navbar.xhtml" />
+        
+        <!-- Carga inicial -->
+        <f:event type="preRenderView" listener="#{insumosBean.listar()}" />
+        
+        <!-- Mensajes -->
+        <p:growl id="msj" showDetail="true" showSummary="true" />
 
-<h:head>
-    <title>Gestión de Insumos</title>
-    <h:outputStylesheet library="css" name="bootstrap.min.css"/>
-</h:head>
+        <section class="home">
+            <div class="contenedor">
+                <div class="tabla">
+                    <section class="card">
+                        <h:form id="formInsumos">
 
-<h:body styleClass="body">
-    <ui:include src="/views/Navbar.xhtml" />
-    <f:event type="preRenderView" listener="#{insumosBean.listar}" />
-    <p:growl id="msj" showDetail="true" showSummary="true" />
-
-    <center>
-        <div class="container mt-5" style="max-width: 1600px">
-            <div class="card shadow p-4">
-                <h1>Gestión de Insumos</h1>
-
-                <h:form id="formInsumos">
-                    <!-- Botones principales -->
-                    <div class="mb-3">
-                        <h:commandButton value="Nuevo Insumo" 
-                                         action="nuevoinsumo"
-                                         styleClass="btn btn-primary" />
-
-                        <h:commandButton value="Reporte PDF"
-                                         style="margin-left: 10px"
-                                         styleClass="btn btn-danger"
-                                         actionListener="#{insumosBean.exportarPDF}" />
-
-                        <h:commandButton value="Migrar desde Excel"
-                                         style="margin-left: 10px"
-                                         styleClass="btn btn-success"
-                                         action="migrar" />
-                    </div>
-
-                    <!-- Tabla de insumos -->
-                    <p:dataTable id="tablaInsumos"
-                                 value="#{insumosBean.lstInsumos}"
-                                 var="i"
-                                 widgetVar="wtInsumos"
-                                 paginator="true"
-                                 rows="5"
-                                 paginatorPosition="bottom"
-                                 filteredValue="#{insumosBean.lstFiltrados}"
-                                 emptyMessage="No se encontraron registros de insumos"
-                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
-                                 rowsPerPageTemplate="5,10,{ShowAll|'Todos'}"
-                                 filterEvent="keyup"
-                                 styleClass="table table-hover table-striped">
-
-                        <!-- Buscador global -->
-                        <f:facet name="header">
-                            <div align="right">
-                                <p:inputText id="globalFilter" 
-                                             onkeyup="PF('wtInsumos').filter()" 
-                                             style="width:10rem"
-                                             placeholder="Buscar..." />
+                            <!-- Encabezado -->
+                            <div class="encabezado">
+                                <h2><i class='bx bx-package'></i> Gestión de Insumos</h2>
+                                <div>
+                                    <h:commandButton value="Nuevo Insumo" action="nuevoinsumo" styleClass="export-btn"/>
+                                    <h:commandButton value="Reporte PDF"  style="margin-left: 10px" 
+                                                     styleClass="export-btn" 
+                                                     actionListener="#{insumosBean.exportarPDF}"/>
+                                    <h:commandButton value="Migrar desde Excel"  style="margin-left: 10px" 
+                                                     styleClass="export-btn" 
+                                                     action="migrar"/>
+                                </div>
                             </div>
-                        </f:facet>
 
-                        <!-- Columnas -->
-                        <p:column filterBy="#{i.id_ins}" width="60" filterMatchMode="contains" sortBy="#{i.id_ins}">
-                            <f:facet name="header">ID</f:facet>
-                            <p:outputLabel value="#{i.id_ins}" />
-                        </p:column>
+                            <!-- Tabla principal -->
+                            <h:panelGroup id="tablaInsumosWrapper">
+                                <div class="wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>ID <span class="draggable" onmousedown="initResize(0)"></span></th>
+                                                <th>Nombre <span class="draggable" onmousedown="initResize(1)"></span></th>
+                                                <th>Stock Actual <span class="draggable" onmousedown="initResize(2)"></span></th>
+                                                <th>Unidad <span class="draggable" onmousedown="initResize(3)"></span></th>
+                                                <th>Stock Mínimo <span class="draggable" onmousedown="initResize(4)"></span></th>
+                                                <th>Estado <span class="draggable" onmousedown="initResize(5)"></span></th>
+                                                <th style="width:6rem">Opciones</th>
+                                            </tr>
+                                        </thead>
 
-                        <p:column filterBy="#{i.nombre}" filterMatchMode="contains" sortBy="#{i.nombre}">
-                            <f:facet name="header">Nombre</f:facet>
-                            <p:outputLabel value="#{i.nombre}" />
-                        </p:column>
+                                        <tbody>
+                                            <ui:repeat value="#{insumosBean.lstInsumos}" var="i">
+                                                <tr>
+                                                    <td><span class="cell-content"><h:outputText value="#{i.id_ins}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{i.nombre}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{i.stock_actual}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{i.unidad_medida}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{i.stock_min}" /></span></td>
+                                                    <td>
+                                                        <span class="cell-content">
+                                                            <h:outputText 
+                                                                value="#{i.estado}" 
+                                                                style="font-weight:bold;
+                                                                       color:#{i.estado eq 'Activo' ? 'green' : 
+                                                                              (i.estado eq 'Insumo vencido' ? 'red' : 
+                                                                              (i.estado eq 'Stock insuficiente' ? 'orange' : 'black'))};" />
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <!-- Editar -->
+                                                        <h:commandLink actionListener="#{insumosBean.editar(i)}" 
+                                                                       action="editarinsumo"
+                                                                       styleClass="btn btn-outline-success">
+                                                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                                                        </h:commandLink>
 
-                        <p:column filterBy="#{i.stock_actual}" width="100" filterMatchMode="contains" sortBy="#{i.stock_actual}">
-                            <f:facet name="header">Stock Actual</f:facet>
-                            <p:outputLabel value="#{i.stock_actual}" />
-                        </p:column>
+                                                        <!-- Eliminar -->
+                                                        <h:commandLink actionListener="#{insumosBean.eliminar(i)}"
+                                                                       onclick="return confirm('¿Está seguro de eliminar este insumo?!!')"
+                                                                       styleClass="btn btn-outline-danger">
+                                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                                            <f:ajax execute="@this" render="tablaInsumosWrapper :formInsumos:msj" />
+                                                        </h:commandLink>
 
-                        <p:column filterBy="#{i.unidad_medida}" width="100" filterMatchMode="contains" sortBy="#{i.unidad_medida}">
-                            <f:facet name="header">Unidad</f:facet>
-                            <p:outputLabel value="#{i.unidad_medida}" />
-                        </p:column>
+                                                        <!-- Ver lotes -->
+                                                        <h:link outcome="detalle_insumo.xhtml" styleClass="btn btn-outline-primary">
+                                                            <f:param name="idInsumo" value="#{i.id_ins}" />
+                                                            <i class="bi bi-box-seam" aria-hidden="true"></i>
+                                                        </h:link>
+                                                    </td>
+                                                </tr>
+                                            </ui:repeat>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </h:panelGroup>
 
-                        <p:column filterBy="#{i.stock_min}" width="100" filterMatchMode="contains" sortBy="#{i.stock_min}">
-                            <f:facet name="header">Stock Mínimo</f:facet>
-                            <p:outputLabel value="#{i.stock_min}" />
-                        </p:column>
-
-                        <!-- Estado -->
-                        <p:column filterBy="#{i.estado}" width="140" filterMatchMode="contains" sortBy="#{i.estado}">
-                            <f:facet name="header">Estado</f:facet>
-                            <p:outputLabel 
-                                value="#{i.estado}" 
-                                style="font-weight:bold;
-                                       color:#{i.estado eq 'Activo' ? 'green' : 
-                                              (i.estado eq 'Insumo vencido' ? 'red' : 
-                                              (i.estado eq 'Stock insuficiente' ? 'orange' : 'black'))};" />
-                        </p:column>
-
-                        <!-- Opciones -->
-                        <p:column style="width:10rem">
-                            <f:facet name="header">Opciones</f:facet>
-
-                            <!-- Editar -->
-                            <h:commandLink actionListener="#{insumosBean.editar(i)}"
-                                           action="editarinsumo"
-                                           styleClass="btn btn-outline-success d-inline-flex align-items-center mx-1">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                            <!-- Botón volver -->
+                            <h:commandLink styleClass="btn-back" 
+                                           action="/views/Dashboard.xhtml?faces-redirect=true">
+                                <i class='bx bx-chevron-left'></i> Volver
                             </h:commandLink>
 
-                            <!-- Eliminar -->
-                            <h:commandLink actionListener="#{insumosBean.eliminar(i)}"
-                                           onclick="return confirm('¿Está seguro de eliminar este insumo?')"
-                                           styleClass="btn btn-outline-danger d-inline-flex align-items-center mx-1">
-                                <i class="bi bi-trash" aria-hidden="true"></i>
-                            </h:commandLink>
-                            
-<h:link value="Lotes"
-        outcome="detalle_insumo.xhtml"
-        styleClass="btn btn-outline-primary d-inline-flex align-items-center mx-1">
-    <f:param name="idInsumo" value="#{i.id_ins}" />
-    <i class="bi bi-box-seam" aria-hidden="true"></i>
-</h:link>
-
-
-
-
-                        </p:column>
-                    </p:dataTable>
-
-                    <br/>
-                    <p:commandButton value="Menú anterior" icon="pi pi-home"
-                                     action="/views/Dashboard.xhtml?faces-redirect=true"
-                                     styleClass="btn btn-secondary" />
-                </h:form>
+                        </h:form>
+                    </section>
+                </div>
             </div>
-        </div>
-    </center>
-</h:body>
+        </section>
+
+        <!-- Script tabla -->
+        <script type="text/javascript" src="/assets/js/tabla.js"></script>
+    </h:body>
 </html>
