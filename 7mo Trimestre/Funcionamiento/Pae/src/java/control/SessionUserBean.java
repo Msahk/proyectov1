@@ -47,6 +47,16 @@ public class SessionUserBean implements Serializable {
     public String getRol() {
         return usuario != null ? usuario.getRol() : "";
     }
+    
+    public String getCorreo() {
+        return usuario != null ? usuario.getCorreo(): "";
+    }
+    
+    public long getTelefono() {
+        return usuario != null ? usuario.getTelefono(): 0;
+    }
+    
+    
 
     
     

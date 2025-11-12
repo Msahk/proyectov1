@@ -33,24 +33,7 @@ public class dashboardDao {
     
     
     
-    public int obtenerConteoVentas() {
-        int conteo = 0;
-        
-        try {
-            String sql = "select count(*) as conteo from ventas";
-            ps = ConDB.conectar().prepareStatement(sql);
-            
-            rs = ps.executeQuery();
-                while(rs.next()) {
-                    conteo = rs.getInt("conteo");
-                }
-        } catch (SQLException e) {
-                System.out.println("Error al obtener el conteo de la produccion");
-                e.printStackTrace();
-        }
-        
-        return conteo;
-    }
+    
     
     //ToDO LO QUE SEA PRODUCCIONES
     
@@ -130,10 +113,106 @@ public class dashboardDao {
         return conteo;
     }
     
+                //PRODUCCIONES POR USUARIO
+                public int obtenerConteoProduccionUsuario(int id) {
+                    int conteo = 0;
+
+                    try {
+                        String sql = "select count(*) as conteo from produccion where id_asignado = ?";
+                        ps = ConDB.conectar().prepareStatement(sql);
+                        ps.setInt(1, id);
+                        rs = ps.executeQuery();
+                            while(rs.next()) {
+                                conteo = rs.getInt("conteo");
+                            }
+                    } catch (SQLException e) {
+                            System.out.println("Error al obtener el conteo de la produccion");
+                            e.printStackTrace();
+                    }
+
+                    return conteo;
+                }
+    
+                public int conteoProduccionesPendientesUsuario(int id) {
+                    int conteo = 0;
+
+                    try {
+                        String sql = "select count(*) as conteo  from produccion where id_asignado = ? and estado = 'Pendiente'";
+                        ps = ConDB.conectar().prepareStatement(sql);
+                        ps.setInt(1, id);
+
+                        rs = ps.executeQuery();
+                            if(rs.next()) {
+                                conteo = rs.getInt("conteo");
+                            }
+                    } catch (SQLException e) {
+                            System.out.println("Error al obtener el conteo de la produccion pendiente");
+                            e.printStackTrace();
+                    }
+
+                    return conteo;
+                }
+
+                public int conteoProduccionesAceptadaUsuario(int id) {
+                    int conteo = 0;
+
+                    try {
+                        String sql = "select count(*) as conteo  from produccion where id_asignado = ? and estado = 'Aceptada'";
+                        ps = ConDB.conectar().prepareStatement(sql);
+                        ps.setInt(1, id);
+                        rs = ps.executeQuery();
+                            if(rs.next()) {
+                                conteo = rs.getInt("conteo");
+                            }
+                    } catch (SQLException e) {
+                            System.out.println("Error al obtener el conteo de la produccion aceptada");
+                            e.printStackTrace();
+                    }
+
+                    return conteo;
+                }
+
+                public int conteoProduccionesFinalizadaUsuario(int id) {
+                    int conteo = 0;
+
+                    try {
+                        String sql = "select count(*) as conteo  from produccion where id_asignado = ? and estado = 'Finalizada'";
+                        ps = ConDB.conectar().prepareStatement(sql);
+                        ps.setInt(1, id);    
+                        rs = ps.executeQuery();
+                            if(rs.next()) {
+                                conteo = rs.getInt("conteo");
+                            }
+                    } catch (SQLException e) {
+                            System.out.println("Error al obtener el conteo de la produccion finalizada");
+                            e.printStackTrace();
+                    }
+
+                    return conteo;
+    }
+    
     
     //TODO LO QUE SEA VENTAS
     
-    
+    public int obtenerConteoVentas() {
+        int conteo = 0;
+        
+        try {
+            String sql = "select count(*) as conteo from ventas";
+            ps = ConDB.conectar().prepareStatement(sql);
+            
+            rs = ps.executeQuery();
+                while(rs.next()) {
+                    conteo = rs.getInt("conteo");
+                }
+        } catch (SQLException e) {
+                System.out.println("Error al obtener el conteo de la produccion");
+                e.printStackTrace();
+        }
+        
+        return conteo;
+    }
+                
     public int conteoVentasPagoPendiente() {
         int conteo = 0;
         
@@ -210,6 +289,103 @@ public class dashboardDao {
         return conteo;
     }
     
+    
+    //TODO LO DE VENTAS POR USUARIO
+    
+    public int obtenerConteoVentasUsuario(int id) {
+        int conteo = 0;
+        
+        try {
+            String sql = "select count(*) as conteo from ventas where id_usu = ?";
+            ps = ConDB.conectar().prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+                while(rs.next()) {
+                    conteo = rs.getInt("conteo");
+                }
+        } catch (SQLException e) {
+                System.out.println("Error al obtener el conteo de la produccion");
+                e.printStackTrace();
+        }
+        
+        return conteo;
+    }
+    
+    public int conteoVentasPagoPendienteUsuario(int id) {
+        int conteo = 0;
+        
+        try {
+            String sql = "select count(*) as conteo from ventas where estado = 'Pago pendiente' and id_usu = ?";
+            ps = ConDB.conectar().prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+                while(rs.next()) {
+                    conteo = rs.getInt("conteo");
+                }
+        } catch (SQLException e) {
+                System.out.println("Error al obtener el conteo de la produccion pendiente");
+                e.printStackTrace();
+        }
+        
+        return conteo;
+    }
+    
+    public int conteoVentasPagoCompletoUsuario(int id) {
+        int conteo = 0;
+        
+        try {
+            String sql = "select count(*) as conteo from ventas where estado = 'Pago completo' and id_usu = ?";
+            ps = ConDB.conectar().prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+                while(rs.next()) {
+                    conteo = rs.getInt("conteo");
+                }
+        } catch (SQLException e) {
+                System.out.println("Error al obtener el conteo de la produccion pendiente");
+                e.printStackTrace();
+        }
+        
+        return conteo;
+    }
+    
+    public int conteoVentasProcesandoUsuario(int id) {
+        int conteo = 0;
+        
+        try {
+            String sql = "select count(*) as conteo from ventas where estado = 'Procesando' and id_usu = ?";
+            ps = ConDB.conectar().prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+                while(rs.next()) {
+                    conteo = rs.getInt("conteo");
+                }
+        } catch (SQLException e) {
+                System.out.println("Error al obtener el conteo de la produccion pendiente");
+                e.printStackTrace();
+        }
+        
+        return conteo;
+    }
+    
+    public int conteoVentasCompletadoUsuario(int id) {
+        int conteo = 0;
+        
+        try {
+            String sql = "select count(*) as conteo from ventas where estado = 'Completada' and id_usu = ?";
+            ps = ConDB.conectar().prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+                while(rs.next()) {
+                    conteo = rs.getInt("conteo");
+                }
+        } catch (SQLException e) {
+                System.out.println("Error al obtener el conteo de la produccion pendiente");
+                e.printStackTrace();
+        }
+        
+        return conteo;
+    }
     
     //TODO LO DE RECETAS
     

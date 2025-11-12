@@ -401,7 +401,7 @@ body.dark {
 
 .usuario {
     width: 370px;
-    height: calc(100% - 40px);
+    height: max-content;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -472,7 +472,6 @@ body.dark {
     color: var(--blanco);
     background-color: var(--azul);
     padding: 10px;
-    width: 80px;
     border-radius: 8px;
     font-size: 1em;
     font-weight: bolder;

@@ -46,6 +46,28 @@ public class dashboardBean {
         return conteo;
     }
     
+        //PRODUCCIONES POR USUARIO
+    
+            public int conteoProduccionUsuario(int id) {
+                int conteo = dDao.obtenerConteoProduccionUsuario(id);
+                return conteo;
+            }
+    
+            public int conteoProduccionPendienteUsuario(int id) {
+                int conteo = dDao.conteoProduccionesPendientesUsuario(id);
+                return conteo;
+            }
+
+            public int conteoProduccionAceptadaUsuario(int id) {
+                int conteo = dDao.conteoProduccionesAceptadaUsuario(id);
+                return conteo;
+            }
+
+            public int conteoProduccionFinalizadaUsuario(int id) {
+                int conteo = dDao.conteoProduccionesFinalizadaUsuario(id);
+                return conteo;
+            }
+    
     //TODO LO QUE SEA VENTAS
     
     public int conteoVentasPagoPendiente() {
@@ -68,6 +90,33 @@ public class dashboardBean {
         return conteo;
     }
     
+    
+    //TODO LO QUE SEA VENTA POR USUARIO
+    
+            public int conteoVentasUsuario(int id) {
+                int conteo  = dDao.obtenerConteoVentasUsuario(id);
+                return conteo;
+            }
+            
+            public int conteoVentasPagoPendienteUsuario(int id){
+                int conteo = dDao.conteoVentasPagoPendienteUsuario(id);
+                return conteo;
+            }
+
+            public int conteoVentaPagoCompletoUsuario(int id) {
+                int conteo = dDao.conteoVentasPagoCompletoUsuario(id);
+                return conteo;
+            }
+
+            public int conteoVentaProcesandoUsuario(int id) {
+                int conteo = dDao.conteoVentasProcesandoUsuario(id);
+                return conteo;
+            }
+
+            public int conteoVentaCompletadaUsuario(int id) {
+                int conteo = dDao.conteoVentasCompletadoUsuario(id);
+                return conteo;
+            }
     
     //TODO LO DE RECETAS
     
