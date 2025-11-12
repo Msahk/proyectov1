@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Nuevo Cliente</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+</h:head>
+
+<h:body class="bg-light">
+    <!-- Barra de navegación -->
+    <ui:include src="/views/Navbar.xhtml" />
+
+    <div class="container mt-5">
+        <div class="card shadow p-4">
+            <h2 class="text-center">Registrar Nuevo Cliente</h2>
+            <hr/>
+
+            <h:form id="formNuevoCliente">
+                <h:panelGrid columns="2" cellpadding="8" class="table table-borderless">
+
+                    <!-- Nombre -->
+                    <h:outputLabel value="Nombre:" for="nombre"/>
+                    <h:inputText id="nombre"
+                                 value="#{clientesBean.clienteNuevo.nombre}"
+                                 styleClass="form-control"
+                                 required="true"
+                                 requiredMessage="El nombre es obligatorio" />
+                    <h:message for="nombre" styleClass="text-danger" />
+
+                    <!-- NIT -->
+                    <h:outputLabel value="NIT:" for="nit"/>
+                    <h:inputText id="nit"
+                                 value="#{clientesBean.clienteNuevo.nit}"
+                                 styleClass="form-control"
+                                 required="true"
+                                 requiredMessage="El NIT es obligatorio">
+                        <!-- Formato NIT: 800.000.000-9 -->
+                        <f:validateRegex pattern="^\d{1,3}(\.\d{3})*-\d$" />
+                    </h:inputText>
+                    <h:message for="nit" styleClass="text-danger">
+                        El NIT debe tener el formato 800.000.000-9
+                    </h:message>
+
+                    <!-- Teléfono -->
+                    <h:outputLabel value="Teléfono:" for="telefono"/>
+                    <h:inputText id="telefono"
+                                 value="#{clientesBean.clienteNuevo.telefono}"
+                                 styleClass="form-control"
+                                 required="true"
+                                 requiredMessage="El teléfono es obligatorio">
+                        <f:validateRegex pattern="^\+?\d{7,15}$" />
+                    </h:inputText>
+                    <h:message for="telefono" styleClass="text-danger">
+                        Ingrese un número de teléfono válido (solo dígitos, opcional '+' al inicio)
+                    </h:message>
+
+                    <!-- Correo -->
+                    <h:outputLabel value="Correo:" for="correo"/>
+                    <h:inputText id="correo"
+                                 value="#{clientesBean.clienteNuevo.correo}"
+                                 styleClass="form-control"
+                                 required="true"
+                                 requiredMessage="El correo es obligatorio">
+                        <f:validateRegex pattern="^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}$" />
+                    </h:inputText>
+                    <h:message for="correo" styleClass="text-danger">
+                        Ingrese un correo electrónico válido
+                    </h:message>
+
+                </h:panelGrid>
+
+                <!-- Botones -->
+                <div class="mt-4 text-center">
+                    <h:commandButton value="Guardar"
+                                     action="#{clientesBean.guardarCliente}"
+                                     styleClass="btn btn-success" />
+
+                    <h:commandButton value="Volver"
+                                     action="/views/Clientes/Index.xhtml?faces-redirect=true"
+                                     immediate="true"
+                                     styleClass="btn btn-secondary ms-2" />
+                </div>
+            </h:form>
+        </div>
+    </div>
+</h:body>
+</html>

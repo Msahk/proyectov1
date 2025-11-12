@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Recetas de la Producción</title>
+</h:head>
+
+<h:body style="background-color:#f8f9fa;">
+    <!-- Navbar -->
+    <ui:include src="/views/Navbar.xhtml" />
+
+    <div class="container mt-5">
+        <div class="card shadow p-4">
+
+            <!-- Título -->
+            <div class="card-header bg-primary text-white mb-4">
+                <h2 class="text-center mb-0">Recetas Asociadas a la Producción</h2>
+            </div>
+
+            <h:form id="formRecetasProduccion">
+
+                <!-- Mensajes globales -->
+                <p:messages id="mensajes" closable="true"/>
+
+
+                <!-- Tabla de recetas asociadas -->
+                <h3 class="mb-3 text-center">Listado de Recetas Asociadas</h3>
+                <p:dataTable id="tablaRecetas"
+                             value="#{produccionrecetasBean.lstProduccionRecetas}"
+                             var="pr"
+                             paginator="true"
+                             rows="10"
+                             emptyMessage="No hay recetas asociadas"
+                             styleClass="table table-striped"
+                             rowKey="#{pr.id_detalle}">
+
+                    <p:column headerText="ID Detalle" style="width:120px; text-align:center;">
+                        <h:outputText value="#{pr.id_detalle}"/>
+                    </p:column>
+
+                    <p:column headerText="Receta">
+                        <h:outputText value="#{produccionrecetasBean.getNombreReceta(pr.id_rec)}"/>
+                    </p:column>
+
+                    <p:column headerText="Cantidad" style="width:120px; text-align:center;">
+                        <h:outputText value="#{pr.cantidad}"/>
+                    </p:column>
+
+                </p:dataTable>
+
+                <!-- Botón para volver a Producciones -->
+                <div class="text-center mt-4">
+                    <p:commandButton value="Volver a Producciones"
+                                     icon="pi pi-arrow-left"
+                                     ajax="false"
+                                     action="/views/Producciones/produccion?faces-redirect=true"
+                                     styleClass="btn btn-secondary mx-2"/>
+                </div>
+
+            </h:form>
+        </div>
+    </div>
+</h:body>
+</html>

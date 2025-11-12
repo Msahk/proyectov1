@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">  
+    <h:head>
+        <title>Dashboard</title>
+
+        
+        <style>
+            .barra-progreso-1 {
+                width: #{dashboardBean.porcentajeInactivas()}%;
+            }
+            
+        </style>
+    </h:head>
+    <h:body>
+
+        <ui:include src="Navbar.xhtml" />
+
+
+        <section class="home">
+            <div class="contenedor">
+                <div class="contenedor__info-usuario">
+                    <section class="contenedor-info">
+                        <div class="contenedor-info__topbar">
+                            <div class="topbar__texto">
+                                <h2>Hola, #{sessionUser.nombres}!</h2>
+                                <p><b>Tu rol:</b> #{sessionScope.sessionUser.rol == 'A' ? 'Administrador' :
+                                                    (sessionScope.sessionUser.rol == 'EP' ? 'Empleado Producción' :
+                                                    (sessionScope.sessionUser.rol == 'EV' ? 'Empleado Ventas' : 'Desconocido'))}</p>
+                            </div>
+                            <button class="topbar__boton">
+                                <i class="bi bi-bell-fill"></i>
+                                <span></span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <section class="cards">
+                        <article class=" cards__card">
+                            <div class="card__texto">
+                                <span class="card-numeros">#{dashboardBean.conteoUsuarios()}</span>
+                                <span class="card-nombre">Usuarios Registrados</span>
+                            </div>
+                            <div class="card__icono">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                        </article>
+                        <article class="cards__card">
+                            <div class="card__texto">
+                                <span class="card-numeros">#{dashboardBean.conteoProduccion()}</span>
+                                <span class="card-nombre">Producciones Realizadas</span>
+                            </div>
+                            <div class="card__icono">
+                                <i class="bx bx-store-alt-2 icon"></i>
+                            </div>
+                        </article>
+                        <article class=" cards__card">
+                            <div class="card__texto">
+                                <span class="card-numeros">#{dashboardBean.conteoVentas()}</span>
+                                <span class="card-nombre">Ventas que se han realizado</span>
+                            </div>
+                            <div class="card__icono">
+                                <i class="bx bx-department-store icon"></i>
+                            </div>
+                        </article>
+                    </section>
+                    <section class="graficos">
+                    <article class="graficos__workout">
+                        <div class="workout__titulo">
+                            <div class="titulo_box">
+                                <h3>Gestion de</h3>
+                                <h2>Ventas</h2>
+                            </div>
+                            <div class="titulo__icono">
+                                <i class="bx bx-store-alt-2 icon"></i>
+                            </div>
+                        </div>
+                        <div class="workout__info-box">
+                            <div>
+                                <i class="bi bi-hourglass-split"></i>
+                                <h4>#{dashboardBean.conteoVentasPagoPendiente()}</h4>
+                                <p>Pago Pendiente</p>
+                            </div>
+                            <div>
+                                <i class="bi bi-pencil-square"></i>
+                                <h4>#{dashboardBean.conteoVentaPagoCompleto()}</h4>
+                                <p>Pago Completo</p>
+                            </div>
+                            <div>
+                                <i class="bi bi-stopwatch"></i>
+                                <h4>#{dashboardBean.conteoVentaProcesando()}</h4>
+                                <p>Procesando</p>
+                            </div>
+                            <div>
+                                <i class="bi bi-check2-circle"></i>
+                                <h4>#{dashboardBean.conteoVentaCompletada()}</h4>
+                                <p>Completada</p>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="graficos__workout">
+                        <div class="workout__titulo">
+                            <div class="titulo_box">
+                                <h3>Gestion de</h3>
+                                <h2>Producciones</h2>
+                            </div>
+                            <div class="titulo__icono">
+                                <i class="bx bx-store-alt-2 icon"></i>
+                            </div>
+                        </div>
+                        <div class="workout__info-box">
+                            <div>
+                                <i class="bi bi-pencil-square"></i>
+                                <h4>#{dashboardBean.conteoProduccionPendiente()}</h4>
+                                <p>Pendientes</p>
+                            </div>
+                            <div>
+                                <i class="bi bi-clipboard-check"></i>
+                                <h4>#{dashboardBean.conteoProduccionAceptada()}</h4>
+                                <p>Aceptadas</p>
+                            </div>
+                            <div>
+                                <i class="bi bi-check2-circle"></i>
+                                <h4>#{dashboardBean.conteoProduccionFinalizada()}</h4>
+                                <p>Finalizadas</p>
+                            </div>
+                        </div>
+                    </article>
+                </section>
+
+                </div>
+
+                <aside class="usuario">
+                    <div class="usuario__perfil">
+                        <div class="perfil__foto">
+                            <div class="foto__box">
+                                <img src="assets/img/perfil.jpg" alt="Foto de perfil"/>
+                            </div>
+                            <div class="foto__data">
+                                <h3>Marlon Avila</h3>
+                            </div>
+                        </div>
+                        <div class="perfil__info-box">
+                            <div class="info-box__item">
+                                <h4>Altura</h4>
+                                <p>1.74 m</p>
+                            </div>
+                            <div class="info-box__item">
+                                <h4>Peso</h4>
+                                <p>70 kg</p>
+                            </div>
+                            <div class="info-box__item">
+                                <h4>Edad</h4>
+                                <p>20</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="usuario__objetivos">
+                        <h3>Resumen</h3>
+                        <div class="objetivos__item-objetivo">
+                            <div class="item_objetivo__label">
+                                <p>Recetas</p>
+                                <p>#{dashboardBean.conteoRecetasInactivas()} <span>/ #{dashboardBean.conteoRecetasTotales()}</span></p>
+                            </div>
+                            <div class="item-objetivo__barra-progreso">
+                                <div class="barra-progreso__numero barra-progreso-1"></div>
+                            </div>
+                        </div>
+                        <div class="objetivos__item-objetivo">
+                            <div class="item_objetivo__label">
+                                <p>Perder Peso</p>
+                                <p>2kg<span>/ 5kg</span></p>
+                            </div>
+                            <div class="item-objetivo__barra-progreso">
+                                <div class="barra-progreso__numero barra-progreso-2"></div>
+                            </div>
+                        </div>
+                        <div class="objetivos__item-objetivo">
+                            <div class="item_objetivo__label">
+                                <p>Meditacion</p>
+                                <p>24 dias<span>/ 30 dias</span></p>
+                            </div>
+                            <div class="item-objetivo__barra-progreso">
+                                <div class="barra-progreso__numero barra-progreso-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+    </h:body>
+</html>

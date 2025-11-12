@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Registrar Nueva Venta</title>
+        <h:outputStylesheet library="css" name="formularios.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:include src="/views/Navbar.xhtml" />
+        <f:event type="preRenderView" listener="#{ventasBean.inicializarNuevaVenta}" />
+
+        <section class="home">
+            <div class="card-form">
+                <div class="formulario">
+                    <h2>Registrar Nueva Venta</h2>
+                    <h:form id="formVentaCompleto">
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cliente">Cliente existente</label>
+                                <h:selectOneMenu id="cliente"
+                                                 value="#{ventasBean.ventaNueva.idCliente}"
+                                                 styleClass="select"
+                                                 required="#{!ventasBean.nuevoCliente}"
+                                                 requiredMessage="Seleccione un cliente existente.">
+                                    <f:selectItem itemLabel="-- Seleccione --" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{ventasBean.listaClientes}" var="cliente"
+                                                   itemValue="#{cliente.id_Cliente}" itemLabel="#{cliente.nombre}" />
+                                </h:selectOneMenu>
+                                <h:message for="cliente" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;"/>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full">
+    <label for="usuarioVenta">Usuario que registra la venta</label>
+    
+    <!-- Mostrar el usuario en una línea nueva debajo del label con espacio abajo -->
+    <div style="margin-top:4px; margin-bottom:8px;">
+        <h:outputText id="usuarioVenta"
+                      value="#{sessionUser.nombres} #{sessionUser.apellidos} (#{sessionUser.rol})"
+                      styleClass="input" />
+    </div>
+    
+    <!-- Pasar el ID del usuario al bean de ventas sin tocar sessionUser -->
+    <h:inputHidden value="#{ventasBean.ventaNueva.idUsuario}" />
+</div>
+
+
+
+
+                            <div class="form-group">
+                                <label for="idAsignado">Asignado a (EP)</label>
+                                <h:selectOneMenu id="idAsignado"
+                                                 value="#{ventasBean.ventaNueva.idAsignado}"
+                                                 styleClass="select"
+                                                 required="true"
+                                                 requiredMessage="Seleccione el empleado.">
+                                    <f:selectItem itemLabel="-- Seleccione --" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{ventasBean.listaUsuariosEP}" var="usuario"
+                                                   itemValue="#{usuario.idUsu}" 
+                                                   itemLabel="#{usuario.nombres} #{usuario.apellidos} #{ventasBean.conteo(usuario.idUsu)}" />
+                                </h:selectOneMenu>
+                                <h:message for="idAsignado" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group full">
+                            <label>¿Registrar cliente nuevo?</label>
+                            <h:selectBooleanCheckbox id="chkNuevoCliente" value="#{ventasBean.nuevoCliente}">
+                                <f:ajax render="panelNuevoCliente cliente" />
+                            </h:selectBooleanCheckbox>
+                        </div>
+
+                        <h:panelGroup id="panelNuevoCliente">
+                            <h:panelGroup rendered="#{ventasBean.nuevoCliente}">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Nombre</label>
+                                        <h:inputText value="#{ventasBean.clienteNuevo.nombre}" styleClass="input" required="true"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Teléfono</label>
+                                        <h:inputText value="#{ventasBean.clienteNuevo.telefono}" styleClass="input"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Correo</label>
+                                        <h:inputText value="#{ventasBean.clienteNuevo.correo}" styleClass="input"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>NIT</label>
+                                        <h:inputText value="#{ventasBean.clienteNuevo.nit}" styleClass="input" required="true"
+                                                     requiredMessage="El NIT es obligatorio para el cliente nuevo"/>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+
+                        <div class="form-group full">
+                            <label>Observaciones</label>
+                            <h:inputTextarea value="#{ventasBean.ventaNueva.observaciones}" styleClass="input" rows="3"/>
+                        </div>
+
+                        <hr/>
+                        <h3>Detalle de Empanadas</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="receta">Selecciona la empanada</label>
+                                <h:selectOneMenu id="receta" value="#{ventasBean.recetaSeleccionada}" styleClass="select">
+                                    <f:selectItem itemLabel="-- Selecciona --" itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{ventasBean.listaRecetas}" var="r"
+                                                   itemValue="#{r.id_rec}" itemLabel="#{r.nombre}" />
+                                    <f:ajax listener="#{ventasBean.actualizarPrecioReceta}" render="precioEmpanada subtotalEmpanada"/>
+                                </h:selectOneMenu>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Precio unitario</label>
+                                <h:outputText id="precioEmpanada" value="#{ventasBean.precioRecetaSeleccionada}">
+                                    <f:convertNumber type="currency" currencySymbol="$"/>
+                                </h:outputText>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Cantidad</label>
+                                <h:inputText id="cantidad" value="#{ventasBean.cantidadEmpanada}" styleClass="input">
+                                    <f:ajax event="keyup" listener="#{ventasBean.calcularSubtotalEmpanada}" render="subtotalEmpanada"/>
+                                </h:inputText>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Subtotal</label>
+                                <h:outputText id="subtotalEmpanada" value="#{ventasBean.subtotalEmpanada}">
+                                    <f:convertNumber type="currency" currencySymbol="$"/>
+                                </h:outputText>
+                            </div>
+
+                            <div class="form-group">
+                                <h:commandButton value="Agregar al carrito"
+                                                 action="#{ventasBean.agregarDetalleEmpanada}"
+                                                 styleClass="btn-outline-danger" />
+                            </div>
+                        </div>
+
+                        <div class="form-group full text-right">
+                            <h4>Total de la venta: 
+                                <h:outputText id="totalVenta" value="#{ventasBean.ventaNueva.total}">
+                                    <f:convertNumber type="currency" currencySymbol="$"/>
+                                </h:outputText>
+                            </h4>
+                        </div>
+
+                        <div class="botones">
+                                <h:commandButton value="Registrar Venta"
+                                                 action="#{ventasBean.registrarVenta}"
+                                                 styleClass="btn-primario"/>
+                                <h:commandButton value="Volver"
+                                                 action="#{ventasBean.volverALaLista}"
+                                                 immediate="true"
+                                                 styleClass="btn-secundario"/>
+                        </div>
+
+                    </h:form>
+                </div>
+            </div>
+        </section>
+    </h:body>
+</html>
