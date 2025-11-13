@@ -155,23 +155,23 @@ public int agregar(produccion p) {
 
 
     // 🔹 ELIMINAR producción
-    public void eliminar(produccion p) {
-        String sql = "DELETE FROM produccion WHERE id_proc=?";
+   // 🔹 ELIMINAR producción por ID
+public boolean eliminar(int idProc) {
+    String sql = "DELETE FROM produccion WHERE id_proc=?";
 
-        try (Connection con = ConDB.conectar();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+    try (Connection con = ConDB.conectar();
+         PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, p.getId_proc());
-            ps.executeUpdate();
+        ps.setInt(1, idProc);
+        int filas = ps.executeUpdate();
+        return filas > 0;
 
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso", "Producción eliminada exitosamente"));
-
-        } catch (SQLException e) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al eliminar producción"));
-        }
+    } catch (SQLException e) {
+        System.out.println("❌ Error en eliminar(): " + e.getMessage());
+        return false;
     }
+}
+
 
     // 🔹 CAMBIAR estado con trazabilidad automática
     public boolean cambiarEstado(int id, String nuevoEstado) {

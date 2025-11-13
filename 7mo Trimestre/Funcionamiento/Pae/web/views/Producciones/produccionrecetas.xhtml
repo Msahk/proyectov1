@@ -12,60 +12,61 @@
     <title>Recetas de la Producción</title>
 </h:head>
 
-<h:body style="background-color:#f8f9fa;">
-    <!-- Navbar -->
+<h:body>
     <ui:include src="/views/Navbar.xhtml" />
 
-    <div class="container mt-5">
-        <div class="card shadow p-4">
+    <section class="home">
+        <div class="contenedor">
+            <div class="tabla">
+                <section class="card">
+                    <h:form id="formRecetasProduccion">
 
-            <!-- Título -->
-            <div class="card-header bg-primary text-white mb-4">
-                <h2 class="text-center mb-0">Recetas Asociadas a la Producción</h2>
+                        <div class="encabezado">
+                            <h2><i class="bx bx-baguette"></i> Recetas Asociadas a la Producción</h2>
+                            <div>
+                                <p:commandButton value="Volver a Producciones"
+                 icon="pi pi-arrow-left"
+                 ajax="false"
+                 action="/views/Producciones/produccion?faces-redirect=true"
+                 styleClass="export-btn"/>
+
+                            </div>
+                        </div>
+
+                        <h:panelGroup id="tablaRecetasWrapper">
+                            <div class="wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID Detalle <span class="draggable" onmousedown="initResize(0)"></span></th>
+                                            <th>Receta <span class="draggable" onmousedown="initResize(1)"></span></th>
+                                            <th>Cantidad <span class="draggable" onmousedown="initResize(2)"></span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ui:repeat value="#{produccionrecetasBean.lstProduccionRecetas}" var="pr">
+                                            <tr>
+                                                <td><span class="cell-content"><h:outputText value="#{pr.id_detalle}" /></span></td>
+                                                <td><span class="cell-content"><h:outputText value="#{produccionrecetasBean.getNombreReceta(pr.id_rec)}" /></span></td>
+                                                <td><span class="cell-content"><h:outputText value="#{pr.cantidad}" /></span></td>
+                                            </tr>
+                                        </ui:repeat>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </h:panelGroup>
+
+                        <h:commandLink styleClass="btn-back"
+                                       action="/views/Producciones/produccion?faces-redirect=true">
+                            <i class='bx bx-chevron-left'></i> Volver
+                        </h:commandLink>
+
+                    </h:form>
+                </section>
             </div>
-
-            <h:form id="formRecetasProduccion">
-
-                <!-- Mensajes globales -->
-                <p:messages id="mensajes" closable="true"/>
-
-
-                <!-- Tabla de recetas asociadas -->
-                <h3 class="mb-3 text-center">Listado de Recetas Asociadas</h3>
-                <p:dataTable id="tablaRecetas"
-                             value="#{produccionrecetasBean.lstProduccionRecetas}"
-                             var="pr"
-                             paginator="true"
-                             rows="10"
-                             emptyMessage="No hay recetas asociadas"
-                             styleClass="table table-striped"
-                             rowKey="#{pr.id_detalle}">
-
-                    <p:column headerText="ID Detalle" style="width:120px; text-align:center;">
-                        <h:outputText value="#{pr.id_detalle}"/>
-                    </p:column>
-
-                    <p:column headerText="Receta">
-                        <h:outputText value="#{produccionrecetasBean.getNombreReceta(pr.id_rec)}"/>
-                    </p:column>
-
-                    <p:column headerText="Cantidad" style="width:120px; text-align:center;">
-                        <h:outputText value="#{pr.cantidad}"/>
-                    </p:column>
-
-                </p:dataTable>
-
-                <!-- Botón para volver a Producciones -->
-                <div class="text-center mt-4">
-                    <p:commandButton value="Volver a Producciones"
-                                     icon="pi pi-arrow-left"
-                                     ajax="false"
-                                     action="/views/Producciones/produccion?faces-redirect=true"
-                                     styleClass="btn btn-secondary mx-2"/>
-                </div>
-
-            </h:form>
         </div>
-    </div>
+    </section>
+
+    <script type="text/javascript" src="/assets/js/tabla.js"></script>
 </h:body>
 </html>

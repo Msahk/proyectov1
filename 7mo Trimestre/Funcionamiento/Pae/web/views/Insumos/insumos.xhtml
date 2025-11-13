@@ -77,11 +77,13 @@
                                                     </td>
                                                     <td>
                                                         <!-- Editar -->
-                                                        <h:commandLink actionListener="#{insumosBean.editar(i)}" 
-                                                                       action="editarinsumo"
-                                                                       styleClass="btn btn-outline-success">
-                                                            <i class="bi bi-pencil" aria-hidden="true"></i>
-                                                        </h:commandLink>
+                                                        <!-- Editar -->
+<h:link outcome="/views/Insumos/editarinsumo.xhtml" styleClass="btn btn-outline-success">
+    <f:param name="id" value="#{i.id_ins}" />
+    <i class="bi bi-pencil" aria-hidden="true"></i>
+</h:link>
+
+
 
                                                         <!-- Eliminar -->
                                                         <h:commandLink actionListener="#{insumosBean.eliminar(i)}"

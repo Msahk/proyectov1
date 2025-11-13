@@ -248,6 +248,33 @@ public class produccionBean implements Serializable {
             return null;
         }
     }
+    
+    public String irARecetasProduccion() {
+    FacesContext.getCurrentInstance().getExternalContext()
+        .getSessionMap().put("produccionSeleccionada", produccionSeleccionada);
+    return "/views/Producciones/produccionrecetas?faces-redirect=true";
+}
+
+    public void eliminar(produccion p) {
+    try {
+        if (p != null && p.getId_proc() > 0) {
+            boolean eliminado = dao.eliminar(p.getId_proc());
+            if (eliminado) {
+                listar(); // recarga la lista
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Producción eliminada correctamente."));
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "No se pudo eliminar la producción."));
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al eliminar: " + e.getMessage()));
+    }
+}
+
 
     // ✅ Getters & Setters
     public produccion getProduccion() { return produccion; }
