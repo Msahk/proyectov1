@@ -59,7 +59,7 @@
                                                     <td><span class="cell-content"><h:outputText value="#{usu.rol}" /></span></td>
                                                     <td>
                                                         <span class="cell-content">
-                                                        <h:outputText value="#{usu.estado == 'A' ? 'Activo' : (usu.estado == 'I' ? 'Inactivo' : 'Desconocido')}" />
+                                                            <h:outputText value="#{usu.estado == 'A' ? 'Activo' : (usu.estado == 'I' ? 'Inactivo' : 'Desconocido')}" />
                                                         </span>
                                                     </td>
                                                     <td>
@@ -76,7 +76,7 @@
                                                         </h:commandLink>
 
                                                         <h:commandLink actionListener="#{usuariosBean.eliminar(usu)}"
-                                                                       onclick="return confirm('¿Está seguro de ELIMINAR el usuario?!!')"
+                                                                       onclick="return confirmarEliminacion()"
                                                                        styleClass="btn btn-outline-danger ">
                                                             <i class="bi bi-trash" aria-hidden="true"></i>
                                                         </h:commandLink>
@@ -95,6 +95,14 @@
             </div>
         </section>
         <script type="text/javascript" src="/assets/js/tabla.js"></script>
+        <script>
+                                                                           function confirmarEliminacion() {
+                                                                               const texto = prompt("Para confirmar la eliminación, escriba la palabra ELIMINAR:");
+                                                                               if (texto === null)
+                                                                                   return false;
+                                                                               return texto.trim().toUpperCase() === "ELIMINAR";
+                                                                           }
+        </script>
     </h:body>
 
 </html>

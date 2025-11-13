@@ -151,8 +151,41 @@
 
                         <div class="form-group full text-right">
                             <h4>Total de la venta: 
+                                
+                            </h4>
+                        </div>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Empanada</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Subtotal</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ui:repeat value="#{ventasBean.detallesVenta}" var="det">
+                                    <tr>
+                                        <td>#{det.nombreEmpanada}</td>
+                                        <td>#{det.cantidad}</td>
+                                        <td>#{det.precioUnitario}</td>
+                                        <td>#{det.subtotal}</td>
+                                        <td>
+                                            
+                                            <h:commandButton value="Eliminar" action="#{ventasBean.eliminarDetalle(det)}"
+                                                 styleClass="ui-button-danger btn-sm" />
+                                        </td>
+                                    </tr>
+                                </ui:repeat>
+                            </tbody>
+                        </table>
+
+                        <div class="text-end mt-3">
+                            <h4>Total de la venta: 
                                 <h:outputText id="totalVenta" value="#{ventasBean.ventaNueva.total}">
-                                    <f:convertNumber type="currency" currencySymbol="$"/>
+                                    <f:convertNumber type="currency" currencySymbol="$" />
                                 </h:outputText>
                             </h4>
                         </div>
