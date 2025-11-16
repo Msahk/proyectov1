@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Editar Venta</title>
+    <h:outputStylesheet library="css" name="formularios_2.css" />
+    
+
+</h:head>
+
+<h:body>
+    <ui:include src="/views/Navbar.xhtml" />
+    <p:growl id="msj" showDetail="true" showSummary="true" />
+
+    <section class="home">
+        <div class="card-form">
+            <h2>Editar Venta</h2>
+
+            <h:form id="formEditarVenta" styleClass="formulario">
+                
+                <!-- Tipo -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label>Tipo:</label>
+                        <h:outputText value="#{ventasBean.ventaSeleccionada.tipo}" styleClass="input-lectura" />
+                    </div>
+                </div>
+
+                <!-- Cliente -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label>Cliente:</label>
+                        <h:outputText value="#{ventasBean.ventaSeleccionada.nombreCliente}" styleClass="input-lectura" />
+                    </div>
+                </div>
+
+                <!-- Usuario vendedor -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label>Usuario que vendió:</label>
+                        <h:outputText value="#{ventasBean.ventaSeleccionada.nombreUsuario}" styleClass="input-lectura" />
+                    </div>
+                </div>
+
+                <!-- Empleado Producción -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label>Empleado Producción (EP):</label>
+                        <h:outputText value="#{ventasBean.getNombreAsignado(ventasBean.ventaSeleccionada)}" styleClass="input-lectura" />
+                    </div>
+                </div>
+
+                <!-- Fecha -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label>Fecha:</label>
+                        <h:outputText value="#{ventasBean.ventaSeleccionada.fecha}" styleClass="input-lectura">
+                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                        </h:outputText>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label>Total (precio):</label>
+                        <h:outputText value="#{ventasBean.ventaSeleccionada.total}" styleClass="input-lectura">
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </h:outputText>
+                    </div>
+                </div>
+
+                <!-- Estado -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label>Estado:</label>
+                        <h:outputText value="#{ventasBean.ventaSeleccionada.estado}" styleClass="input-lectura" />
+                    </div>
+                </div>
+
+                <!-- Observaciones -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="obs">Observaciones:</label>
+                        <p:inputTextarea id="obs" value="#{ventasBean.ventaSeleccionada.observaciones}" rows="4" styleClass="input" autoResize="false" />
+                        <p:message for="obs" style="color:#d9534f; font-size:12px; margin-top:4px;" />
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="botones">
+                    <p:commandButton value="Actualizar" ajax="false"
+                                     action="#{ventasBean.actualizarVenta}"
+                                     styleClass="btn-primario" />
+                    <p:commandButton value="Cancelar" ajax="false" immediate="true"
+                                     action="#{ventasBean.volverALaLista}"
+                                     styleClass="btn-secundario" />
+                </div>
+
+            </h:form>
+        </div>
+    </section>
+</h:body>
+</html>

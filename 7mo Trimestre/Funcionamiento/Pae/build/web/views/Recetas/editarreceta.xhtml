@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Editar Receta</title>
+    <h:outputStylesheet library="css" name="formularios_2.css" />
+    
+    
+</h:head>
+
+<h:body>
+    <ui:include src="/views/Navbar.xhtml" />
+    <p:growl id="msj" showDetail="true" showSummary="true" />
+
+    <section class="home">
+        <div class="card-form">
+            <h2>Editar Receta</h2>
+
+            <h:form id="formEditarReceta" styleClass="formulario">
+
+                <!-- Nombre -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="nombre">Nombre:</label>
+                        <p:inputText id="nombre" value="#{recetasBean.receta.nombre}" required="true"
+                                     requiredMessage="Debe ingresar el nombre de la receta"
+                                     styleClass="input" />
+                        <p:message for="nombre" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
+
+                <!-- Estado y Precio -->
+                <div class="fila dos-columnas">
+                    <div class="campo">
+                        <label for="estado">Estado:</label>
+                        <h:selectOneMenu id="estado" value="#{recetasBean.receta.estado}" required="true"
+                                         requiredMessage="Debe seleccionar el estado"
+                                         styleClass="select">
+                            <f:selectItem itemLabel="Activo" itemValue="Activo"/>
+                            <f:selectItem itemLabel="Inactivo" itemValue="Inactivo"/>
+                        </h:selectOneMenu>
+                        <p:message for="estado" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+
+                    <div class="campo">
+                        <label for="precio">Precio (COP):</label>
+                        <p:inputNumber id="precio" value="#{recetasBean.receta.precio}"
+                                       required="true" minValue="0"
+                                       decimalPlaces="2"
+                                       requiredMessage="Debe ingresar el precio de la receta"
+                                       symbol=" $" symbolPosition="s"
+                                       styleClass="input" />
+                        <p:message for="precio" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
+
+                <!-- Descripción -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="descripcion">Descripción:</label>
+                        <p:inputTextarea id="descripcion" value="#{recetasBean.receta.descripcion}" 
+                                         styleClass="input" rows="4" autoResize="false" />
+                        <p:message for="descripcion" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="botones">
+                    <p:commandButton value="Actualizar" ajax="false"
+                                     action="#{recetasBean.guardarYRedirigir}"
+                                     styleClass="btn-primario" />
+                    <p:commandButton value="Cancelar" ajax="false" immediate="true"
+                                     action="/views/Recetas/recetas.xhtml?faces-redirect=true"
+                                     styleClass="btn-secundario" />
+                </div>
+
+            </h:form>
+        </div>
+    </section>
+</h:body>
+</html>
