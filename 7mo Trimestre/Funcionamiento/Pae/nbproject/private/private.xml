@@ -3,24 +3,20 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/ventasBean.java</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/dashboardDao.java</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/resources/css/formularios.css</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/nuevaVenta.xhtml</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/resources/css/estilos.css</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/assets/js/tabla.js</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/dashboardBean.java</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/views/Usuarios/nuevousu.xhtml</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/usuariosBean.java</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/views/Navbar.xhtml</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/ventasDao.java</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/views/Dashboard.xhtml</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/views/Usuarios/editarusu.xhtml</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/index.xhtml</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/views/Usuarios/Index.xhtml</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/resources/css/tablas.css</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/usuariosDao.java</file>
-            <file>file:/C:/xampp/htdocs/Proyecto/7mo%20Trimestre/Funcionamiento/Pae/web/resources/css/navbar.css</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/nuevaVenta.xhtml</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Navbar.xhtml</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/gestionarrecetas.xhtml</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/index.xhtml</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Clientes/Index.xhtml</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/editarVentas.xhtml</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/usuariosDao.java</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/ventasBean.java</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/ventasDao.java</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/CorreoClientesBean.java</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/migrarVentas.xhtml</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/CorreoBean.java</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/modelo/detalle_insumo.java</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/modelo/historial.java</file>
         </group>
     </open-files>
 </project-private>
