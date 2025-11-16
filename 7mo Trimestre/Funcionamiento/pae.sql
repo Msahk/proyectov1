@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-11-2025 a las 04:10:10
+-- Tiempo de generación: 16-11-2025 a las 23:14:03
 -- Versión del servidor: 10.11.15-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -79,7 +79,7 @@ INSERT INTO `detalle_insumo` (`id_detalle`, `id_ins`, `cantidad`, `fecha_ingreso
 (4, 3, 10.00, '2025-11-05 00:00:00', '2025-11-30', 'Eliminado'),
 (5, 3, 10.00, '2025-11-05 00:00:00', '2025-11-30', 'Eliminado'),
 (6, 47, 0.00, '2025-11-05 00:00:00', '2025-11-25', 'Agotado'),
-(7, 47, 19.00, '2025-11-05 00:00:00', '2025-11-30', 'Activo'),
+(7, 47, 19.00, '2025-11-05 00:00:00', '2025-11-18', 'Activo'),
 (8, 46, 10.00, '2025-11-05 00:00:00', '2025-11-14', 'Activo'),
 (9, 3, 2.00, '2025-11-05 00:00:00', '2025-11-29', 'Eliminado'),
 (10, 52, 10.00, '2025-11-06 00:00:00', '2025-11-30', 'Eliminado'),
@@ -92,10 +92,10 @@ INSERT INTO `detalle_insumo` (`id_detalle`, `id_ins`, `cantidad`, `fecha_ingreso
 (17, 52, 10.00, '2025-11-06 13:48:35', '2025-11-30', 'Activo'),
 (18, 52, 10.00, '2025-11-06 13:48:58', '2025-11-24', 'Activo'),
 (19, 53, 0.00, '2025-11-06 14:19:04', '2025-11-23', 'Agotado'),
-(20, 53, 4.00, '2025-11-06 14:19:17', '2025-11-13', 'Activo'),
-(21, 54, 6.00, '2025-11-06 17:19:39', '2025-11-13', 'Activo'),
-(22, 54, 5.00, '2025-11-06 17:20:11', '2025-11-13', 'Activo'),
-(23, 54, 5.00, '2025-11-06 17:25:26', '2025-11-08', 'Vencido'),
+(20, 53, 4.00, '2025-11-06 14:19:17', '2025-11-21', 'Activo'),
+(21, 54, 6.00, '2025-11-06 17:19:39', '2025-11-20', 'Eliminado'),
+(22, 54, 5.00, '2025-11-06 17:20:11', '2025-11-11', 'Eliminado'),
+(23, 54, 5.00, '2025-11-06 17:25:26', '2025-11-08', 'Eliminado'),
 (24, 53, 0.00, '2025-11-06 20:27:13', '2025-11-08', 'Agotado'),
 (25, 55, 0.00, '2025-11-08 14:58:11', '2025-11-10', 'Agotado'),
 (26, 55, 0.00, '2025-11-08 14:58:21', '2025-11-04', 'Vencido'),
@@ -105,7 +105,20 @@ INSERT INTO `detalle_insumo` (`id_detalle`, `id_ins`, `cantidad`, `fecha_ingreso
 (30, 55, 0.00, '2025-11-08 16:50:52', '2025-11-04', 'Vencido'),
 (31, 55, 1.00, '2025-11-08 16:51:06', '2025-11-04', 'Vencido'),
 (32, 53, 10.00, '2025-11-10 16:42:16', '2025-11-18', 'Eliminado'),
-(33, 53, 10.00, '2025-11-10 17:33:55', '2025-11-04', 'Vencido');
+(33, 53, 10.00, '2025-11-10 17:33:55', '2025-11-12', 'Vencido'),
+(34, 53, 10.00, '2025-11-16 10:45:07', '2025-11-17', 'Activo'),
+(35, 53, 1.00, '2025-11-16 10:55:27', '2025-11-18', 'Activo'),
+(36, 57, 5.00, '2025-11-16 11:13:20', '2025-11-18', 'Activo'),
+(37, 57, 1.00, '2025-11-16 11:58:10', '2025-11-17', 'Activo'),
+(38, 57, 1.00, '2025-11-16 12:08:27', '2025-11-17', 'Activo'),
+(39, 57, 1.00, '2025-11-16 12:21:59', '2025-11-19', 'Activo'),
+(40, 57, 1.00, '2025-11-16 12:41:14', '2025-11-18', 'Activo'),
+(41, 57, 1.00, '2025-11-16 12:41:58', '2025-11-18', 'Activo'),
+(42, 54, 1.00, '2025-11-16 14:31:27', '2025-11-17', 'Eliminado'),
+(43, 54, 1.00, '2025-11-16 14:34:31', '2025-11-17', 'Eliminado'),
+(44, 54, 0.00, '2025-11-16 14:36:14', '2025-11-18', 'Eliminado'),
+(45, 54, 7.00, '2025-11-16 14:36:14', '2025-11-17', 'Eliminado'),
+(46, 54, 0.00, '2025-11-16 14:37:09', '2025-11-17', 'Eliminado');
 
 -- --------------------------------------------------------
 
@@ -116,7 +129,10 @@ INSERT INTO `detalle_insumo` (`id_detalle`, `id_ins`, `cantidad`, `fecha_ingreso
 CREATE TABLE `historial` (
   `idHist` int(11) NOT NULL,
   `fecha` datetime NOT NULL,
-  `accion` enum('Entrada','Salida') NOT NULL,
+  `accion` enum('Entrada','Salida','Edición') NOT NULL,
+  `estado` enum('Producción','Vencimiento','Edición','Ingreso de lote','Eliminado') NOT NULL DEFAULT 'Ingreso de lote',
+  `cantidad` int(11) NOT NULL DEFAULT 0,
+  `stock_actual` int(11) NOT NULL DEFAULT 0,
   `novedad` varchar(100) DEFAULT NULL,
   `id_ins` int(11) NOT NULL,
   `id_detalle` int(11) DEFAULT NULL
@@ -126,51 +142,68 @@ CREATE TABLE `historial` (
 -- Volcado de datos para la tabla `historial`
 --
 
-INSERT INTO `historial` (`idHist`, `fecha`, `accion`, `novedad`, `id_ins`, `id_detalle`) VALUES
-(1, '2025-11-05 18:25:05', 'Entrada', 'Ingreso de lote (10.0 unidades)', 3, 1),
-(2, '2025-11-05 18:27:58', 'Entrada', 'Ingreso de lote (20.0 unidades)', 3, 2),
-(3, '2025-11-05 18:34:07', 'Entrada', 'Ingreso de lote (10.0 unidades)', 3, 3),
-(4, '2025-11-05 18:45:26', 'Entrada', 'Ingreso de lote (10.0 unidades)', 3, 4),
-(5, '2025-11-05 18:55:03', 'Entrada', 'Ingreso de lote (10.0 unidades)', 3, 5),
-(6, '2025-11-05 18:58:41', 'Entrada', 'Ingreso de lote (10.0 unidades)', 47, 6),
-(7, '2025-11-05 18:58:58', 'Entrada', 'Ingreso de lote (20.0 unidades)', 47, 7),
-(8, '2025-11-05 19:04:00', 'Entrada', 'Ingreso de lote (12.0 unidades)', 46, 8),
-(9, '2025-11-05 20:07:54', 'Salida', 'wda', 3, 1),
-(10, '2025-11-05 20:21:52', 'Salida', 'wdwd', 3, 1),
-(11, '2025-11-05 20:36:11', 'Salida', 'wenax2', 3, 5),
-(12, '2025-11-05 20:57:52', 'Salida', 'claro', 3, 5),
-(13, '2025-11-05 21:49:04', 'Salida', 'porquesi', 3, 4),
-(14, '2025-11-05 21:53:40', 'Entrada', 'Se agregó lote de 2.0 unidades', 3, 9),
-(15, '2025-11-05 21:53:56', 'Salida', 'weuuu', 3, 9),
-(16, '2025-11-06 05:48:21', 'Entrada', 'Se agregó lote de 10.0 unidades', 52, 10),
-(17, '2025-11-06 05:58:14', 'Salida', 'eliminado', 52, 10),
-(18, '2025-11-06 06:12:05', 'Entrada', 'Se agregó lote de 5.0 unidades', 52, 11),
-(19, '2025-11-06 06:17:29', 'Salida', 'se fue', 52, 11),
-(20, '2025-11-06 07:21:38', 'Entrada', 'Se agregó lote de 10.0 unidades', 52, 12),
-(21, '2025-11-06 07:23:07', 'Salida', 'Se vencio', 52, 12),
-(22, '2025-11-06 12:03:56', 'Entrada', 'Se agregó lote de 11.0 unidades', 3, 13),
-(23, '2025-11-06 13:07:42', 'Entrada', 'Se agregó lote de 2.0 unidades', 3, 14),
-(24, '2025-11-06 13:25:49', 'Entrada', 'Se agregó lote de 1.0 unidades', 3, 15),
-(25, '2025-11-06 13:38:46', 'Entrada', 'Se agregó lote de 1.0 unidades', 3, 16),
-(26, '2025-11-06 13:48:35', 'Entrada', 'Se agregó lote de 10.0 unidades', 52, 17),
-(27, '2025-11-06 13:48:58', 'Entrada', 'Se agregó lote de 10.0 unidades', 52, 18),
-(28, '2025-11-06 14:19:04', 'Entrada', 'Se agregó lote de 10.0 unidades', 53, 19),
-(29, '2025-11-06 14:19:17', 'Entrada', 'Se agregó lote de 10.0 unidades', 53, 20),
-(30, '2025-11-06 17:19:39', 'Entrada', 'Se agregó lote de 20.0 unidades', 54, 21),
-(31, '2025-11-06 17:20:11', 'Entrada', 'Se agregó lote de 10.0 unidades', 54, 22),
-(32, '2025-11-06 17:25:26', 'Entrada', 'Se agregó lote de 5.0 unidades', 54, 23),
-(33, '2025-11-06 20:27:13', 'Entrada', 'Se agregó lote de 10.0 unidades', 53, 24),
-(34, '2025-11-08 14:58:11', 'Entrada', 'Se agregó lote de 10.0 unidades', 55, 25),
-(35, '2025-11-08 14:58:21', 'Entrada', 'Se agregó lote de 10.0 unidades', 55, 26),
-(36, '2025-11-08 15:02:24', 'Entrada', 'Se agregó lote de 1.0 unidades', 55, 27),
-(37, '2025-11-08 15:19:46', 'Entrada', 'Se agregó lote de 10.0 unidades', 55, 28),
-(38, '2025-11-08 15:34:27', 'Entrada', 'Se agregó lote de 1.0 unidades', 55, 29),
-(39, '2025-11-08 16:50:52', 'Entrada', 'Se agregó lote de 1.0 unidades', 55, 30),
-(40, '2025-11-08 16:51:06', 'Entrada', 'Se agregó lote de 1.0 unidades', 55, 31),
-(41, '2025-11-08 16:51:30', 'Salida', 'se vencio', 55, 29),
-(42, '2025-11-10 16:42:16', 'Entrada', 'Se agregó lote de 10.0 unidades', 53, 32),
-(43, '2025-11-10 17:33:03', 'Salida', 'chao', 53, 32),
-(44, '2025-11-10 17:33:55', 'Entrada', 'Se agregó lote de 10.0 unidades', 53, 33);
+INSERT INTO `historial` (`idHist`, `fecha`, `accion`, `estado`, `cantidad`, `stock_actual`, `novedad`, `id_ins`, `id_detalle`) VALUES
+(1, '2025-11-05 18:25:05', 'Entrada', 'Ingreso de lote', 0, 0, 'Ingreso de lote (10.0 unidades)', 3, 1),
+(2, '2025-11-05 18:27:58', 'Entrada', 'Ingreso de lote', 0, 0, 'Ingreso de lote (20.0 unidades)', 3, 2),
+(3, '2025-11-05 18:34:07', 'Entrada', 'Ingreso de lote', 0, 0, 'Ingreso de lote (10.0 unidades)', 3, 3),
+(4, '2025-11-05 18:45:26', 'Entrada', 'Ingreso de lote', 0, 0, 'Ingreso de lote (10.0 unidades)', 3, 4),
+(5, '2025-11-05 18:55:03', 'Entrada', 'Ingreso de lote', 0, 0, 'Ingreso de lote (10.0 unidades)', 3, 5),
+(6, '2025-11-05 18:58:41', 'Entrada', 'Ingreso de lote', 0, 0, 'Ingreso de lote (10.0 unidades)', 47, 6),
+(7, '2025-11-05 18:58:58', 'Entrada', 'Ingreso de lote', 0, 0, 'Ingreso de lote (20.0 unidades)', 47, 7),
+(8, '2025-11-05 19:04:00', 'Entrada', 'Ingreso de lote', 0, 0, 'Ingreso de lote (12.0 unidades)', 46, 8),
+(9, '2025-11-05 20:07:54', 'Salida', 'Ingreso de lote', 0, 0, 'wda', 3, 1),
+(10, '2025-11-05 20:21:52', 'Salida', 'Ingreso de lote', 0, 0, 'wdwd', 3, 1),
+(11, '2025-11-05 20:36:11', 'Salida', 'Ingreso de lote', 0, 0, 'wenax2', 3, 5),
+(12, '2025-11-05 20:57:52', 'Salida', 'Ingreso de lote', 0, 0, 'claro', 3, 5),
+(13, '2025-11-05 21:49:04', 'Salida', 'Ingreso de lote', 0, 0, 'porquesi', 3, 4),
+(14, '2025-11-05 21:53:40', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 2.0 unidades', 3, 9),
+(15, '2025-11-05 21:53:56', 'Salida', 'Ingreso de lote', 0, 0, 'weuuu', 3, 9),
+(16, '2025-11-06 05:48:21', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 52, 10),
+(17, '2025-11-06 05:58:14', 'Salida', 'Ingreso de lote', 0, 0, 'eliminado', 52, 10),
+(18, '2025-11-06 06:12:05', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 5.0 unidades', 52, 11),
+(19, '2025-11-06 06:17:29', 'Salida', 'Ingreso de lote', 0, 0, 'se fue', 52, 11),
+(20, '2025-11-06 07:21:38', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 52, 12),
+(21, '2025-11-06 07:23:07', 'Salida', 'Ingreso de lote', 0, 0, 'Se vencio', 52, 12),
+(22, '2025-11-06 12:03:56', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 11.0 unidades', 3, 13),
+(23, '2025-11-06 13:07:42', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 2.0 unidades', 3, 14),
+(24, '2025-11-06 13:25:49', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 1.0 unidades', 3, 15),
+(25, '2025-11-06 13:38:46', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 1.0 unidades', 3, 16),
+(26, '2025-11-06 13:48:35', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 52, 17),
+(27, '2025-11-06 13:48:58', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 52, 18),
+(28, '2025-11-06 14:19:04', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 53, 19),
+(29, '2025-11-06 14:19:17', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 53, 20),
+(30, '2025-11-06 17:19:39', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 20.0 unidades', 54, 21),
+(31, '2025-11-06 17:20:11', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 54, 22),
+(32, '2025-11-06 17:25:26', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 5.0 unidades', 54, 23),
+(33, '2025-11-06 20:27:13', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 53, 24),
+(34, '2025-11-08 14:58:11', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 55, 25),
+(35, '2025-11-08 14:58:21', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 55, 26),
+(36, '2025-11-08 15:02:24', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 1.0 unidades', 55, 27),
+(37, '2025-11-08 15:19:46', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 55, 28),
+(38, '2025-11-08 15:34:27', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 1.0 unidades', 55, 29),
+(39, '2025-11-08 16:50:52', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 1.0 unidades', 55, 30),
+(40, '2025-11-08 16:51:06', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 1.0 unidades', 55, 31),
+(41, '2025-11-08 16:51:30', 'Salida', 'Ingreso de lote', 0, 0, 'se vencio', 55, 29),
+(42, '2025-11-10 16:42:16', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 53, 32),
+(43, '2025-11-10 17:33:03', 'Salida', 'Ingreso de lote', 0, 0, 'chao', 53, 32),
+(44, '2025-11-10 17:33:55', 'Entrada', 'Ingreso de lote', 0, 0, 'Se agregó lote de 10.0 unidades', 53, 33),
+(45, '2025-11-16 12:41:14', 'Entrada', 'Ingreso de lote', 1, 1, 'Se agregó lote de 1.0 unidades', 57, 40),
+(46, '2025-11-16 12:41:58', 'Entrada', 'Ingreso de lote', 1, 2, 'Se agregó lote de 1.0 unidades', 57, 41),
+(47, '2025-11-16 14:03:49', 'Salida', 'Ingreso de lote', 6, 0, 'bayss', 54, 21),
+(48, '2025-11-16 14:04:05', 'Salida', 'Ingreso de lote', 5, 0, 'chao', 54, 23),
+(49, '2025-11-16 14:31:27', 'Entrada', 'Ingreso de lote', 1, -10, 'Se agregó lote de 1.0 unidades', 54, 42),
+(50, '2025-11-16 14:31:45', 'Salida', 'Eliminado', 1, 0, 'bayss', 54, 42),
+(51, '2025-11-16 14:32:14', 'Salida', 'Vencimiento', 5, 0, 'wena', 54, 22),
+(52, '2025-11-16 14:34:31', 'Entrada', 'Ingreso de lote', 1, -15, 'Se agregó lote de 1.0 unidades', 54, 43),
+(53, '2025-11-16 14:36:14', 'Entrada', 'Ingreso de lote', 2, -13, 'Se agregó lote de 2.0 unidades', 54, 44),
+(54, '2025-11-16 14:36:51', 'Entrada', 'Ingreso de lote', 20, 7, 'Se agregó lote de 20.0 unidades', 54, 45),
+(55, '2025-11-16 14:37:09', 'Entrada', 'Ingreso de lote', 1, 8, 'Se agregó lote de 1.0 unidades', 54, 46),
+(56, '2025-11-16 14:38:55', 'Salida', 'Eliminado', 1, 7, 'bayss', 54, 43),
+(57, '2025-11-16 14:39:15', 'Salida', 'Eliminado', 7, 0, 'Chaooo', 54, 45),
+(58, '2025-11-16 14:39:25', 'Salida', 'Eliminado', 0, 0, 'bayss', 54, 44),
+(59, '2025-11-16 14:39:29', 'Salida', 'Eliminado', 0, 0, 'bayss', 54, 46),
+(60, '2025-11-16 16:47:06', 'Edición', 'Edición', 19, 0, 'salida', 47, 7),
+(61, '2025-11-16 16:47:50', 'Edición', 'Edición', 19, -19, 'Entarda', 47, 7);
 
 -- --------------------------------------------------------
 
@@ -210,9 +243,10 @@ INSERT INTO `insumos` (`id_ins`, `nombre`, `unidad_medida`, `stock_min`, `stock_
 (50, 'Piña', 'g', 40.00, 0.00, 'Stock insuficiente'),
 (51, 'quesito', 'g', 50.00, 0.00, 'Stock insuficiente'),
 (52, 'carnesita', 'g', 10.00, 20.00, 'Activo'),
-(53, 'Baguet', 'g', 10.00, 4.00, 'Stock insuficiente'),
-(54, 'aniz', 'g', 10.00, 11.00, 'Activo'),
-(55, 'Maiz', 'g', 10.00, 0.00, 'Stock insuficiente');
+(53, 'Baguet', 'g', 10.00, 15.00, 'Activo'),
+(54, 'aniz', 'g', 10.00, 0.00, 'Stock insuficiente'),
+(55, 'Maiz', 'g', 10.00, 0.00, 'Stock insuficiente'),
+(57, 'polemo', 'g', 10.00, 10.00, 'Activo');
 
 -- --------------------------------------------------------
 
@@ -430,10 +464,10 @@ INSERT INTO `recetas` (`id_rec`, `nombre`, `descripcion`, `precio`, `estado`) VA
 (43, 'Empanda de azucar', 'Una deliciosa empanda dulce', 1000.00, 'Activo'),
 (45, 'carnesita', 'wena mi loco', 2000.00, 'Activo'),
 (46, 'Azucar de', 'ojala', 1200.00, 'Activo'),
-(47, 'Baguete', 'Chamo', 1000.00, 'Inactivo'),
-(48, 'Empanada de Anis', 'deliciosa', 1000.00, 'Activo'),
+(47, 'Baguete', 'Chamo', 1000.00, 'Activo'),
+(48, 'Empanada de Anis', 'deliciosa', 1000.00, 'Inactivo'),
 (49, 'Empanda de Maiz', 'Prueba esta empanada', 1000.00, 'Inactivo'),
-(50, 'Bechanis', 'Combinacion', 1500.00, 'Activo'),
+(50, 'Bechanis', 'Combinacion', 1500.00, 'Inactivo'),
 (52, 'Cardamomo', 'wena', 2000.00, 'Activo');
 
 -- --------------------------------------------------------
@@ -459,11 +493,11 @@ INSERT INTO `receta_insumos` (`id_rec_ins`, `id_rec`, `id_ins`, `cantidad`, `uni
 (88, 43, 3, 2.00, 'kg', 'Activo'),
 (89, 46, 3, 2.00, 'kg', 'Activo'),
 (90, 45, 52, 2.00, 'g', 'Activo'),
-(91, 47, 53, 2.00, 'g', 'Agotado'),
-(92, 48, 54, 2.00, 'g', 'Activo'),
+(91, 47, 53, 2.00, 'g', 'Activo'),
+(92, 48, 54, 2.00, 'g', 'Agotado'),
 (93, 49, 55, 2.00, 'g', 'Agotado'),
 (94, 50, 47, 1.00, 'g', 'Activo'),
-(95, 50, 54, 1.00, 'g', 'Activo'),
+(95, 50, 54, 1.00, 'g', 'Agotado'),
 (96, 52, 46, 2.00, 'g', 'Activo');
 
 -- --------------------------------------------------------
@@ -840,19 +874,19 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de la tabla `detalle_insumo`
 --
 ALTER TABLE `detalle_insumo`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `historial`
 --
 ALTER TABLE `historial`
-  MODIFY `idHist` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `idHist` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id_ins` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id_ins` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
@@ -876,7 +910,7 @@ ALTER TABLE `produccion_recetas`
 -- AUTO_INCREMENT de la tabla `recetas`
 --
 ALTER TABLE `recetas`
-  MODIFY `id_rec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id_rec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT de la tabla `receta_insumos`
