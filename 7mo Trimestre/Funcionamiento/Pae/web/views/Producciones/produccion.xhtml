@@ -116,29 +116,33 @@
                                                         </h:panelGroup>
 
                                                         <!-- Fechas -->
-                                                        <h:commandLink title="Ver trazabilidad de fechas"
-                                                                       styleClass="btn btn-outline-warning"
-                                                                       onclick="PF('dlgFechas').show(); return false;">
-                                                            <i class="bi bi-clock"></i>
-                                                            <f:setPropertyActionListener target="#{produccionBean.produccionSeleccionada}" value="#{prod}" />
-                                                        </h:commandLink>
+                                                        <p:commandLink title="Ver trazabilidad de fechas"
+               styleClass="btn btn-outline-warning"
+               update=":dialogFechas"
+               oncomplete="PF('dlgFechas').show();">
+    <i class="bi bi-clock"></i>
+    <f:setPropertyActionListener target="#{produccionBean.produccionSeleccionada}" value="#{prod}" />
+</p:commandLink>
 
                                                         <!-- Ver recetas -->
-                                                        <h:commandLink title="Ver recetas"
-                                                                       styleClass="btn btn-outline-info"
-                                                                       action="#{produccionBean.verRecetas(prod)}"
-                                                                       immediate="true">
-                                                            <i class="bi bi-eye"></i>
-                                                        </h:commandLink>
+                                                        <p:commandLink title="Ver Recetas"
+               action="#{produccionBean.irARecetasProduccion}"
+               styleClass="btn btn-outline-info">
+    <i class="bi bi-basket"></i>
+    <f:setPropertyActionListener target="#{produccionBean.produccionSeleccionada}" value="#{prod}" />
+</p:commandLink>
 
-                                                        <!-- Eliminar -->
-                                                        <h:commandLink title="Eliminar"
-                                                                       styleClass="btn btn-outline-danger"
-                                                                       onclick="return confirm('¿Está seguro de eliminar esta producción?');">
-                                                            <i class="bi bi-trash"></i>
-                                                            <f:ajax execute="@this" render="tablaProduccionWrapper msj"
-                                                                    listener="#{produccionBean.eliminar(prod)}" />
-                                                        </h:commandLink>
+
+                                                      <!-- Eliminar -->
+<h:commandLink title="Eliminar"
+               styleClass="btn btn-outline-danger"
+               onclick="return confirm('¿Está seguro de eliminar esta producción?');">
+    <i class="bi bi-trash"></i>
+    <f:ajax execute="@this" 
+            render="@form msj"
+            listener="#{produccionBean.eliminar(prod)}" />
+</h:commandLink>
+
                                                     </div>
                                                 </td>
                                             </tr>

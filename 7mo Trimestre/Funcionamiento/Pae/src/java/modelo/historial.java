@@ -7,22 +7,27 @@ public class historial implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public int idHist;
-    public Date fecha;
-    public String accion;
-    public String novedad;
-    public int id_ins;
-    public Integer id_detalle;
-    public String nombre_insumo; // para mostrar el nombre del insumo en listados
+    private int idHist;
+    private Date fecha;
+    private String accion;
+    private String estado;      // nuevo campo
+    private int cantidad;       // nuevo campo
+    private int stockActual;    // nuevo campo
+    private String novedad;
+    private int id_ins;
+    private Integer id_detalle;
+    private String nombre_insumo; // para mostrar el nombre del insumo en listados
 
     public historial() {
-
     }
 
-    public historial(int idHist, Date fecha, String accion, String novedad, int id_ins, Integer id_detalle, String nombre_insumo) {
+    public historial(int idHist, Date fecha, String accion, String estado, int cantidad, int stockActual, String novedad, int id_ins, Integer id_detalle, String nombre_insumo) {
         this.idHist = idHist;
         this.fecha = fecha;
         this.accion = accion;
+        this.estado = estado;
+        this.cantidad = cantidad;
+        this.stockActual = stockActual;
         this.novedad = novedad;
         this.id_ins = id_ins;
         this.id_detalle = id_detalle;
@@ -51,6 +56,30 @@ public class historial implements Serializable {
 
     public void setAccion(String accion) {
         this.accion = accion;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public int getStockActual() {
+        return stockActual;
+    }
+
+    public void setStockActual(int stockActual) {
+        this.stockActual = stockActual;
     }
 
     public String getNovedad() {
@@ -84,5 +113,4 @@ public class historial implements Serializable {
     public void setNombre_insumo(String nombre_insumo) {
         this.nombre_insumo = nombre_insumo;
     }
-
 }

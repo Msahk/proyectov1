@@ -77,12 +77,18 @@
                                                     </td>
                                                     <td>
                                                         <!-- Editar -->
-                                                        <h:commandLink actionListener="#{insumosBean.editar(i)}" 
-                                                                       action="editarinsumo"
-                                                                       styleClass="btn btn-outline-success">
-                                                            <i class="bi bi-pencil" aria-hidden="true"></i>
-                                                        </h:commandLink>
+                                                        <!-- Editar -->
+<h:link outcome="/views/Insumos/editarinsumo.xhtml" styleClass="btn btn-outline-success">
+    <f:param name="id" value="#{i.id_ins}" />
+    <i class="bi bi-pencil" aria-hidden="true"></i>
+</h:link>
 
+
+<!-- Ver lotes -->
+                                                        <h:link outcome="detalle_insumo.xhtml?faces-redirect=true" styleClass="btn btn-outline-primary">
+    <f:param name="idInsumo" value="#{i.id_ins}" />
+    <i class="bi bi-box-seam" aria-hidden="true"></i>
+</h:link>
                                                         <!-- Eliminar -->
                                                         <h:commandLink actionListener="#{insumosBean.eliminar(i)}"
                                                                        onclick="return confirm('¿Está seguro de eliminar este insumo?!!')"
@@ -91,11 +97,7 @@
                                                             <f:ajax execute="@this" render="tablaInsumosWrapper :formInsumos:msj" />
                                                         </h:commandLink>
 
-                                                        <!-- Ver lotes -->
-                                                        <h:link outcome="detalle_insumo.xhtml" styleClass="btn btn-outline-primary">
-                                                            <f:param name="idInsumo" value="#{i.id_ins}" />
-                                                            <i class="bi bi-box-seam" aria-hidden="true"></i>
-                                                        </h:link>
+                                                        
                                                     </td>
                                                 </tr>
                                             </ui:repeat>

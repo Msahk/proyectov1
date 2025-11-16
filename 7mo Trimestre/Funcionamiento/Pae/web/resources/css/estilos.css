@@ -6,12 +6,12 @@
     --blanco: #f1f1f1;
     --blanco2: #f0f0f0;
     --negro: #1b1b1b;
-    --sombra: 0px 0px 23px -2px rgba(0,0,0,0.19);
+    --sombra: 0px 0px 23px -2px rgba(0,0,0,0.1);
     --gris: #616161;
     --gris-claro: #e3e3e3;
-    --azul-oscuro: #6f1919;
-    --azul: #fa4138;
-    --azul-claro: #ffbcbc;
+    --rojo-oscuro: #6f1919;
+    --rojo: #fa4138;
+    --rojo-claro: #ffbcbc;
 
     --tran-02: all 0.2s ease;
     --tran-03: all 0.3s ease;
@@ -84,8 +84,8 @@ body.dark {
     border-radius: 8px;
     font-size: 1.2em;
     cursor: pointer;
-    background-color: var(--azul-claro);
-    color: var(--azul);
+    background-color: var(--rojo-claro);
+    color: var(--rojo);
 }
 
 .topbar__boton span {
@@ -95,7 +95,7 @@ body.dark {
     width: 10px;
     height: 10px;
     border-radius: 100%;
-    background-color: var(--azul);
+    background-color: var(--rojo);
     z-index: 1;
 }
 
@@ -110,7 +110,7 @@ body.dark {
 
 .cards__card {
     position: relative;
-    background: var(--azul);
+    background: var(--rojo);
     padding: 30px;
     width: 305px;
     box-shadow: var(--sombra);
@@ -120,6 +120,7 @@ body.dark {
     gap: 15px;
     cursor: pointer;
     transition: 0.4s;
+    will-change: transform;
 }
 
 .card__texto {
@@ -142,7 +143,7 @@ body.dark {
 .card__icono {
     width: 50px;
     height: 50px;
-    background-color: var(--azul-oscuro);
+    background-color: var(--rojo-oscuro);
     border-radius: 8px;
     display: grid;
     place-items: center;
@@ -196,7 +197,7 @@ body.dark {
 }
 
 .titulo__box h2{
-    color: var(--azul);
+    color: var(--rojo);
     font-size: 2.5em;
     font-weight: bolder;
 }
@@ -204,7 +205,7 @@ body.dark {
 .titulo__icono {
     width: 80px;
     height: 80px;
-    background-color: var(--azul);
+    background-color: var(--rojo);
     border-radius: 8px;
     display: grid;
     place-items: center;
@@ -222,7 +223,7 @@ body.dark {
 
 .workout__info-box div i {
     font-size: 2.5em;
-    color: var(--azul);
+    color: var(--rojo);
 }
 
 .workout__info-box div h4 {
@@ -278,8 +279,8 @@ body.dark {
 .card .encabezado .export-btn {
     font-family: inherit;
     background: transparent;
-    color: var(--azul);
-    border: 1px solid var(--azul);
+    color: var(--rojo);
+    border: 1px solid var(--rojo);
     border-radius: 20px;
     padding: 6px 16px 6px 12px;
     font-size: 12.5px;
@@ -290,7 +291,7 @@ body.dark {
 }
 
 .card .encabezado .export-btn:hover {
-    background: var(--azul);
+    background: var(--rojo);
     color: #f9f9f9;
     cursor: pointer;
 }
@@ -299,8 +300,8 @@ body.dark {
     width: 100px;
     font-family: inherit;
     background: transparent;
-    color: var(--azul);
-    border: 1px solid var(--azul);
+    color: var(--rojo);
+    border: 1px solid var(--rojo);
     border-radius: 20px;
     padding: 6px 16px 6px 12px;
     font-size: 15.5px;
@@ -315,7 +316,7 @@ body.dark {
 
 
 .btn-back:hover {
-    background: var(--azul);
+    background: var(--rojo);
     color: #f9f9f9;
     cursor: pointer;
 }
@@ -335,7 +336,7 @@ body.dark {
 }
 
 .wrapper {
-    height: calc(100vh - 225px);
+    height: calc(100vh - 315px);
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     position: relative;
@@ -470,7 +471,7 @@ body.dark {
 
 .info-box__item p {
     color: var(--blanco);
-    background-color: var(--azul);
+    background-color: var(--rojo);
     padding: 10px;
     border-radius: 8px;
     font-size: 1em;
@@ -519,7 +520,7 @@ body.dark {
 
 .barra-progreso__numero {
     height: 10px;
-    background-color: var(--azul);
+    background-color: var(--rojo);
 }
 
 
@@ -555,7 +556,7 @@ body.dark {
     position: absolute;
     top: 15px;
     left: 0;
-    background-color: var(--azul);
+    background-color: var(--rojo);
     width: 5px;
     height: 50px;
     border-radius: 8px;
@@ -616,7 +617,7 @@ body.dark {
 }
 
 .checkbox__input:checked ~ .check {
-    background-color: var(--azul);
+    background-color: var(--rojo);
     box-shadow: 0 3px 5px rgba(33, 150, 243, 0.3);
 }
 
@@ -710,4 +711,117 @@ ease-in-out;
 .dark .graficos article h3, .dark .graficos article, .dark .workout__info-box div h4,
 .dark .workout__info-box div p, .dark h3, .dark h4, .dark p{
     color: #ccc;
+}
+
+@media (max-width: 1200px) {
+    .cards, .graficos {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .cards__card, .graficos article {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .contenedor__info-usuario {
+        width: 100%;
+        padding-right: 0;
+    }
+    .usuario {
+        width: 100%;
+        margin: 20px 0;
+    }
+}
+
+@media (max-width: 830px) {
+    .contenedor {
+        flex-direction: column;
+        gap: 20px;
+        height: auto;
+    }
+
+    .contenedor__info-usuario {
+        width: 100%;
+        height: auto;
+        padding-left: 0;
+    }
+
+    .usuario {
+        width: 100%;
+        margin: 0;
+        height: auto;
+    }
+    
+    .encabezado {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+
+    .encabezado h2 {
+        font-size: 1.2rem;
+    }
+
+    .export-btn {
+        width: 100%;
+        margin: 0;
+    }
+
+    .tabla {
+        padding: 0.5rem;
+    }
+
+    .wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        font-size: 0.85rem;
+        min-width: 700px;
+    }
+
+    th, td {
+        padding: 0.5rem;
+    }
+
+    .btn {
+        padding: 0.3rem 0.4rem;
+        font-size: 0.8rem;
+        margin-right: 0.2rem;
+    }
+
+    .btn-back {
+        width: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        margin-top: 1rem;
+        background: transparent;
+    color: var(--rojo);
+    border: 1px solid var(--rojo);
+    border-radius: 20px;
+        text-decoration: none;
+        border: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .encabezado h2 {
+        font-size: 1rem;
+    }
+
+    table {
+        min-width: 600px;
+    }
+
+    .export-btn {
+        font-size: 0.8rem;
+        padding: 0.5rem;
+    }
+
+    .btn {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.3rem;
+    }
 }

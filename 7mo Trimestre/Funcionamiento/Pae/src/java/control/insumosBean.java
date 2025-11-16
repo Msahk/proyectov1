@@ -210,6 +210,26 @@ private void verificarStockYEstado() {
     }
 }
 
+// 🧭 Cargar insumo seleccionado desde parámetro URL
+public void cargarInsumoSeleccionado() {
+    try {
+        FacesContext context = FacesContext.getCurrentInstance();
+        Map<String, String> params = context.getExternalContext().getRequestParameterMap();
+        String idParam = params.get("id");
+
+        if (idParam != null && !idParam.isEmpty()) {
+            int id = Integer.parseInt(idParam);
+            insumo = dao.obtenerPorId(id); // ✅ Usa tu método del DAO
+        } else if (insumo == null || insumo.getId_ins() == 0) {
+            insumo = new insumos(); // Evita NullPointer
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        insumo = new insumos();
+    }
+}
+
+
 
     // 🧩 Getters y Setters
     public insumos getInsumo() { return insumo; }

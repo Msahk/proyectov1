@@ -4,161 +4,291 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
+
     <h:head>
         <title>Gestión de Pagos - Factura</title>
-        <!-- Bootstrap CSS CDN -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-        <!-- PrimeIcons para iconos -->
+        <h:outputStylesheet library="css" name="formularios_1.css" />
         <link href="https://cdn.jsdelivr.net/npm/primeicons@6.0.1/primeicons.css" rel="stylesheet"/>
+        <style>
+            /* ===== Home y Card dinámico ===== */
+            .home {
+                position: relative;
+                height: 100vh;
+                left: 250px;   /* ancho sidebar abierta */
+                width: calc(100% - 250px);
+                transition: left 0.3s ease, width 0.3s ease;
+            }
+
+            .sidebar.close ~ .home {
+                left: 88px;              /* ancho sidebar cerrada */
+                width: calc(100% - 88px);
+            }
+
+            .card-form {
+                width: calc(100% - 40px);
+                max-width: 1100px;
+                margin: 20px auto;
+                padding: 30px 35px;
+                border-radius: 14px;
+                background: #fff;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                transition: width 0.3s ease, margin 0.3s ease;
+            }
+
+            /* Inputs */
+            .input, .select {
+                width: 100%;
+                padding: 10px 8px;
+                border: none;
+                border-bottom: 2px solid #ccc;
+                outline: none;
+            }
+            .input:focus, .select:focus {
+                border-bottom: 2px solid #2e86de;
+                background: #f9fbff;
+            }
+            .select {
+                border-radius: 4px;
+                cursor: pointer;
+                background: #fafafa;
+            }
+
+            /* Botones */
+            .btn-primario {
+                color: #dc3545;
+                border: 2px solid #dc3545;
+                background: transparent;
+            }
+            .btn-primario:hover {
+                background: #dc3545;
+                color: #fff;
+            }
+            .btn-secundario {
+                color: #6c757d;
+                border: 2px solid #6c757d;
+                background: transparent;
+            }
+            .btn-secundario:hover {
+                background: #6c757d;
+                color: #fff;
+            }
+
+            /* Tabla */
+            .tabla-card table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            .tabla-card th, .tabla-card td {
+                padding: 8px 12px;
+                border: 1px solid #ccc;
+                text-align: left;
+            }
+
+            /* Layout */
+            h2 {
+                text-align: center;
+                color: #2c3e50;
+                font-size: 22px;
+                margin-bottom: 25px;
+            }
+            .fila.dos-columnas {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            .campo.full {
+                grid-column: 1 / -1;
+            }
+
+            /* Responsive móvil */
+            @media (max-width: 600px) {
+                .card-form {
+                    width: 95%;
+                    padding: 25px;
+                }
+                .fila.dos-columnas {
+                    grid-template-columns: 1fr;
+                }
+            }
+            
+            .btn-verde {
+    color: #fff;               /* color del texto */
+    background-color: #28a745; /* verde Bootstrap */
+    border: 2px solid #28a745;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-verde:hover {
+    background-color: #1e7e34; /* verde más oscuro al pasar el mouse */
+}
+
+.btn-rojo {
+    color: #fff;               /* color del texto */
+    background-color: #dc3545; /* rojo Bootstrap */
+    border: 2px solid #dc3545;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-rojo:hover {
+    background-color: #a71d2a; /* rojo más oscuro al pasar el mouse */
+}
+
+
+        </style>
     </h:head>
 
     <h:body>
-        <h:form id="formPagos">
-            <f:metadata>
-                <f:viewParam name="idVenta" value="#{pagoBean.idVenta}" />
-                <f:event type="preRenderView" listener="#{pagoBean.cargarPagosPorId}" />
-            </f:metadata>
+        <ui:include src="/views/Navbar.xhtml" />
 
-            <div class="container my-5">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h2 class="card-title text-center mb-4">Factura de Venta</h2>
+        <section class="home">
+            <div class="card-form">
+                <h:form id="formPagos">
+                    <f:metadata>
+                        <f:viewParam name="idVenta" value="#{pagoBean.idVenta}" />
+                        <f:event type="preRenderView" listener="#{pagoBean.cargarPagosPorId}" />
+                    </f:metadata>
 
-                        <!-- Datos de la venta -->
-                        <div class="row mb-4">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">ID Venta:</label>
-                                <div class="border p-2 rounded bg-light">
-                                    <h:outputText value="#{pagoBean.ventaSeleccionada.idVen}" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Cliente:</label>
-                                <div class="border p-2 rounded bg-light">
-                                    <h:outputText value="#{pagoBean.ventaSeleccionada.nombreCliente}" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Registrada por:</label>
-                                <div class="border p-2 rounded bg-light">
-                                    <h:outputText value="#{pagoBean.ventaSeleccionada.nombreUsuario} #{pagoBean.ventaSeleccionada.apellidoUsuario}" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Asignado a:</label>
-                                <div class="border p-2 rounded bg-light">
-                                    <h:outputText value="#{pagoBean.ventaSeleccionada.nombreAsignado} #{pagoBean.ventaSeleccionada.apellidoAsignado}" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Total a pagar:</label>
-                                <div class="border p-2 rounded bg-light">
-                                    <h:outputText value="#{pagoBean.ventaSeleccionada.total}">
-                                        <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="0"/>
-                                    </h:outputText>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Estado actual:</label>
-                                <div class="border p-2 rounded bg-light text-success fw-bold">
-                                    <h:outputText value="#{pagoBean.ventaSeleccionada.estado}" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Total pagado:</label>
-                                <div class="border p-2 rounded bg-light">
-                                    <h:outputText id="totalPagadoOutput" value="#{pagoBean.totalPagado}">
-                                        <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="0"/>
-                                    </h:outputText>
-                                </div>
+                    <h2>Factura de Venta</h2>
+
+                    <div class="fila dos-columnas">
+                        <div class="campo">
+                            <label>ID Venta:</label>
+                            <div class="border p-2 rounded bg-light">
+                                <h:outputText value="#{pagoBean.ventaSeleccionada.idVen}" />
                             </div>
                         </div>
-
-
-                        <!-- Tabla de pagos realizados -->
-                        <h4 class="mb-3">Historial de Pagos</h4>
-                        <h:dataTable id="tablaPagos" value="#{pagoBean.listaPagos}" var="p" styleClass="table table-striped table-bordered">
-
-                            <h:column>
-                                <f:facet name="header">Fecha</f:facet>
-                                <h:outputText value="#{p.fechaPago}">
-                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
-                                </h:outputText>
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header">Monto</f:facet>
-                                <h:outputText value="#{p.monto}">
+                        <div class="campo">
+                            <label>Cliente:</label>
+                            <div class="border p-2 rounded bg-light">
+                                <h:outputText value="#{pagoBean.ventaSeleccionada.nombreCliente}" />
+                            </div>
+                        </div>
+                        <div class="campo">
+                            <label>Registrada por:</label>
+                            <div class="border p-2 rounded bg-light">
+                                <h:outputText value="#{pagoBean.ventaSeleccionada.nombreUsuario} #{pagoBean.ventaSeleccionada.apellidoUsuario}" />
+                            </div>
+                        </div>
+                        <div class="campo">
+                            <label>Asignado a:</label>
+                            <div class="border p-2 rounded bg-light">
+                                <h:outputText value="#{pagoBean.ventaSeleccionada.nombreAsignado} #{pagoBean.ventaSeleccionada.apellidoAsignado}" />
+                            </div>
+                        </div>
+                        <div class="campo">
+                            <label>Total a pagar:</label>
+                            <div class="border p-2 rounded bg-light">
+                                <h:outputText value="#{pagoBean.ventaSeleccionada.total}">
                                     <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="0"/>
                                 </h:outputText>
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header">Tipo de Pago</f:facet>
-                                <h:outputText value="#{p.tipoPago}" />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header">Acción</f:facet>
-                      
-                                <!-- Botón de eliminar con confirmación automática -->
-                                <p:commandButton icon="bi bi-trash-fill"
-                                                 styleClass="btn btn-danger btn-sm"
-                                                 title="Eliminar Pago"
-                                                 actionListener="#{pagoBean.eliminarPagoAction}"
-                                                 update=":formPagos:tablaPagos :formPagos:totalPagadoOutput"
-                                                 process="@this"
-                                                 onclick="return confirm('¿Está seguro de eliminar este pago?');">
-                                    <f:setPropertyActionListener target="#{pagoBean.pagoSeleccionado}" value="#{p}"/>
-                                </p:commandButton>
-
-
-                                <!-- Diálogo global para todas las confirmaciones -->
-                                <p:confirmDialog global="true" widgetVar="confirmDialog"/>
-
-
-                            </h:column>
-                        </h:dataTable>
-
-
-
-                        <!-- Registro de nuevo pago -->
-                        <div class="mt-5 p-3 bg-light rounded">
-                            <h4 class="mb-3">Registrar nuevo pago</h4>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Monto:</label>
-                                    <h:inputText id="monto" value="#{pagoBean.pagoNuevo.monto}" required="true" styleClass="form-control"/>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Tipo de pago:</label>
-                                    <h:selectOneMenu id="tipo" value="#{pagoBean.pagoNuevo.tipoPago}" required="true" styleClass="form-select">
-                                        <f:selectItem itemLabel="Seleccione..." itemValue="" />
-                                        <f:selectItem itemLabel="Abono" itemValue="abono" />
-                                        <f:selectItem itemLabel="Pago total" itemValue="total" />
-                                    </h:selectOneMenu>
-                                </div>
                             </div>
-                            <h:commandButton value="Registrar Pago" action="#{pagoBean.registrarPago}" styleClass="btn btn-success mt-3"/>
                         </div>
-
-
-                        <div class="mb-3">
-                            <h:link outcome="/views/Ventas/index" styleClass="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Regresar
-                            </h:link>
-                        </div>    
-
-                        <!-- Footer -->
-                        <div class="text-end mt-4">
-                            <strong>Fecha actual:</strong> <h:outputText value="#{pagoBean.fechaActual}" />
+                        <div class="campo">
+                            <label>Estado actual:</label>
+                            <div class="border p-2 rounded bg-light text-success fw-bold">
+                                <h:outputText value="#{pagoBean.ventaSeleccionada.estado}" />
+                            </div>
                         </div>
-
-                        <!-- Mensajes globales -->
-                        <h:messages globalOnly="true" styleClass="text-danger fw-bold mt-3"/>
+                        <div class="campo full">
+                            <label>Total pagado:</label>
+                            <div class="border p-2 rounded bg-light">
+                                <h:outputText id="totalPagadoOutput" value="#{pagoBean.totalPagado}">
+                                    <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="0"/>
+                                </h:outputText>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Bootstrap JS CDN -->
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        </h:form>
+
+                    <div style="visibility: hidden;">Este contenido está oculto</div>
+
+                    <h4 class="mt-4 mb-3">Historial de Pagos</h4>
+                    <div class="tabla-card">
+                        <h:panelGroup id="tablaPagosContainer">
+                            <h:dataTable id="tablaPagos" value="#{pagoBean.listaPagos}" var="p"
+                                         styleClass="table table-hover table-bordered">
+                                <h:column>
+                                    <f:facet name="header">Fecha</f:facet>
+                                    <h:outputText value="#{p.fechaPago}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                    </h:outputText>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Monto</f:facet>
+                                    <h:outputText value="#{p.monto}">
+                                        <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="0"/>
+                                    </h:outputText>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Tipo de Pago</f:facet>
+                                    <h:outputText value="#{p.tipoPago}" />
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Acción</f:facet>
+                                    <h:commandLink title="Eliminar"
+               styleClass="btn btn-outline-danger btn-sm"
+               onclick="return confirm('¿Está seguro de eliminar este pago?');">
+    <i class="bi bi-trash"></i>
+    <f:setPropertyActionListener target="#{pagoBean.pagoSeleccionado}" value="#{p}" />
+    <f:ajax execute="@this" render="@form" listener="#{pagoBean.eliminarPagoAction}" />
+</h:commandLink>
+
+                                </h:column>
+                            </h:dataTable>
+                        </h:panelGroup>
+                    </div>
+
+                    <div style="visibility: hidden;">Este contenido está oculto</div>
+
+
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h4 class="mb-3">Registrar nuevo pago</h4>
+                        <div class="fila dos-columnas">
+                            <div class="campo">
+                                <label>Monto:</label>
+                                <h:inputText id="monto" value="#{pagoBean.pagoNuevo.monto}" required="true" styleClass="input"/>
+                            </div>
+                            <div class="campo">
+                                <label>Tipo de pago:</label>
+                                <h:selectOneMenu id="tipo" value="#{pagoBean.pagoNuevo.tipoPago}" required="true" styleClass="select">
+                                    <f:selectItem itemLabel="Seleccione..." itemValue="" />
+                                    <f:selectItem itemLabel="Abono" itemValue="abono" />
+                                    <f:selectItem itemLabel="Pago total" itemValue="total" />
+                                </h:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <div style="visibility: hidden;">Este contenido está oculto</div>
+
+                        <div class="botones mt-3">
+                           <h:commandButton value="Registrar Pago" 
+                 action="#{pagoBean.registrarPago}" 
+                 styleClass="btn-verde"/>
+
+
+
+                            <button type="button" class="btn-rojo" onclick="history.back()">
+    <i class="bi bi-arrow-left"></i> Volver
+</button>
+                        </div>
+                    </div>
+
+                    <div style="visibility: hidden;">Este contenido está oculto</div>
+
+
+                    <div class="text-end mt-4">
+                        <strong>Fecha actual:</strong> <h:outputText value="#{pagoBean.fechaActual}" />
+                    </div>
+
+                    <h:messages globalOnly="true" styleClass="text-danger fw-bold mt-3"/>
+                </h:form>
+            </div>
+        </section>
     </h:body>
 </html>
