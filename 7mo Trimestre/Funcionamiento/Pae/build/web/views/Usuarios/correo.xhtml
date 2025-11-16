@@ -1,59 +1,76 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <title>Enviar Correos</title>
-    </h:head>
-    <h:body>
-        <ui:include src="/views/Navbar.xhtml" />
-        <p:growl id="msj" showDetail="true" showSummary="true" />
-        <f:event type="preRenderView" listener="#{correoBean.listarUsuarios()}" />
-        <div class="container mt-5">
 
-            <div class="card shadow p-4">
-                <div class="registro-section">
-                    <h2>Envío de Correos</h2>
-                    <h:form>
-                        <div class="form-group">
-                        <h:panelGrid styleClass="arriba">
-                            <h:panelGrid columns="1">
-                                <p:outputLabel value="Destinatarios" />
-                                <p:selectManyMenu value="#{correoBean.dest}" required="true"  requiredMessage="Debe especificar Destinatarios" 
-                                                  widgetVar="dest" showCheckbox="true" style="width: 370px;" >
-                                    <f:selectItems value="#{correoBean.listaUsuarios}" var="usr" itemLabel=" #{usr.nombres}"   
-                                                   itemValue="#{usr.correo}" />
-                                </p:selectManyMenu>
-                                <h:panelGrid columns="2">
-                                    <p:commandButton value="T" onclick="PF('dest').selectAll()" />
-                                    <p:commandButton value="N" onclick="PF('dest').unselectAll()" />
-                                </h:panelGrid>
-                            </h:panelGrid>
+<h:head>
+    <title>Enviar Correos</title>
+    <h:outputStylesheet library="css" name="formularios_2.css" />
+</h:head>
 
-                            <h:panelGrid columns="1">
-                                <p:outputLabel value="Asunto" />
-                                <p:inputText value="#{correoBean.asunto}" required="true" size="35" 
-                                             requiredMessage="Debe especificar un Asunto" />
-                                <p:outputLabel value="Mensaje" />
-                                <p:inputTextarea value="#{correoBean.contenido}" required="true" cols="35" rows="5" 
-                                                 requiredMessage="Debe especificar un Mensaje" />
-                                <h:panelGrid columns="2">
-                                    <p:commandButton value="Enviar" ajax="false" actionListener="#{correoBean.enviarCorreo()}" />
-                                    <p:commandButton value="Cancelar" ajax="false" immediate="true" action="/views/Usuarios/Index.html" />
-                                </h:panelGrid>
-                            </h:panelGrid>
+<h:body>
+    <ui:include src="/views/Navbar.xhtml" />
+    <p:growl id="msj" showDetail="true" showSummary="true" />
+    <f:event type="preRenderView" listener="#{correoBean.listarUsuarios()}" />
 
+    <section class="home">
+        <div class="card-form">
+            <h2>Envío de Correos</h2>
+
+            <h:form id="formEnviarCorreo" styleClass="formulario">
+
+                <!-- Destinatarios -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="destinatarios">Destinatarios:</label>
+                        <p:selectManyMenu id="destinatarios" value="#{correoBean.dest}" required="true" 
+                                          requiredMessage="Debe especificar Destinatarios"
+                                          widgetVar="dest" showCheckbox="true" styleClass="select" style="width:100%;">
+                            <f:selectItems value="#{correoBean.listaUsuarios}" var="usr" 
+                                           itemLabel="#{usr.nombres}" itemValue="#{usr.correo}" />
+                        </p:selectManyMenu>
+                        <h:panelGrid columns="2" style="margin-top:4px;">
+                            <p:commandButton value="T" onclick="PF('dest').selectAll()" styleClass="btn-primario"/>
+                            <p:commandButton value="N" onclick="PF('dest').unselectAll()" styleClass="btn-secundario"/>
                         </h:panelGrid>
-            </div>
-                            
-                    </h:form>
-
-
+                    </div>
                 </div>
-            </div>
+
+                <!-- Asunto -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="asunto">Asunto:</label>
+                        <p:inputText id="asunto" value="#{correoBean.asunto}" required="true" 
+                                     requiredMessage="Debe especificar un Asunto" styleClass="input" />
+                        <p:message for="asunto" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
+
+                <!-- Mensaje -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="mensaje">Mensaje:</label>
+                        <p:inputTextarea id="mensaje" value="#{correoBean.contenido}" required="true" 
+                                         cols="35" rows="5" styleClass="input"
+                                         requiredMessage="Debe especificar un Mensaje" />
+                        <p:message for="mensaje" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="botones">
+                    <p:commandButton value="Enviar" ajax="false" actionListener="#{correoBean.enviarCorreo()}" 
+                                     styleClass="btn-primario"/>
+                    <p:commandButton value="Cancelar" ajax="false" immediate="true" 
+                                     action="/views/Usuarios/Index.html" styleClass="btn-secundario"/>
+                </div>
+
+            </h:form>
         </div>
-    </h:body>
+    </section>
+</h:body>
 </html>
