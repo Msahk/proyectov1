@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:h="http://xmlns.jcp.org/jsf/html"
+       xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta charset="UTF-8"/>
+        <title>#{etq.msj_title}</title>
+        <h:outputStylesheet library="css" name="navbar.css"/>
+        <h:outputStylesheet library="css" name="index.css"/>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+              rel="stylesheet"/>
+    </h:head>
+    <h:body styleClass="body">
+        <header class="header">
+            <div class="logo">#{etq.msj_title} 🥟</div>
+            <nav class="navbar">
+                <a href="#inicio">#{etq.msj_inicio}</a>
+                <a class="boton" onclick="login()">#{etq.msj_ingresar}</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="inicio" id="inicio">
+                <div class="contenido">
+                    <h1>¡#{etq.msj_titulo}!</h1>
+                    <p>#{etq.msj_info}</p>
+                    <a onclick="login()" class="boton">#{etq.msj_ingresarSistema}</a>
+                </div>
+                <div class="imagenes">
+                    <img src="#{request.contextPath}/assets/img/1.png" alt="Empanada tradicional"/>
+                    <img src="#{request.contextPath}/assets/img/2.png" alt="Empanada de queso"/>
+                    <img src="#{request.contextPath}/assets/img/4.png" alt="Empanada picante"/>
+                </div>
+            </section>
+        </main>
+
+
+        <footer class="footer">
+            <p> 2025 #{etq.msj_title}. #{etq.msj_derechos}.</p>
+        </footer>
+        
+        
+        <div id="login-placeholder" style="display:none">
+    <h:form id="formLogin" prependId="false" styleClass="p-3">
+      <p:messages id="msj" />
+      <div class="mb-3 swal-row">
+        <label for="correoDoc" class="swal-label form-label">#{etq.msj_correo}:</label>
+        <div class="swal-input-wrap">
+          <p:inputText id="correoDoc" value="#{usuariosBean.usuario.correo}" styleClass="form-control" />
+        </div>
+      </div>
+
+      <div class="mb-3 swal-row">
+        <label for="PwUsr" class="swal-label form-label">#{etq.msj_pass}:</label>
+        <div class="swal-input-wrap">
+          <p:password id="PwUsr" value="#{usuariosBean.usuario.password}" styleClass="form-control" feedback="false" />
+        </div>
+      </div>
+
+      <p:commandButton id="btnLoginHidden" style="display:none" process="@form" update="msj"
+                       action="#{usuariosBean.autenticar}" />
+      <p:remoteCommand name="swalLoginSubmit"
+                       action="#{usuariosBean.autenticar}"
+                       process="@form"
+                       update="msj"
+                       oncomplete="handleLoginComplete(xhr, status, args)" />
+    </h:form>
+  </div>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript">
+  /*<![CDATA[*/
+  window.login = function () {
+    var original = document.getElementById('formLogin');
+    if (!original) return;
+    var clone = original.cloneNode(true);
+    clone.id = original.id + '_sw';
+    clone.querySelectorAll('.swal-row').forEach(function(r){ r.style.marginBottom = '8px'; });
+
+    Swal.fire({
+      html: '<div id="swal-login-container"></div>',
+      title: '#{etq.msj_iniciarSesion}',
+      showConfirmButton: false,
+      showCloseButton: true,
+      didOpen: function () {
+        var container = document.getElementById('swal-login-container');
+        container.appendChild(clone);
+
+        clone.querySelectorAll('input').forEach(function(i){
+          i.classList.add('form-control');
+          if(i.type === 'password') i.classList.add('form-control');
+        });
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'swal2-confirm swal2-styled btn btn-primary';
+        btn.innerText = '#{etq.msj_aceptar}';
+        btn.onclick = function () {
+          var cCorreo = clone.querySelector('input[id*="correoDoc"], input[name*="correo"]');
+          var cPw = clone.querySelector('input[type="password"]');
+          var oCorreo = document.getElementById('correoDoc');
+          var oPw = document.getElementById('PwUsr');
+          if (cCorreo && oCorreo) oCorreo.value = cCorreo.value;
+          if (cPw && oPw) oPw.value = cPw.value;
+          if (typeof swalLoginSubmit === 'function') swalLoginSubmit();
+          else { var hidden = document.getElementById('btnLoginHidden'); if (hidden) hidden.click(); }
+        };
+        container.appendChild(btn);
+      }
+    });
+  };
+
+  function handleLoginComplete(xhr, status, args){
+    var logged = args && args.loggedIn;
+    var msg = args && args.msg ? args.msg : '#{etq.msj_credenciales}';
+    if (logged){
+      Swal.fire({icon:'success',title:'#{etq.msj_bienvenido}',text:'#{etq.msj_bienvenido} '+msg,timer:1000,showConfirmButton:false})
+        .then(function(){ window.location = args.redirect || 'views/Dashboard.xhtml'; });
+    } else {
+      Swal.fire({icon:'error',title:'Error',text:msg});
+      var correo = args && args.correoPreserve ? args.correoPreserve : '';
+      var cont = document.getElementById('swal-login-container');
+      var clonedCorreo = cont && cont.querySelector('input[id*="correoDoc"], input[name="correo"]');
+      var clonedPw = cont && cont.querySelector('input[type="password"]');
+      if (clonedCorreo) clonedCorreo.value = correo;
+      if (clonedPw) clonedPw.value = '';
+      var oCorreo = document.getElementById('correoDoc');
+      var oPw = document.getElementById('PwUsr');
+      if (oCorreo) oCorreo.value = correo;
+      if (oPw) oPw.value = '';
+    }
+  }
+  /*]]>*/
+  </script>
+
+
+
+
+        <!--  
+            <script>
+                
+                    window.olvidePassword = function () {
+                        Swal.fire({
+                                html: `
+                                            <section class='ingreso' id='ingreso'>
+                                                <h2>Recuperar contraseña</h2>
+                                                <form  method='POST' action="${pageContext.request.contextPath}/usuariosController" class='formulario-ingreso'>
+                                                    <input type="hidden" name='accion' value='olvidar'>
+                                                    <input type='text' name='documento' placeholder='Documento' required>
+                                                    <input type='text' name='correo' placeholder='Correo' required>
+                                                    <input type='password' name='password' placeholder='Contraseña' required>
+                                                    <button type='submit' class="boton" name='accion' value='Ingresar'>
+                                                        <p>Ingresar</p>
+                                                    </button>
+                                            </form>
+                                        </section>
+                                        `,
+                                showConfirmButton: false,
+                                showCloseButton: true
+                            });
+                    }   
+                </script>
+          
+        -->
+
+
+
+
+
+
+
+
+    </h:body>
+    <!--  
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Error...',
+        text: '<%= request.getAttribute("loginError") %>',
+        confirmButtonColor: '#d33'
+    });
+</script>
+<script>
+    Swal.fire({
+        position: "top-end",
+        icon: 'success',
+        title: 'Contraseña actualizada',
+        text: '<%= request.getAttribute("Exitosamente") %>',
+        confirmButtonColor: '#d33',
+        showConfirmButton: false,
+        timer: 1500
+    });
+</script>
+    -->
+</html>

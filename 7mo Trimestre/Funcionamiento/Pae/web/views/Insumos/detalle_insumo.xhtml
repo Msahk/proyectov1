@@ -1,0 +1,632 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Gestión de Lotes</title>
+        <h:outputStylesheet library="css" name="formularios.css" />
+
+        <style>
+            .card-form {
+                max-width: 1200px;
+                width: 95%;
+                padding: 25px;
+                margin: 20px auto;
+                background-color: #fff;
+                border-radius: 10px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            }
+            .fila {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px 10px;
+                margin-bottom: 5px;
+            }
+            .campo {
+                flex: 1 1 150px;
+            }
+            .campo label {
+                display: block;
+                margin-bottom: 3px;
+                font-weight: 500;
+                font-size: 0.95rem;
+            }
+            .campo h\:inputText, .campo h\:selectOneMenu {
+                width: 100%;
+                padding: 6px 10px;
+                font-size: 0.95rem;
+                border-radius: 6px;
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+                font-family: Arial, sans-serif;
+            }
+            th, td {
+                padding: 10px 12px;
+                border: 1px solid #ddd;
+            }
+            th {
+                background-color: #f2f2f2;
+                text-align: left;
+            }
+            .btn {
+                padding: 6px 14px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: 500;
+            }
+            .btn-primario {
+                background-color: #007bff;
+                color: white;
+                border: none;
+            }
+            .btn-secundario {
+                background-color: #6c757d;
+                color: white;
+                border: none;
+            }
+            .btn-outline-success {
+                border: 1px solid #28a745;
+                color: #28a745;
+                background: none;
+            }
+            .btn-outline-danger {
+                border: 1px solid #dc3545;
+                color: #dc3545;
+                background: none;
+            }
+            .btn-sm {
+                padding: 4px 10px;
+                font-size: 0.85rem;
+            }
+
+            /* MODAL */
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0,0,0,0.4);
+                transition: opacity 0.3s ease;
+            }
+            .modal-content {
+                background-color: #fff;
+                margin: 80px auto;
+                padding: 20px;
+                border-radius: 12px;
+                max-width: 450px;
+                width: 90%;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+                position: relative;
+                animation: slideDown 0.3s ease;
+            }
+            .modal-header {
+                font-size: 1.25rem;
+                font-weight: bold;
+                margin-bottom: 12px;
+                text-align: center;
+            }
+            .modal-footer {
+                margin-top: 12px;
+                display: flex;
+                justify-content: flex-end;
+                gap: 8px;
+            }
+            .close {
+                position: absolute;
+                top: 8px;
+                right: 10px;
+                font-size: 1.3rem;
+                font-weight: bold;
+                color: #555;
+                cursor: pointer;
+                transition: color 0.2s ease;
+            }
+            .close:hover {
+                color: #000;
+            }
+            @keyframes slideDown {
+                from {
+                    transform: translateY(-20px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            .botonera {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* la separación entre botones */
+}
+
+body.dark th {
+    background-color: #2a2a2a !important;
+    color: #ffffff !important;
+}
+
+body.dark td {
+    background-color: #1f1f1f !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark table,
+body.dark th,
+body.dark td {
+    border-color: #444 !important;
+}
+
+body.dark .btn.btn-primario {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border: 1px solid #0d6efd !important;
+}
+
+body.dark .btn.btn-primario:hover {
+    background-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Quitar subrayado de links que se usan como botones */
+.btn {
+    text-decoration: none !important; /* quita subrayado */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.btn:hover {
+    text-decoration: none !important; /* asegura que al pasar mouse tampoco aparezca */
+}
+
+/* Modo oscuro solo si el body tiene clase dark */
+body.dark .ui-dialog {
+    background-color: #1f1f1f !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark .ui-dialog th {
+    background-color: #2a2a2a !important;
+    color: #ffffff !important;
+}
+
+body.dark .ui-dialog td {
+    background-color: #1f1f1f !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark .ui-dialog .btn.btn-primario {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border: 1px solid #0d6efd !important;
+}
+
+body.dark .ui-dialog .btn.btn-primario:hover {
+    background-color: rgba(255,255,255,0.1) !important;
+}
+
+body.dark .ui-dialog .btn {
+    text-decoration: none !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+body.dark .ui-dialog .btn:hover {
+    text-decoration: none !important;
+}
+
+/* MODOS OSCUROS PARA MODALES */
+body.dark .modal .modal-content {
+    background-color: #1f1f1f !important; /* Fondo modal */
+    color: #e0e0e0 !important; /* Texto general */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+body.dark .modal .modal-header {
+    background-color: #2a2a2a !important; /* Encabezado */
+    color: #ffffff !important;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-bottom: 1px solid #444;
+}
+
+body.dark .modal .close {
+    color: #ffffff !important; /* Botón cerrar */
+}
+
+body.dark .modal .campo label {
+    color: #e0e0e0 !important; /* Labels */
+}
+
+body.dark .modal .btn.btn-primario {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border: 1px solid #0d6efd !important;
+}
+
+body.dark .modal .btn.btn-primario:hover {
+    background-color: rgba(255,255,255,0.1) !important;
+}
+
+body.dark .modal .btn.btn-secundario {
+    background-color: transparent !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #888 !important;
+}
+
+body.dark .modal .btn.btn-secundario:hover {
+    background-color: rgba(255,255,255,0.05) !important;
+}
+
+/* Inputs y selects en modo oscuro */
+body.dark .modal input,
+body.dark .modal select,
+body.dark .modal .ui-inputfield,
+body.dark .modal .ui-calendar {
+    background-color: #2a2a2a !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #555 !important;
+}
+
+body.dark .modal .modal-footer {
+    border-top: 1px solid #444;
+}
+
+
+        </style>
+
+        <script type="text/javascript">
+            function openModal(id) {
+                document.getElementById(id).style.display = 'block';
+            }
+            function closeModal(id) {
+                document.getElementById(id).style.display = 'none';
+            }
+        </script>
+    </h:head>
+
+    <h:body>
+        <ui:include src="/views/Navbar.xhtml" />
+        <h:messages id="msj" globalOnly="true" styleClass="msg" />
+
+        <section class="home">
+            <div class="card-form">
+                <h2>Gestión de Lotes</h2>
+
+                <h:form id="formLotes">
+                    <div class="botonera">
+    <button type="button" class="btn btn-primario" onclick="openModal('modalAgregarLote')">+ Agregar Lote</button>
+
+    <button type="button" class="btn btn-primario" onclick="PF('dlgHistorial').show();">
+        <i class="bi bi-clock-history"></i> Historial
+    </button>
+
+    <h:commandLink 
+        action="/views/Insumos/insumos.xhtml?faces-redirect=true"
+        styleClass="btn btn-primario">
+        <span><i class="bi bi-arrow-left"></i> Volver</span>
+    </h:commandLink>
+</div>
+
+
+
+
+                    <h:panelGroup id="tablaLotes">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Insumo</th>
+                                    <th>Cantidad</th>
+                                    <th>Fecha Ingreso</th>
+                                    <th>Fecha Vencimiento</th>
+                                    <th>Estado</th>
+                                    <th>Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ui:repeat value="#{detalleInsumoBean.lstDetalle}" var="lote">
+                                    <tr>
+                                        <td>#{lote.id_detalle}</td>
+                                        <td>#{lote.nombre_insumo}</td>
+                                        <td>#{lote.cantidad}</td>
+                                        <td>#{lote.fecha_ingreso}</td>
+                                        <td>#{lote.fecha_vencimiento}</td>
+                                        <td style="font-weight:bold; color:#{lote.estado eq 'Activo' ? 'green' : (lote.estado eq 'Vencido' ? 'red':'orange')}">#{lote.estado}</td>
+                                        <td>
+                                            <h:commandLink action="#{detalleInsumoBean.editar(lote)}"
+                                                           styleClass="btn btn-outline-success btn-sm"
+                                                           title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                                <f:ajax execute="@this" render="formEditarLote"
+                                                        onevent="function(data){ if(data.status=='success'){ openModal('modalEditarLote'); } }"/>
+                                            </h:commandLink>
+                                            <h:commandLink action="#{detalleInsumoBean.prepararEliminar(lote)}"
+               styleClass="btn btn-outline-danger btn-sm"
+               title="Eliminar">
+    <i class="bi bi-trash"></i>
+    <f:ajax execute="@this" render=":formEliminarLote"
+            onevent="function(data){ if(data.status=='success'){ openModal('modalEliminarLote'); } }"/>
+</h:commandLink>
+
+
+                                        </td>
+                                    </tr>
+                                </ui:repeat>
+                            </tbody>
+                        </table>
+                    </h:panelGroup>
+                </h:form>
+            </div>
+        </section>
+
+       <!-- MODAL AGREGAR LOTE -->
+<div id="modalAgregarLote" class="modal">
+    <div class="modal-content">
+        
+        <!-- Botón cerrar -->
+        <span class="close" onclick="closeModal('modalAgregarLote')">&#215;</span>
+
+        <!-- Título -->
+        <div class="modal-header">Agregar Lote</div>
+
+        <h:form id="formAgregarLote">
+
+            <div class="fila" style="flex-direction: column; gap:8px; margin-bottom:0;">
+
+                <!-- Cantidad -->
+                <div class="campo" style="flex:1;">
+                    <label>Cantidad:</label>
+                    <h:inputText value="#{detalleInsumoBean.detalle.cantidad}" required="true"/>
+                </div>
+
+                <!-- Fecha vencimiento -->
+                <div class="campo" style="flex:1;">
+                    <label>Fecha Vencimiento:</label>
+                    <p:calendar id="fechaVencimientoAgregar"
+                                value="#{detalleInsumoBean.detalle.fecha_vencimiento}"
+                                pattern="dd/MM/yyyy"
+                                showButtonPanel="true"
+                                navigator="true"
+                                required="true"/>
+                </div>
+
+                <!-- Estado -->
+                <div class="campo" style="flex:1;">
+                    <label>Estado:</label>
+                    <h:selectOneMenu value="#{detalleInsumoBean.detalle.estado}">
+                        <f:selectItem itemLabel="Activo" itemValue="Activo"/>
+                        <f:selectItem itemLabel="Vencido" itemValue="Vencido"/>
+                        <f:selectItem itemLabel="Agotado" itemValue="Agotado"/>
+                    </h:selectOneMenu>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <h:commandButton value="Agregar"
+                                     action="#{detalleInsumoBean.agregar}"
+                                     class="btn btn-primario">
+                        <f:ajax execute="@form"
+                                render=":formLotes:tablaLotes :formLotes:msj"
+                                onevent="
+                                    function(data){
+                                        if(data.status=='success'){
+                                            closeModal('modalAgregarLote');
+                                        }
+                                    }
+                                "/>
+                    </h:commandButton>
+
+                    <button type="button" class="btn btn-secundario"
+                            onclick="closeModal('modalAgregarLote')">
+                        Cancelar
+                    </button>
+                </div>
+
+            </div>
+
+        </h:form>
+    </div>
+</div>
+
+
+      <!-- MODAL EDITAR LOTE -->
+<div id="modalEditarLote" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('modalEditarLote')">&#215;</span>
+        <div class="modal-header">Editar Lote</div>
+
+        <h:form id="formEditarLote">
+            
+            <!-- Campos ocultos para enviar IDs esenciales -->
+<h:inputHidden value="#{detalleInsumoBean.detalle.id_detalle}" />
+<h:inputHidden value="#{detalleInsumoBean.detalle.id_ins}" />
+
+            <div class="fila" style="flex-direction: column; gap:8px; margin-bottom:0;">
+
+                <!-- Cantidad -->
+                <div class="campo" style="flex:1;">
+                    <label>Cantidad:</label>
+                    <h:inputText value="#{detalleInsumoBean.detalle.cantidad}" />
+                </div>
+
+                <!-- Fecha vencimiento -->
+                <div class="campo" style="flex:1;">
+                    <label>Fecha Vencimiento:</label>
+                    <p:calendar id="fechaVencimiento"
+                                value="#{detalleInsumoBean.detalle.fecha_vencimiento}"
+                                pattern="dd/MM/yyyy"
+                                showButtonPanel="true"
+                                navigator="true"
+                                required="true" />
+                </div>
+
+                <!-- Estado -->
+                <div class="campo" style="flex:1;">
+                    <label>Estado:</label>
+                    <h:selectOneMenu value="#{detalleInsumoBean.detalle.estado}">
+                        <f:selectItem itemLabel="Activo" itemValue="Activo" />
+                        <f:selectItem itemLabel="Vencido" itemValue="Vencido" />
+                        <f:selectItem itemLabel="Agotado" itemValue="Agotado" />
+                    </h:selectOneMenu>
+                </div>
+
+                <!-- Motivo de edición -->
+                <div class="campo" style="flex:1;">
+                    <label>Motivo de edición:</label>
+                    <h:inputText value="#{detalleInsumoBean.motivoEdicion}" required="true"
+                                 requiredMessage="Debe ingresar un motivo de edición" />
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <h:commandButton value="Actualizar"
+                                     action="#{detalleInsumoBean.actualizar}"
+                                     class="btn btn-primario">
+                        <f:ajax execute="@form"
+                                render=":formLotes:tablaLotes :formLotes:msj"
+                                onevent="
+                                    function(data){
+                                        if(data.status=='success'){
+                                            closeModal('modalEditarLote');
+                                        }
+                                    }
+                                " />
+                    </h:commandButton>
+
+                    <button type="button" class="btn btn-secundario"
+                            onclick="closeModal('modalEditarLote')">
+                        Cancelar
+                    </button>
+                </div>
+
+            </div>
+
+        </h:form>
+    </div>
+</div>
+
+
+
+      <p:dialog header="Historial del Insumo" widgetVar="dlgHistorial" 
+          modal="true" resizable="false" dynamic="true" appendTo="@(body)" 
+          width="900">
+
+    <h:form id="formHistorialDialog">
+        <!-- Scroll para muchos registros -->
+        <div style="max-height:400px; overflow:auto; margin-top:10px;">
+            <table style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Acción</th>
+                        <th>Estado</th>
+                        <th>Cantidad</th>
+                        <th>Stock Actual</th>
+                        <th>Novedad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Historial existente -->
+                    <ui:repeat value="#{detalleInsumoBean.lstHistorial}" var="h">
+                        <tr>
+                            <td>
+                                <h:outputText value="#{h.fecha}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                </h:outputText>
+                            </td>
+                            <td><h:outputText value="#{h.accion}"/></td>
+                            <td style="font-weight:bold; color:#{h.estado eq 'Activo' ? 'green' : (h.estado eq 'Vencido' ? 'red':'orange')}">
+                                #{h.estado}
+                            </td>
+                            <td><h:outputText value="#{h.cantidad}"/></td>
+                            <td><h:outputText value="#{h.stockActual}"/></td>
+                            <td><h:outputText value="#{h.novedad}"/></td>
+                        </tr>
+                    </ui:repeat>
+
+                    <!-- Mensaje cuando no hay historial -->
+                    <ui:fragment rendered="#{empty detalleInsumoBean.lstHistorial}">
+                        <tr>
+                            <td colspan="6" style="text-align:center; font-style:italic; color:#555;">
+                                No hay historial para este insumo
+                            </td>
+                        </tr>
+                    </ui:fragment>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer" style="justify-content:center; margin-top:10px;">
+            <p:commandButton value="Cerrar" onclick="PF('dlgHistorial').hide();" 
+                             type="button" styleClass="btn btn-secundario"/>
+        </div>
+    </h:form>
+</p:dialog>
+       
+       <!-- MODAL ELIMINAR LOTE -->
+<div id="modalEliminarLote" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('modalEliminarLote')">&#215;</span>
+        <div class="modal-header">Eliminar Lote</div>
+
+        <h:form id="formEliminarLote">
+            <div class="fila" style="flex-direction: column; gap:8px; margin-bottom:0;">
+
+                <!-- Mostrar información del lote -->
+                <div class="campo">
+                    <label>Lote ID:</label>
+                    <h:outputText value="#{detalleInsumoBean.loteAEliminar.id_detalle}" />
+                </div>
+                <div class="campo">
+                    <label>Insumo:</label>
+                    <h:outputText value="#{detalleInsumoBean.loteAEliminar.nombre_insumo}" />
+                </div>
+
+                <!-- Motivo de eliminación -->
+                <div class="campo">
+                    <label>Motivo de eliminación:</label>
+                    <h:inputText value="#{detalleInsumoBean.motivoEliminacion}" required="true" style="width:100%;" />
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <h:commandButton value="Eliminar" 
+                                     action="#{detalleInsumoBean.eliminarConMotivo}" 
+                                     class="btn btn-outline-danger">
+                        <f:ajax execute="@form"
+                                render=":formLotes:tablaLotes :formLotes:msj"
+                                onevent="function(data){ if(data.status=='success'){ closeModal('modalEliminarLote'); } }"/>
+                    </h:commandButton>
+
+                    <button type="button" class="btn btn-secundario"
+                            onclick="closeModal('modalEliminarLote')">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </h:form>
+    </div>
+</div>
+
+
+
+    </h:body>
+</html>

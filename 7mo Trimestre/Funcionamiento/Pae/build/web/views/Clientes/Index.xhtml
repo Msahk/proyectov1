@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Gestión de Clientes</title>
+</h:head>
+
+<h:body>
+    <ui:include src="/views/Navbar.xhtml" />
+    <f:event type="preRenderView" listener="#{clientesBean.listar()}" />
+    <p:growl id="msj" showDetail="true" showSummary="true" />
+
+    <section class="home">
+        <div class="contenedor">
+            <div class="tabla">
+                <section class="card">
+                    <h:form id="formClientes">
+
+                        <!-- ENCABEZADO -->
+                        <div class="encabezado">
+                            <h2><i class='bx bx-group'></i> Gestión de Clientes</h2>
+                            <div>
+                                <h:commandButton value="Nuevo Cliente"
+                                                 action="nuevoCliente"
+                                                 styleClass="export-btn"/>
+
+                                <h:commandButton value="Reporte PDF"
+                                                 style="margin-left: 10px"
+                                                 styleClass="export-btn"
+                                                 actionListener="#{clientesBean.exportarPDF}"/>
+
+                                <h:commandButton value="Enviar Correos"
+                                                 style="margin-left: 10px"
+                                                 styleClass="export-btn"
+                                                 action="correo"/>
+
+                                <h:commandButton value="Gestionar Ventas"
+                                                 style="margin-left: 10px"
+                                                 styleClass="export-btn"
+                                                 action="/views/Ventas/index.xhtml?faces-redirect=true"/>
+
+                                <h:commandButton value="Migrar"
+                                                 style="margin-left: 10px"
+                                                 styleClass="export-btn"
+                                                 action="migrarClientes"/>
+                            </div>
+                        </div>
+
+                        <!-- TABLA DE CLIENTES -->
+                        <h:panelGroup id="tablaClientesWrapper">
+                            <div class="wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID <span class="draggable" onmousedown="initResize(0)"></span></th>
+                                            <th>NIT <span class="draggable" onmousedown="initResize(1)"></span></th>
+                                            <th>Nombre <span class="draggable" onmousedown="initResize(2)"></span></th>
+                                            <th>Teléfono <span class="draggable" onmousedown="initResize(3)"></span></th>
+                                            <th>Correo <span class="draggable" onmousedown="initResize(4)"></span></th>
+                                            <th style="width:5rem">Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ui:repeat value="#{clientesBean.listaClientes}" var="cli">
+                                            <tr>
+                                                <td><span class="cell-content"><h:outputText value="#{cli.id_Cliente}" /></span></td>
+                                                <td><span class="cell-content"><h:outputText value="#{cli.nit}" /></span></td>
+                                                <td><span class="cell-content"><h:outputText value="#{cli.nombre}" /></span></td>
+                                                <td><span class="cell-content"><h:outputText value="#{cli.telefono}" /></span></td>
+                                                <td><span class="cell-content"><h:outputText value="#{cli.correo}" /></span></td>
+                                                <td>
+                                                    <!-- Editar -->
+                                                    <h:commandLink actionListener="#{clientesBean.prepararEdicion(cli)}"
+                                                                   action="editarCliente"
+                                                                   styleClass="btn btn-outline-success">
+                                                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                                                    </h:commandLink>
+
+                                                    <!-- Eliminar -->
+                                                    <h:commandLink actionListener="#{clientesBean.eliminarCliente(cli)}"
+                                                                   onclick="return confirm('¿Está seguro de ELIMINAR el cliente?!!')"
+                                                                   styleClass="btn btn-outline-danger">
+                                                        <i class="bi bi-trash" aria-hidden="true"></i>
+                                                    </h:commandLink>
+                                                </td>
+                                            </tr>
+                                        </ui:repeat>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </h:panelGroup>
+
+                        <!-- BOTÓN VOLVER -->
+                        <h:commandLink styleClass="btn-back"
+                                       action="/views/Dashboard.xhtml?faces-redirect=true">
+                            <i class='bx bx-chevron-left'></i> Volver
+                        </h:commandLink>
+
+                    </h:form>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <script type="text/javascript" src="/assets/js/tabla.js"></script>
+</h:body>
+</html>

@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Nuevo Insumo</title>
+    <h:outputStylesheet library="css" name="formularios_2.css" />
+</h:head>
+
+<h:body>
+    <ui:include src="/views/Navbar.xhtml" />
+    <f:event type="preRenderView" listener="#{insumosBean.limpiar()}" />
+
+    <section class="home">
+        <div class="card-form">
+            <h2>Registrar Nuevo Insumo</h2>
+
+            <h:form id="formNuevoInsumo" enctype="multipart/form-data" styleClass="formulario">
+
+                <!-- Nombre -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="nombre">Nombre:</label>
+                        <p:inputText id="nombre" value="#{insumosBean.insumo.nombre}" required="true"
+                                     requiredMessage="Debe ingresar el nombre del insumo"
+                                     styleClass="input" />
+                        <p:message for="nombre"
+                                   style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
+
+                <!-- Unidad de medida (fila completa) -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="unidad">Unidad de Medida:</label>
+                        <h:selectOneMenu id="unidad" value="#{insumosBean.insumo.unidad_medida}" 
+                                         required="true" requiredMessage="Debe seleccionar una unidad de medida"
+                                         styleClass="select">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{insumosBean.unidadesMedida}" var="u" 
+                                           itemLabel="#{u}" itemValue="#{u}"/>
+                        </h:selectOneMenu>
+                        <p:message for="unidad"
+                                   style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
+
+                <!-- Stock mínimo y estado -->
+                <div class="fila dos-columnas">
+                    <div class="campo">
+                        <label for="stockMin">Stock Mínimo:</label>
+                        <p:inputText id="stockMin" value="#{insumosBean.insumo.stock_min}" required="true"
+                                     requiredMessage="Debe ingresar el stock mínimo"
+                                     styleClass="input" />
+                        <p:message for="stockMin"
+                                   style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+
+                    <div class="campo">
+                        <label for="estado">Estado:</label>
+                        <h:selectOneMenu id="estado" value="#{insumosBean.insumo.estado}" required="true"
+                                         requiredMessage="Debe seleccionar el estado"
+                                         styleClass="select">
+                            <f:selectItem itemLabel="Activo" itemValue="Activo"/>
+                            <f:selectItem itemLabel="Inactivo" itemValue="Inactivo"/>
+                        </h:selectOneMenu>
+                        <p:message for="estado"
+                                   style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="botones">
+                    <p:commandButton value="Guardar" ajax="false"
+                                     actionListener="#{insumosBean.agregar()}"
+                                     action="insumos"
+                                     styleClass="btn-primario" />
+                    <p:commandButton value="Cancelar" ajax="false" immediate="true"
+                                     action="insumos"
+                                     styleClass="btn-secundario" />
+                </div>
+
+            </h:form>
+        </div>
+    </section>
+</h:body>
+</html>

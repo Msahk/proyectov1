@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Gestionar Insumos - Receta</title>
+    <h:outputStylesheet library="css" name="formularios.css" />
+
+    <style>
+        /* Card principal */
+        .card-form {
+            max-width: 1200px;
+            width: 95%;
+            padding: 25px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .fila {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 10px;
+            margin-bottom: 5px;
+        }
+        .campo {
+            flex: 1 1 150px;
+        }
+        .campo label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .campo h\:inputText, .campo h\:selectOneMenu {
+            width: 100%;
+            padding: 6px 10px;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+        th, td {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .btn {
+            padding: 6px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-primario {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        .btn-secundario {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+        }
+        .btn-outline-success {
+            border: 1px solid #28a745;
+            color: #28a745;
+            background: none;
+        }
+        .btn-outline-danger {
+            border: 1px solid #dc3545;
+            color: #dc3545;
+            background: none;
+        }
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 0.85rem;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 80px auto;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            position: relative;
+            animation: slideDown 0.3s ease;
+        }
+        .modal-header {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .modal-footer {
+            margin-top: 12px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+        .close {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #555;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .close:hover {
+            color: #000;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        body.dark th {
+    background-color: #2a2a2a !important;
+    color: #ffffff !important;
+}
+
+body.dark td {
+    background-color: #1f1f1f !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark table,
+body.dark th,
+body.dark td {
+    border-color: #444 !important;
+}
+
+/* ---- MODO OSCURO PARA TODOS LOS .btn-primario ---- */
+body.dark .btn.btn-primario {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border: 1px solid #0d6efd !important;
+    transition: all 0.3s ease;
+}
+
+body.dark .btn.btn-primario:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+}
+
+/* MODOS OSCUROS PARA MODALES */
+body.dark .modal .modal-content {
+    background-color: #1f1f1f !important; /* Fondo modal */
+    color: #e0e0e0 !important; /* Texto general */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+body.dark .modal .modal-header {
+    background-color: #2a2a2a !important; /* Encabezado */
+    color: #ffffff !important;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-bottom: 1px solid #444;
+}
+
+body.dark .modal .close {
+    color: #ffffff !important; /* Botón cerrar */
+}
+
+body.dark .modal .campo label {
+    color: #e0e0e0 !important; /* Labels */
+}
+
+body.dark .modal .btn.btn-primario {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border: 1px solid #0d6efd !important;
+}
+
+body.dark .modal .btn.btn-primario:hover {
+    background-color: rgba(255,255,255,0.1) !important;
+}
+
+body.dark .modal .btn.btn-secundario {
+    background-color: transparent !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #888 !important;
+}
+
+body.dark .modal .btn.btn-secundario:hover {
+    background-color: rgba(255,255,255,0.05) !important;
+}
+
+/* Inputs y selects en modo oscuro */
+body.dark .modal input,
+body.dark .modal select,
+body.dark .modal .ui-inputfield,
+body.dark .modal .ui-calendar {
+    background-color: #2a2a2a !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #555 !important;
+}
+
+body.dark .modal .modal-footer {
+    border-top: 1px solid #444;
+}
+
+    </style>
+
+    <script type="text/javascript">
+        function openModal(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+    </script>
+</h:head>
+
+<h:body>
+    <ui:include src="/views/Navbar.xhtml" />
+    <h:messages id="msj" globalOnly="true" styleClass="msg" />
+
+    <section class="home">
+        <div class="card-form">
+            <h2>Gestionar Insumos - Receta: #{receta_insumosBean.receta.nombre}</h2>
+
+            <h:form id="formRecetaInsumos">
+                <button type="button" class="btn btn-primario" onclick="openModal('modalAgregar')">+ Agregar Insumo</button>
+                <button type="button" class="btn btn-primario" onclick="history.back()">
+    <i class="bi bi-arrow-left"></i> Volver
+</button>
+
+
+                <h:panelGroup id="tablaRecetaInsumos">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Insumo</th>
+                                <th>Cantidad</th>
+                                <th>Estado</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ui:repeat value="#{receta_insumosBean.lstRecetaInsumos}" var="ri">
+                                <tr>
+                                    <td>#{ri.id_rec_ins}</td>
+                                    <td>#{ri.insumo.nombre}</td>
+                                    <td>#{ri.cantidad} #{ri.unidad}</td>
+                                    <td style="font-weight:bold; color:#{ri.estado eq 'Agotado' ? 'red':'green'};">#{ri.estado}</td>
+                                    <td>
+                                       <h:commandLink action="#{receta_insumosBean.editar(ri)}"
+                   styleClass="btn btn-outline-success btn-sm"
+                   title="Editar">
+        <i class="bi bi-pencil"></i>
+        <f:ajax execute="@this" render="formEditar"
+                onevent="function(data){ if(data.status=='success'){ openModal('modalEditar'); } }"/>
+    </h:commandLink>
+
+    <!-- ELIMINAR -->
+    <h:commandLink action="#{receta_insumosBean.eliminar(ri)}"
+                   styleClass="btn btn-outline-danger btn-sm"
+                   title="Eliminar"
+                   onclick="return confirm('¿Está seguro de eliminar este insumo?');">
+        <i class="bi bi-trash"></i>
+        <f:ajax execute="@this" render="tablaRecetaInsumos msj"/>
+    </h:commandLink>
+                                    </td>
+                                </tr>
+                            </ui:repeat>
+                        </tbody>
+                    </table>
+                </h:panelGroup>
+            </h:form>
+        </div>
+    </section>
+
+    <!-- MODAL AGREGAR -->
+    <div id="modalAgregar" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalAgregar')">&#215;</span>
+            <div class="modal-header">Agregar Insumo</div>
+            <h:form id="formAgregar">
+                <div class="fila" style="flex-direction: column; gap:8px; margin-bottom:0;">
+                    
+
+                    <div class="fila" style="gap:10px;">
+                        
+                        <div class="campo" style="flex:1;">
+                        <label>Insumo:</label>
+                        <h:selectOneMenu value="#{receta_insumosBean.recetaInsumo.id_ins}" required="true">
+    <f:selectItem itemLabel="-- Seleccione Insumo --" itemValue="#{null}" />
+    <f:selectItems value="#{receta_insumosBean.lstInsumos}" var="i" itemLabel="#{i.nombre}" itemValue="#{i.id_ins}" />
+    <f:ajax listener="#{receta_insumosBean.actualizarUnidad}" render=":formAgregar" />
+</h:selectOneMenu>
+                    </div>
+                        <div class="campo" style="flex:1;">
+                            <label>Cantidad:</label>
+                            <h:inputText value="#{receta_insumosBean.recetaInsumo.cantidad}" />
+                        </div>
+                        <div class="campo" style="flex:1;">
+                            <label>Unidad:</label>
+                            <h:inputText value="#{receta_insumosBean.recetaInsumo.unidad}" readonly="true" />
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label>Estado:</label>
+                        <h:selectOneMenu value="#{receta_insumosBean.recetaInsumo.estado}">
+                            <f:selectItem itemLabel="Activo" itemValue="Activo" />
+                            <f:selectItem itemLabel="Agotado" itemValue="Agotado" />
+                        </h:selectOneMenu>
+                    </div>
+
+                    <div class="modal-footer">
+                        <h:commandButton value="Agregar" action="#{receta_insumosBean.agregar}" class="btn btn-primario">
+                            <f:ajax execute="@form" render="tablaRecetaInsumos msj" />
+                        </h:commandButton>
+                        <button type="button" class="btn btn-secundario" onclick="closeModal('modalAgregar')">Cancelar</button>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR -->
+    <div id="modalEditar" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalEditar')">&#215;</span>
+            <div class="modal-header">Editar Insumo</div>
+            <h:form id="formEditar">
+                <div class="fila" style="flex-direction: column; gap:8px;">
+                    <div class="fila" style="gap:10px;">
+                        <div class="campo" style="flex:1;">
+                            <label>Insumo:</label>
+                            <h:outputText value="#{receta_insumosBean.recetaInsumo.insumo.nombre}" />
+                        </div>
+                        <div class="campo" style="flex:1;">
+                            <label>Cantidad:</label>
+                            <h:inputText value="#{receta_insumosBean.recetaInsumo.cantidad}" />
+                        </div>
+                        <div class="campo" style="flex:1;">
+                            <label>Unidad:</label>
+                            <h:inputText value="#{receta_insumosBean.recetaInsumo.unidad}" readonly="true" />
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label>Estado:</label>
+                        <h:selectOneMenu value="#{receta_insumosBean.recetaInsumo.estado}">
+                            <f:selectItem itemLabel="Activo" itemValue="Activo" />
+                            <f:selectItem itemLabel="Agotado" itemValue="Agotado" />
+                        </h:selectOneMenu>
+                    </div>
+
+                    <div class="modal-footer">
+                        <h:commandButton value="Guardar" action="#{receta_insumosBean.actualizar}" class="btn btn-primario">
+                            <f:ajax execute="@form" render="tablaRecetaInsumos msj" />
+                        </h:commandButton>
+                        <button type="button" class="btn btn-secundario" onclick="closeModal('modalEditar')">Cancelar</button>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+    </div>
+
+</h:body>
+</html>

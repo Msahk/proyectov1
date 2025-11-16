@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Gestion de Usuarios</title>  
+    </h:head>
+    <h:body>
+        <ui:include src="/views/Navbar.xhtml" />
+        <f:event type="preRenderView" listener="#{usuariosBean.listar()}" />
+        <p:growl id="msj" showDetail="true" showSummary="true" />
+        <section class="home">
+            <div class="contenedor">
+                <div class="tabla">
+                    <section class="card">
+                        <h:form>
+                            <div class="encabezado">
+                                <h2><i class='bx  bx-bar-chart-big'></i> Gestión de Usuarios</h2>
+                                <div>
+
+                                    <h:commandButton value="Nuevo Usuario" action="nuevousu" styleClass="export-btn"/>
+                                    <h:commandButton value="Reporte PDF"  style="margin-left: 10px" styleClass="export-btn" actionListener="#{usuariosBean.exportarPDF}"/>
+                                    <h:commandButton value="Enviar Correos"  style="margin-left: 10px" styleClass="export-btn" action="correo"/>
+                                    <h:commandButton value="Migrar" style="margin-left: 10px" styleClass="export-btn" action="migrar"/>
+                                </div>
+                            </div>
+
+
+                            <h:panelGroup id="tablaUsuariosWrapper">
+                                <div class="wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Id <span class="draggable" onmousedown="initResize(0)"></span></th>
+                                                <th>Documento <span class="draggable" onmousedown="initResize(1)"></span></th>
+                                                <th>Nombres <span class="draggable" onmousedown="initResize(2)"></span></th>
+                                                <th>Apellidos <span class="draggable" onmousedown="initResize(3)"></span></th>
+                                                <th>Teléfono <span class="draggable" onmousedown="initResize(4)"></span></th>
+                                                <th>Dirección <span class="draggable" onmousedown="initResize(5)"></span></th>
+                                                <th style="width:305px">Correo  <span class="draggable" onmousedown="initResize(6)"></span></th>
+                                                <th>Rol <span class="draggable" onmousedown="initResize(7)"></span></th>
+                                                <th>Estado <span class="draggable" onmousedown="initResize(8)"></span></th>
+                                                <th style="width:5rem">Opciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <ui:repeat value="#{usuariosBean.lstUsu}" var="usu">
+                                                <tr>
+                                                    <td><span class="cell-content"><h:outputText value="#{usu.idUsu}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{usu.documento}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{usu.nombres}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{usu.apellidos}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{usu.telefono}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{usu.direccion}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{usu.correo}" /></span></td>
+                                                    <td><span class="cell-content"><h:outputText value="#{usu.rol}" /></span></td>
+                                                    <td>
+                                                        <span class="cell-content">
+                                                            <h:outputText value="#{usu.estado == 'A' ? 'Activo' : (usu.estado == 'I' ? 'Inactivo' : 'Desconocido')}" />
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <h:commandLink actionListener="#{usuariosBean.editar(usu)}" action="editarusu"
+                                                                       styleClass="btn btn-outline-success ">
+                                                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                                                        </h:commandLink>
+
+                                                        <h:commandLink actionListener="#{usuariosBean.cambiar(usu.idUsu)}"
+                                                                       onclick="return confirm('¿Está seguro de cambiar el estado del usuario?!!')"
+                                                                       styleClass="btn btn-outline-warning ">
+                                                            <i class="#{usu.estado == 'A' ? 'bi bi-person-dash' : (usu.estado == 'I' ? 'bi bi-person-plus' : 'bi bi-person')}" aria-hidden="true"></i>
+                                                            <f:ajax execute="@this" render="tablaUsuariosWrapper :formUsuarios:growl" />
+                                                        </h:commandLink>
+
+                                                        <h:commandLink actionListener="#{usuariosBean.eliminar(usu)}"
+                                                                       onclick="return confirmarEliminacion()"
+                                                                       styleClass="btn btn-outline-danger ">
+                                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                                        </h:commandLink>
+                                                    </td>
+                                                </tr>
+                                            </ui:repeat>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </h:panelGroup>
+
+                            <h:commandLink styleClass="btn-back" action="/views/Dashboard.xhtml?faces-redirect=true"><i class='bx  bx-chevron-left'></i> Volver</h:commandLink>
+                        </h:form>
+                    </section>
+                </div>
+            </div>
+        </section>
+        <script type="text/javascript" src="/assets/js/tabla.js"></script>
+        <script>
+                                                                           function confirmarEliminacion() {
+                                                                               const texto = prompt("Para confirmar la eliminación, escriba la palabra ELIMINAR:");
+                                                                               if (texto === null)
+                                                                                   return false;
+                                                                               return texto.trim().toUpperCase() === "ELIMINAR";
+                                                                           }
+        </script>
+    </h:body>
+
+</html>

@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Nueva Producción</title>
+    <h:outputStylesheet library="css" name="formularios.css" />
+</h:head>
+
+<h:body>
+    <ui:include src="/views/Navbar.xhtml" />
+    <f:event type="preRenderView" listener="#{produccionBean.limpiar}" />
+
+    <section class="home">
+        <div class="card-form">
+            <h2>Registrar Nueva Producción</h2>
+
+            <h:form id="formNuevaProduccion" styleClass="formulario">
+                
+                <!-- Mensajes -->
+                <p:growl id="msgs" showDetail="true" life="4000" />
+
+                <!-- Información -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label>Información:</label>
+                        <p class="info">
+                            La fecha y hora de la producción se registran automáticamente al guardar.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="botones">
+                    <p:commandButton value="Guardar"
+                                     action="#{produccionBean.guardar}"
+                                     update="@form msgs"
+                                     styleClass="btn-primario" />
+
+                    <p:commandButton value="Cancelar"
+                                     ajax="false" immediate="true"
+                                     action="produccion.xhtml?faces-redirect=true"
+                                     styleClass="btn-secundario" />
+                </div>
+            </h:form>
+        </div>
+    </section>
+</h:body>
+</html>

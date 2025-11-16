@@ -1,0 +1,115 @@
+/* ===== CSS dinámico de card y sidebar ===== */
+
+/* Contenedor principal */
+.card-form {
+  width: calc(100% - 40px);  /* margen lateral */
+  max-width: 1600px;
+  margin: 20px auto;
+  padding: 30px 35px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  background: #fff;
+  transition: width 0.3s ease;
+}
+
+/* Home: se ajusta al ancho disponible según sidebar */
+.home {
+  position: relative;
+  height: 100vh;
+  left: 250px;   /* sidebar abierta */
+  width: calc(100% - 250px);
+  transition: left 0.3s ease, width 0.3s ease;
+}
+
+.sidebar.close ~ .home {
+  left: 88px;
+  width: calc(100% - 88px);
+}
+
+/* Títulos y layout */
+h2 { text-align: center; color: #2c3e50; font-size: 22px; margin-bottom: 25px; }
+.fila.dos-columnas { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.campo.full { grid-column: 1 / -1; }
+
+/* Inputs */
+.input, .select { width: 100%; padding: 10px 8px; border: none; border-bottom: 2px solid #ccc; outline: none; }
+.input:focus, .select:focus { border-bottom: 2px solid #2e86de; background: #f9fbff; }
+.select { border-radius: 4px; cursor: pointer; background: #fafafa; }
+
+/* Botones */
+.btn-primario { color: #dc3545; border: 2px solid #dc3545; background: transparent; }
+.btn-primario:hover { background: #dc3545; color: #fff; }
+.btn-secundario { color: #6c757d; border: 2px solid #6c757d; background: transparent; }
+.btn-secundario:hover { background: #6c757d; color: #fff; }
+
+/* Tabla */
+.tabla-card table { width: 100%; border-collapse: collapse; }
+.tabla-card th, .tabla-card td { padding: 8px 12px; border: 1px solid #ccc; text-align: left; }
+
+/* Responsive móvil */
+@media (max-width: 600px) {
+  .card-form { width: 95%; padding: 25px; }
+  .fila.dos-columnas { grid-template-columns: 1fr; }
+}
+
+/* ===== MODO OSCURO ===== */
+body.dark {
+    background: #1e1e1e;
+    color: #f1f1f1;
+}
+
+body.dark .card-form {
+    background: #2a2c2d;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.05);
+}
+
+body.dark h2 {
+    color: #f1f1f1;
+}
+
+body.dark label {
+    color: #ccc;
+}
+
+body.dark .input, body.dark .select {
+    background: #3a3c3d;
+    color: #f1f1f1;
+    border-bottom: 2px solid #555;
+}
+
+body.dark .input:focus, body.dark .select:focus {
+    border-bottom: 2px solid #4da3ff;
+    background: #343738;
+}
+
+body.dark .btn-primario, 
+body.dark .btn-verde {
+    border-color: #28a745;
+    color: #fff;
+}
+
+body.dark .btn-primario:hover, 
+body.dark .btn-verde:hover {
+    background-color: #1e7e34;
+    color: #fff;
+}
+
+body.dark .btn-rojo, 
+body.dark .btn-secundario {
+    border-color: #dc3545;
+    color: #fff;
+}
+
+body.dark .btn-rojo:hover,
+body.dark .btn-secundario:hover {
+    background-color: #a71d2a;
+    color: #fff;
+}
+
+body.dark .tabla-card table,
+body.dark .tabla-card th,
+body.dark .tabla-card td {
+    border-color: #555;
+    color: #f1f1f1;
+}
+
