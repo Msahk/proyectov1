@@ -6,32 +6,68 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
     <title>Enviar Correos a Clientes</title>
+    <h:outputStylesheet library="css" name="formularios_2.css" />
 </h:head>
 <h:body>
     <ui:include src="/views/Navbar.xhtml" />
-    <h:form>
-        <f:event type="preRenderView" listener="#{correoClientesBean.listarClientes}" />
-        <h:panelGrid columns="1">
-            <p:outputLabel value="Destinatarios" />
-            <p:selectManyMenu value="#{correoClientesBean.dest}" required="true" requiredMessage="Debe especificar Destinatarios"
-                              widgetVar="destClientes" showCheckbox="true" style="width: 370px;">
-                <f:selectItems value="#{correoClientesBean.listaClientes}" var="cli"
-                               itemLabel="#{cli.nombre} - #{cli.correo}" itemValue="#{cli.correo}" />
-            </p:selectManyMenu>
-            <h:panelGrid columns="2">
-                <p:commandButton value="Todos" onclick="PF('destClientes').selectAll()" />
-                <p:commandButton value="Ninguno" onclick="PF('destClientes').unselectAll()" />
-            </h:panelGrid>
-            <p:outputLabel value="Asunto" />
-            <p:inputText value="#{correoClientesBean.asunto}" required="true" size="35" requiredMessage="Debe especificar un Asunto"/>
-            <p:outputLabel value="Mensaje" />
-            <p:inputTextarea value="#{correoClientesBean.contenido}" required="true" cols="35" rows="5" requiredMessage="Debe especificar un Mensaje"/>
-            <h:panelGrid columns="2">
-                <p:commandButton value="Enviar" ajax="false" actionListener="#{correoClientesBean.enviarCorreo}" />
-                <p:commandButton value="Cancelar" ajax="false" immediate="true" action="/views/Clientes/Index.xhtml" />
-            </h:panelGrid>
-        </h:panelGrid>
-    </h:form>
-    <p:messages id="msj" showSummary="true" showDetail="false" />
+
+    <section class="home">
+        <div class="card-form">
+             <div style="visibility: hidden;">Este contenido está oculto</div>
+             <div style="visibility: hidden;">Este contenido está oculto</div>
+            <h2>Enviar Correos a Clientes</h2>
+
+            <h:form id="formEnviarCorreos" styleClass="formulario">
+                <f:event type="preRenderView" listener="#{correoClientesBean.listarClientes}" />
+
+                <!-- Destinatarios -->
+                <div class="fila">
+                    <h2>Destinatarios:</h2>
+                    <p:selectManyMenu id="dest" value="#{correoClientesBean.dest}" required="true" 
+                  requiredMessage="Debe especificar Destinatarios"
+                  widgetVar="destClientes" showCheckbox="true" styleClass="select"
+                  style="width:100%;">
+                        <f:selectItems value="#{correoClientesBean.listaClientes}" var="cli"
+                                       itemLabel="#{cli.nombre} - #{cli.correo}" itemValue="#{cli.correo}" />
+                    </p:selectManyMenu>
+                    <p:message for="dest" styleClass="text-danger" />
+                </div>
+
+                <div class="fila botones">
+                    <p:commandButton value="Todos" onclick="PF('destClientes').selectAll();" styleClass="btn-primario"/>
+                    <p:commandButton value="Ninguno" onclick="PF('destClientes').unselectAll();" styleClass="btn-secundario"/>
+                </div>
+
+                <!-- Asunto -->
+                <div class="fila">
+                    <label>Asunto:</label>
+                    <p:inputText id="asunto" value="#{correoClientesBean.asunto}" required="true"
+                                 requiredMessage="Debe especificar un Asunto"
+                                 styleClass="input"/>
+                    <p:message for="asunto" styleClass="text-danger"/>
+                </div>
+
+                <!-- Mensaje -->
+                <div class="fila">
+                    <label>Mensaje:</label>
+                    <p:inputTextarea id="contenido" value="#{correoClientesBean.contenido}" required="true"
+                                     requiredMessage="Debe especificar un Mensaje" cols="35" rows="5"
+                                     styleClass="input"/>
+                    <p:message for="contenido" styleClass="text-danger"/>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="fila botones" style="justify-content:center; gap:10px;">
+                    <p:commandButton value="Enviar" ajax="false" actionListener="#{correoClientesBean.enviarCorreo}"
+                                     styleClass="btn-primario"/>
+                    <p:commandButton value="Cancelar" ajax="false" immediate="true" 
+                                     action="/views/Clientes/Index.xhtml" styleClass="btn-secundario"/>
+                </div>
+
+            </h:form>
+        </div>
+    </section>
+
+    <p:growl id="msj" showDetail="true" showSummary="true" />
 </h:body>
 </html>

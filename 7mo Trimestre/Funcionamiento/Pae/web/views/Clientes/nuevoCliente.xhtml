@@ -2,89 +2,101 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
 
 <h:head>
     <title>Nuevo Cliente</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <h:outputStylesheet library="css" name="formularios_2.css" />
 </h:head>
 
-<h:body class="bg-light">
-    <!-- Barra de navegación -->
+<h:body>
     <ui:include src="/views/Navbar.xhtml" />
 
-    <div class="container mt-5">
-        <div class="card shadow p-4">
-            <h2 class="text-center">Registrar Nuevo Cliente</h2>
-            <hr/>
+    <section class="home">
+        <div class="card-form">
+            <h2>Registrar Nuevo Cliente</h2>
 
-            <h:form id="formNuevoCliente">
-                <h:panelGrid columns="2" cellpadding="8" class="table table-borderless">
+            <h:form id="formNuevoCliente" styleClass="formulario">
 
-                    <!-- Nombre -->
-                    <h:outputLabel value="Nombre:" for="nombre"/>
-                    <h:inputText id="nombre"
-                                 value="#{clientesBean.clienteNuevo.nombre}"
-                                 styleClass="form-control"
-                                 required="true"
-                                 requiredMessage="El nombre es obligatorio" />
-                    <h:message for="nombre" styleClass="text-danger" />
+                <!-- Nombre -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="nombre">Nombre:</label>
+                        <h:inputText id="nombre"
+                                     value="#{clientesBean.clienteNuevo.nombre}"
+                                     required="true"
+                                     requiredMessage="El nombre es obligatorio"
+                                     styleClass="input"/>
+                        <p:message for="nombre" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
 
-                    <!-- NIT -->
-                    <h:outputLabel value="NIT:" for="nit"/>
-                    <h:inputText id="nit"
-                                 value="#{clientesBean.clienteNuevo.nit}"
-                                 styleClass="form-control"
-                                 required="true"
-                                 requiredMessage="El NIT es obligatorio">
-                        <!-- Formato NIT: 800.000.000-9 -->
-                        <f:validateRegex pattern="^\d{1,3}(\.\d{3})*-\d$" />
-                    </h:inputText>
-                    <h:message for="nit" styleClass="text-danger">
-                        El NIT debe tener el formato 800.000.000-9
-                    </h:message>
+                <!-- NIT -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="nit">NIT:</label>
+                        <h:inputText id="nit"
+                                     value="#{clientesBean.clienteNuevo.nit}"
+                                     required="true"
+                                     requiredMessage="El NIT es obligatorio"
+                                     styleClass="input">
+                            <f:validateRegex pattern="^\d{1,3}(\.\d{3})*-\d$" />
+                        </h:inputText>
+                        <p:message for="nit" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;">
+                            El NIT debe tener el formato 800.000.000-9
+                        </p:message>
+                    </div>
+                </div>
 
-                    <!-- Teléfono -->
-                    <h:outputLabel value="Teléfono:" for="telefono"/>
-                    <h:inputText id="telefono"
-                                 value="#{clientesBean.clienteNuevo.telefono}"
-                                 styleClass="form-control"
-                                 required="true"
-                                 requiredMessage="El teléfono es obligatorio">
-                        <f:validateRegex pattern="^\+?\d{7,15}$" />
-                    </h:inputText>
-                    <h:message for="telefono" styleClass="text-danger">
-                        Ingrese un número de teléfono válido (solo dígitos, opcional '+' al inicio)
-                    </h:message>
+                <!-- Teléfono -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="telefono">Teléfono:</label>
+                        <h:inputText id="telefono"
+                                     value="#{clientesBean.clienteNuevo.telefono}"
+                                     required="true"
+                                     requiredMessage="El teléfono es obligatorio"
+                                     styleClass="input">
+                            <f:validateRegex pattern="^\+?\d{7,15}$" />
+                        </h:inputText>
+                        <p:message for="telefono" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;">
+                            Ingrese un número de teléfono válido (solo dígitos, opcional '+' al inicio)
+                        </p:message>
+                    </div>
+                </div>
 
-                    <!-- Correo -->
-                    <h:outputLabel value="Correo:" for="correo"/>
-                    <h:inputText id="correo"
-                                 value="#{clientesBean.clienteNuevo.correo}"
-                                 styleClass="form-control"
-                                 required="true"
-                                 requiredMessage="El correo es obligatorio">
-                        <f:validateRegex pattern="^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}$" />
-                    </h:inputText>
-                    <h:message for="correo" styleClass="text-danger">
-                        Ingrese un correo electrónico válido
-                    </h:message>
-
-                </h:panelGrid>
+                <!-- Correo -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="correo">Correo:</label>
+                        <h:inputText id="correo"
+                                     value="#{clientesBean.clienteNuevo.correo}"
+                                     required="true"
+                                     requiredMessage="El correo es obligatorio"
+                                     styleClass="input">
+                            <f:validateRegex pattern="^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}$" />
+                        </h:inputText>
+                        <p:message for="correo" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;">
+                            Ingrese un correo electrónico válido
+                        </p:message>
+                    </div>
+                </div>
 
                 <!-- Botones -->
-                <div class="mt-4 text-center">
+                <div class="botones">
                     <h:commandButton value="Guardar"
                                      action="#{clientesBean.guardarCliente}"
-                                     styleClass="btn btn-success" />
+                                     styleClass="btn-primario" />
 
                     <h:commandButton value="Volver"
                                      action="/views/Clientes/Index.xhtml?faces-redirect=true"
                                      immediate="true"
-                                     styleClass="btn btn-secondary ms-2" />
+                                     styleClass="btn-secundario" />
                 </div>
+
             </h:form>
         </div>
-    </div>
+    </section>
 </h:body>
 </html>

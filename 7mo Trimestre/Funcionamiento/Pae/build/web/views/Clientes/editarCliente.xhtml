@@ -1,69 +1,80 @@
-<!DOCTYPE html>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
     <title>Editar Cliente</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <h:outputStylesheet library="css" name="formularios_2.css" />
 </h:head>
 
-<h:body class="bg-light">
-    <!-- Barra de navegación -->
+<h:body>
     <ui:include src="/views/Navbar.xhtml" />
+    
 
-    <div class="container mt-5">
-        <div class="card shadow p-4">
-            <h2 class="text-center">Editar Cliente</h2>
-            <hr/>
-            
-            <h:form id="formEditarCliente">
-                <h:panelGrid columns="2" cellpadding="8" class="table table-borderless">
+    <section class="home">
+        <div class="card-form">
+            <h2>Editar Cliente</h2>
 
-                    <!-- Nombre -->
-                    <h:outputLabel value="Nombre:" for="nombre"/>
-                    <h:inputText id="nombre" 
-                                 value="#{clientesBean.clienteSeleccionado.nombre}" 
-                                 styleClass="form-control" 
-                                 required="true"
-                                 requiredMessage="El nombre es obligatorio" />
+            <h:form id="formEditarCliente" styleClass="formulario">
 
-                    <!-- NIT -->
-                    <h:outputLabel value="NIT:" for="nit"/>
-                    <h:inputText id="nit" 
-                                 value="#{clientesBean.clienteSeleccionado.nit}" 
-                                 styleClass="form-control" 
-                                 required="true"
-                                 requiredMessage="El NIT es obligatorio" />
+                <!-- Nombre -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="nombre">Nombre:</label>
+                        <p:inputText id="nombre" value="#{clientesBean.clienteSeleccionado.nombre}" required="true"
+                                     requiredMessage="Debe ingresar el nombre"
+                                     styleClass="input" />
+                        <p:message for="nombre" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
 
-                    <!-- Teléfono -->
-                    <h:outputLabel value="Teléfono:" for="telefono"/>
-                    <h:inputText id="telefono" 
-                                 value="#{clientesBean.clienteSeleccionado.telefono}" 
-                                 styleClass="form-control" />
+                <!-- NIT y Teléfono -->
+                <div class="fila dos-columnas">
+                    <div class="campo">
+                        <label for="nit">NIT:</label>
+                        <p:inputText id="nit" value="#{clientesBean.clienteSeleccionado.nit}" required="true"
+                                     requiredMessage="Debe ingresar el NIT"
+                                     styleClass="input" />
+                        <p:message for="nit" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
 
-                    <!-- Correo -->
-                    <h:outputLabel value="Correo:" for="correo"/>
-                    <h:inputText id="correo" 
-                                 value="#{clientesBean.clienteSeleccionado.correo}" 
-                                 styleClass="form-control" 
-                                 validatorMessage="Correo inválido" />
+                    <div class="campo">
+                        <label for="telefono">Teléfono:</label>
+                        <p:inputText id="telefono" value="#{clientesBean.clienteSeleccionado.telefono}" 
+                                     styleClass="input" />
+                        <p:message for="telefono" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
 
-                </h:panelGrid>
+                <!-- Correo -->
+                <div class="fila">
+                    <div class="campo full">
+                        <label for="correo">Correo:</label>
+                        <p:inputText id="correo" value="#{clientesBean.clienteSeleccionado.correo}" 
+                                     styleClass="input" validatorMessage="Correo inválido" />
+                        <p:message for="correo" style="color:#d9534f; font-size:12px; margin-top:4px; display:block;" />
+                    </div>
+                </div>
 
                 <!-- Botones -->
-                <div class="mt-4 text-center">
-                    <h:commandButton value="Actualizar" 
-                                     action="#{clientesBean.actualizarCliente}" 
-                                     styleClass="btn btn-success" />
-                    <h:commandButton value="Volver" 
-                                     action="/views/Clientes/Index.xhtml?faces-redirect=true"  
-                                     immediate="true" 
-                                     styleClass="btn btn-secondary ms-2" />
+                <div class="botones">
+                    <p:commandButton value="Actualizar" styleClass="btn-primario"
+                                     ajax="false"
+                                     actionListener="#{clientesBean.actualizarCliente()}" 
+                                     action="clientes" />
+                    <p:commandButton value="Cancelar" styleClass="btn-secundario"
+                 ajax="false" immediate="true"
+                 action="/views/Clientes/Index.xhtml?faces-redirect=true" />
+
                 </div>
+
             </h:form>
         </div>
-    </div>
+    </section>
 </h:body>
 </html>
