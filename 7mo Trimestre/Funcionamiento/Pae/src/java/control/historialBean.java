@@ -71,27 +71,42 @@ public class historialBean implements Serializable {
 
     // 🔹 Agregar entrada con cantidad y estado
     public void agregarEntrada(String estado, int cantidad, int id_ins, int id_detalle) {
-    h = new historial();
+    h = new historial();      // asignas el historial al atributo del bean
     h.setAccion("Entrada");
     h.setEstado(estado);
     h.setCantidad(cantidad);
     h.setFecha(new Date());
-    h.setId_ins(id_ins);         // asigna solo int
-    h.setId_detalle(id_detalle); // asigna solo int
-    agregar();
+    h.setId_ins(id_ins);
+    h.setId_detalle(id_detalle);
+
+    int stockActualInsumo = dao.obtenerStockActualInsumo(id_ins);
+    h.setStockActual(stockActualInsumo);
+
+    agregar();   // ✔ sin parámetros
 }
 
+
+
     // 🔹 Agregar salida con cantidad y estado
-    public void agregarSalida(String estado, int cantidad, int id_ins, int id_detalle) {
+  // 🔹 Agregar salida con cantidad y estado
+public void agregarSalida(String estado, int cantidad, int id_ins, int id_detalle) {
+
     h = new historial();
     h.setAccion("Salida");
     h.setEstado(estado);
     h.setCantidad(cantidad);
     h.setFecha(new Date());
-    h.setId_ins(id_ins);         // asigna solo int
-    h.setId_detalle(id_detalle); // asigna solo int
-    agregar();
+    h.setId_ins(id_ins);
+    h.setId_detalle(id_detalle);
+
+    // 🔥 Obtener el stock actual del insumo ANTES de registrar la salida
+    int stockActualInsumo = dao.obtenerStockActualInsumo(id_ins);
+    h.setStockActual(stockActualInsumo);
+
+    // Guardar en la BD
+    agregar();   // ✔ sin parámetros
 }
+
 
     // 🔹 Limpiar objeto
     public void limpiar() {

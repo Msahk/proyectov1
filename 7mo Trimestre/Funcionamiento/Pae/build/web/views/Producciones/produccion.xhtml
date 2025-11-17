@@ -8,7 +8,68 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
-    <title>Gestión de Producciones</title>  
+    <title>Gestión de Producciones</title> 
+    <style>
+        /* MODO OSCURO PARA PRIMEFACES DIALOG */
+body.dark .ui-dialog {
+    background-color: #1f1f1f !important;
+    color: #e0e0e0 !important;
+    border-radius: 8px !important;
+    border: 1px solid #444 !important;
+}
+
+body.dark .ui-dialog .ui-dialog-titlebar {
+    background-color: #2a2a2a !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid #444 !important;
+    font-weight: bold;
+}
+
+body.dark .ui-dialog .ui-dialog-title {
+    color: #ffffff !important;
+}
+
+body.dark .ui-dialog .ui-dialog-titlebar-close {
+    color: #ffffff !important;
+    filter: invert(1); /* Hace visible el ícono */
+}
+
+body.dark .ui-dialog .ui-dialog-content {
+    background-color: #1f1f1f !important;
+    color: #e0e0e0 !important;
+}
+
+/* Inputs dentro del dialog */
+body.dark .ui-dialog .ui-inputfield,
+body.dark .ui-dialog input,
+body.dark .ui-dialog select,
+body.dark .ui-dialog textarea {
+    background-color: #2a2a2a !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #555 !important;
+}
+
+/* Footer del dialog */
+body.dark .ui-dialog .ui-dialog-footer {
+    background-color: #1f1f1f !important;
+    border-top: 1px solid #444 !important;
+}
+
+/* Botones del dialog */
+body.dark .ui-dialog .btn,
+body.dark .ui-dialog .ui-button {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border: 1px solid #0d6efd !important;
+}
+
+body.dark .ui-dialog .btn:hover,
+body.dark .ui-dialog .ui-button:hover {
+    background-color: rgba(255,255,255,0.1) !important;
+}
+
+    </style>  
+    
 </h:head>
 
 <h:body>
@@ -84,10 +145,12 @@
                                                 <td>
                                                     <span class="cell-content">
                                                         <h:outputText 
-                                                            value="#{prod.estado}" 
-                                                            style="font-weight:bold; color:
-                                                                   #{prod.estado eq 'Pendiente' ? 'orange' :
-                                                                     prod.estado eq 'Aceptada' ? 'blue' : 'green'};" />
+    value="#{prod.estado}" 
+    style="font-weight:bold; color:
+           #{prod.estado eq 'Pendiente' ? 'orange' :
+             prod.estado eq 'Aceptada' ? 'blue' :
+             prod.estado eq 'Finalizada' ? 'green' :
+             prod.estado eq 'Esperando insumos' ? 'red' : 'black'};" />
                                                     </span>
                                                 </td>
 
@@ -96,24 +159,39 @@
                                                     <div style="display:flex; gap:6px; justify-content:center;">
                                                         
                                                         <!-- Aceptar -->
-                                                        <h:panelGroup rendered="#{prod.estado eq 'Pendiente'}">
-                                                            <h:commandLink title="Aceptar producción"
-                                                                           styleClass="btn btn-outline-primary">
-                                                                <i class="bi bi-check"></i>
-                                                                <f:ajax execute="@this" render="tablaProduccionWrapper msj"
-                                                                        listener="#{produccionBean.cambiarEstadoCiclo(prod)}" />
-                                                            </h:commandLink>
-                                                        </h:panelGroup>
+<h:panelGroup rendered="#{prod.estado eq 'Pendiente'}">
+    <h:commandLink title="Aceptar producción"
+                   styleClass="btn btn-outline-primary">
+        <i class="bi bi-check"></i>
+        <f:ajax execute="@this"
+        render=":formProduccion:tablaProduccionWrapper :formProduccion:msj"
+        listener="#{produccionBean.cambiarEstadoCiclo(prod)}"/>
+    </h:commandLink>
+</h:panelGroup>
 
-                                                        <!-- Finalizar -->
-                                                        <h:panelGroup rendered="#{prod.estado eq 'Aceptada'}">
-                                                            <h:commandLink title="Finalizar producción"
-                                                                           styleClass="btn btn-outline-success">
-                                                                <i class="bi bi-flag"></i>
-                                                                <f:ajax execute="@this" render="tablaProduccionWrapper msj"
-                                                                        listener="#{produccionBean.cambiarEstadoCiclo(prod)}" />
-                                                            </h:commandLink>
-                                                        </h:panelGroup>
+<!-- Finalizar -->
+<h:panelGroup rendered="#{prod.estado eq 'Aceptada'}">
+    <h:commandLink title="Finalizar producción"
+                   styleClass="btn btn-outline-success">
+        <i class="bi bi-flag"></i>
+        <f:ajax execute="@this"
+        render=":formProduccion:tablaProduccionWrapper :formProduccion:msj"
+        listener="#{produccionBean.cambiarEstadoCiclo(prod)}"/>
+
+    </h:commandLink>
+</h:panelGroup>
+
+<!-- Reintentar cuando está en Esperando insumos -->
+<h:panelGroup rendered="#{prod.estado eq 'Esperando insumos'}">
+    <h:commandLink title="Reintentar finalizar producción (pendiente de stock)"
+                   styleClass="btn btn-outline-warning">
+        <i class="bi bi-arrow-repeat"></i>
+        <f:ajax execute="@this"
+                render=":formProduccion:tablaProduccionWrapper :formProduccion:msj"
+                listener="#{produccionBean.cambiarEstadoCiclo(prod)}"/>
+    </h:commandLink>
+</h:panelGroup>
+
 
                                                         <!-- Fechas -->
                                                         <p:commandLink title="Ver trazabilidad de fechas"

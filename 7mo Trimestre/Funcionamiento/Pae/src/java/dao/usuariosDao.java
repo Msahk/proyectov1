@@ -392,6 +392,57 @@ public List<usuarios> listarUsuariosVenta() {
     return lista;
 }
 
+public usuarios buscarPorCorreo(String correo) {
+    usuarios u = null;
+
+    String sql = "SELECT * FROM usuarios WHERE correo = ? LIMIT 1";
+
+    try (Connection con = ConDB.conectar();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setString(1, correo);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            u = new usuarios();
+            u.setIdUsu(rs.getInt("idUsu"));
+            u.setDocumento(rs.getInt("documento"));
+            u.setNombres(rs.getString("nombres"));
+            u.setApellidos(rs.getString("apellidos"));
+            u.setTelefono(rs.getLong("telefono"));
+            u.setDireccion(rs.getString("direccion"));
+            u.setCorreo(rs.getString("correo"));
+            u.setRol(rs.getString("rol"));
+            u.setPassword(rs.getString("password"));
+            u.setEstado(rs.getString("estado"));
+        }
+
+    } catch (Exception e) {
+        System.out.println("Error buscarPorCorreo: " + e.getMessage());
+    }
+
+    return u;
+}
+
+
+public boolean actualizarPassword(usuarios u) {
+
+    String sql = "UPDATE usuarios SET password = ? WHERE idUsu = ?";
+
+    try (Connection con = ConDB.conectar();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setString(1, u.getPassword());
+        ps.setInt(2, u.getIdUsu());
+
+        return ps.executeUpdate() > 0;
+
+    } catch (Exception e) {
+        System.out.println("Error actualizarPassword: " + e.getMessage());
+        return false;
+    }
+}
 
 
 }

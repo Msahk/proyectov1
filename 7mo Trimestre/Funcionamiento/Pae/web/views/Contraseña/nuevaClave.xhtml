@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+    <title>Nueva contraseña</title>
+    <h:outputStylesheet library="css" name="index_1.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</h:head>
+
+<h:body class="body">
+
+    <h:form id="formNuevaClave">
+        <div class="card-login">
+            <h2>Nueva contraseña</h2>
+
+            <p:messages id="msg" />
+
+            <p:password value="#{recuperarBean.pass1}"
+                        placeholder="Nueva contraseña"
+                        styleClass="input-full"/>
+
+            <p:password value="#{recuperarBean.pass2}"
+                        placeholder="Repite la contraseña"
+                        styleClass="input-full"/>
+
+            <p:commandButton value="Guardar contraseña"
+                             action="#{recuperarBean.actualizarPassword}"
+                             process="@form"
+                             update="msg"
+                             oncomplete="mostrarAlertas()"
+                             styleClass="boton-full"/>
+        </div>
+    </h:form>
+
+    <script>
+        function mostrarAlertas() {
+            var mensajes = document.querySelectorAll('#msg li');
+
+            mensajes.forEach(function (m) {
+                Swal.fire({
+                    icon: 'info',
+                    title: m.innerText,
+                    confirmButtonText: 'OK'
+                });
+            });
+        }
+    </script>
+
+</h:body>
+</html>

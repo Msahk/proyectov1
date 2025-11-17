@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+    <title>Validar código</title>
+    <h:outputStylesheet library="css" name="index_1.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</h:head>
+
+<h:body class="body">
+
+    <h:form id="formCodigo">
+        <div class="card-login">
+            <h2>Validar código</h2>
+
+            <p:messages id="msg" />
+
+            <p:inputText value="#{recuperarBean.codigo}"
+                         placeholder="Código enviado al correo"
+                         maxlength="6"
+                         styleClass="input-full"/>
+
+            <p:commandButton value="Validar"
+                             action="#{recuperarBean.validarCodigo}"
+                             process="@form"
+                             update="msg"
+                             oncomplete="mostrarAlertas()"
+                             styleClass="boton-full"/>
+        </div>
+    </h:form>
+
+    <script>
+        function mostrarAlertas() {
+            var mensajes = document.querySelectorAll('#msg li');
+
+            mensajes.forEach(function (m) {
+                Swal.fire({
+                    icon: 'info',
+                    title: m.innerText,
+                    confirmButtonText: 'OK'
+                });
+            });
+        }
+    </script>
+
+</h:body>
+</html>

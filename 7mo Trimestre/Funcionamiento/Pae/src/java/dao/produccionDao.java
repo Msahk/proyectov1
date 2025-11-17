@@ -173,42 +173,43 @@ public boolean eliminar(int idProc) {
 }
 
 
-    // 🔹 CAMBIAR estado con trazabilidad automática
     public boolean cambiarEstado(int id, String nuevoEstado) {
-        String sql = "";
-        java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
+    String sql = "";
+    java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
 
-        switch (nuevoEstado) {
-            case "Aceptada":
-                sql = "UPDATE produccion SET estado=?, fecha_aceptacion=? WHERE id_proc=?";
-                break;
-            case "Finalizada":
-                sql = "UPDATE produccion SET estado=?, fecha_finalizacion=? WHERE id_proc=?";
-                break;
-            default:
-                sql = "UPDATE produccion SET estado=? WHERE id_proc=?";
-                break;
-        }
-
-        try (Connection con = ConDB.conectar();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, nuevoEstado);
-            if (!nuevoEstado.equalsIgnoreCase("Pendiente")) {
-                ps.setTimestamp(2, now);
-                ps.setInt(3, id);
-            } else {
-                ps.setInt(2, id);
-            }
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            System.out.println("❌ Error en cambiarEstado(): " + e.getMessage());
-        }
-
-        return false;
+    switch (nuevoEstado) {
+        case "Aceptada":
+            sql = "UPDATE produccion SET estado=?, fecha_aceptacion=? WHERE id_proc=?";
+            break;
+        case "Finalizada":
+            sql = "UPDATE produccion SET estado=?, fecha_finalizacion=? WHERE id_proc=?";
+            break;
+        default: // Pendiente, Esperando insumos u otros
+            sql = "UPDATE produccion SET estado=? WHERE id_proc=?";
+            break;
     }
+
+    try (Connection con = ConDB.conectar();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        if ("Aceptada".equals(nuevoEstado) || "Finalizada".equals(nuevoEstado)) {
+            ps.setString(1, nuevoEstado);
+            ps.setTimestamp(2, now);
+            ps.setInt(3, id);
+        } else {
+            ps.setString(1, nuevoEstado);
+            ps.setInt(2, id);
+        }
+
+        return ps.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        System.out.println("❌ Error en cambiarEstado(): " + e.getMessage());
+    }
+
+    return false;
+}
+
 
     // 🟢 Actualizar fecha de aceptación manualmente
     public boolean actualizarFechaAceptacion(int idProc, java.sql.Timestamp fecha) {

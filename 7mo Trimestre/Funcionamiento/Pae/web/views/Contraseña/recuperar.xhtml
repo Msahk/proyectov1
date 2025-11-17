@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+    <title>Recuperar contraseña</title>
+    <h:outputStylesheet library="css" name="index_1.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</h:head>
+
+<h:body class="body">
+
+    <h:form id="formRecuperar">
+        <div class="card-login">
+            <h2>Recuperar contraseña</h2>
+
+            <p:messages id="msg" />
+
+            <p:inputText value="#{recuperarBean.correo}"
+                         placeholder="Ingresa tu correo"
+                         styleClass="input-full"/>
+
+            <p:commandButton value="Enviar código"
+                             action="#{recuperarBean.enviarCodigo}"
+                             process="@form"
+                             update="msg"
+                             oncomplete="mostrarAlertas()"
+                             styleClass="boton-full"/>
+        </div>
+    </h:form>
+
+    <script>
+        function mostrarAlertas() {
+            var mensajes = document.querySelectorAll('#msg li');
+
+            mensajes.forEach(function (m) {
+                Swal.fire({
+                    icon: 'info',
+                    title: m.innerText,
+                    confirmButtonText: 'OK'
+                });
+            });
+        }
+    </script>
+
+</h:body>
+</html>

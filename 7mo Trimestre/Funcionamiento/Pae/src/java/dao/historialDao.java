@@ -115,6 +115,7 @@ public class historialDao {
 
    // Agregar historial con logs
 public boolean agregar(historial h) {
+
     try {
         // LOG: datos que se van a insertar
         System.out.println("=== Intentando agregar historial ===");
@@ -122,24 +123,14 @@ public boolean agregar(historial h) {
         System.out.println("Acción: " + h.getAccion());
         System.out.println("Estado: " + h.getEstado());
         System.out.println("Cantidad: " + h.getCantidad());
+        System.out.println("Stock_actual enviado: " + h.getStockActual());
         System.out.println("Novedad: " + h.getNovedad());
         System.out.println("id_ins: " + h.getId_ins());
         System.out.println("id_detalle: " + h.getId_detalle());
 
-        // Calcular stock actual
-        int stockActual = calcularStockActual(h.getId_ins());
-        System.out.println("Stock actual antes de insertar: " + stockActual);
-
-        if ("Entrada".equalsIgnoreCase(h.getAccion())) {
-            stockActual += h.getCantidad();
-        } else if ("Salida".equalsIgnoreCase(h.getAccion())) {
-            stockActual -= h.getCantidad();
-            if (stockActual < 0) stockActual = 0;
-        }
-        System.out.println("Stock calculado para insertar: " + stockActual);
-
-        String sql = "INSERT INTO historial (fecha, accion, estado, cantidad, stock_actual, novedad, id_ins, id_detalle) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO historial "
+                + "(fecha, accion, estado, cantidad, stock_actual, novedad, id_ins, id_detalle) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection con = ConDB.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -148,14 +139,15 @@ public boolean agregar(historial h) {
             ps.setString(2, h.getAccion());
             ps.setString(3, h.getEstado());
             ps.setInt(4, h.getCantidad());
-            ps.setInt(5, stockActual);
+            ps.setInt(5, h.getStockActual()); // ✔ YA VIENE LISTO DESDE EL BEAN
             ps.setString(6, h.getNovedad());
             ps.setInt(7, h.getId_ins());
 
+            // id_detalle puede venir null
             if (h.getId_detalle() != null) {
                 ps.setInt(8, h.getId_detalle());
             } else {
-                ps.setNull(8, java.sql.Types.INTEGER);
+                ps.setNull(8, Types.INTEGER);
             }
 
             int filas = ps.executeUpdate();
@@ -166,13 +158,16 @@ public boolean agregar(historial h) {
 
     } catch (SQLException e) {
         System.err.println("Error en historialDao.agregar(): " + e.getMessage());
-        e.printStackTrace(); // muestra la traza completa del error
+        e.printStackTrace();
+
     } catch (Exception ex) {
         System.err.println("Error inesperado: " + ex.getMessage());
         ex.printStackTrace();
     }
+
     return false;
 }
+
 
 
     // Actualizar historial
@@ -241,4 +236,27 @@ public boolean agregar(historial h) {
         }
         return stock;
     }
+    
+    public int obtenerStockActualInsumo(int id_ins) {
+    int stock = 0;
+    String sql = "SELECT stock_actual FROM insumos WHERE id_ins = ?";
+
+    try (Connection con = ConDB.conectar();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, id_ins);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                stock = rs.getInt("stock_actual");
+            }
+        }
+
+    } catch (SQLException e) {
+        System.err.println("Error en obtenerStockActualInsumo(): " + e.getMessage());
+    }
+
+    return stock;
+}
+
 }

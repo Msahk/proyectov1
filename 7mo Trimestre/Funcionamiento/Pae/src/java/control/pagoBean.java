@@ -231,6 +231,15 @@ private void generarProduccion() throws Exception {
     private void mostrarMensaje(FacesMessage.Severity tipo, String titulo, String detalle) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(tipo, titulo, detalle));
     }
+    
+    public void eliminarPagoAction(javax.faces.event.AjaxBehaviorEvent event) {
+    try {
+        eliminarPago(pagoSeleccionado);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
 
     // Getters y Setters
     public int getIdVenta() { return idVenta; }

@@ -120,59 +120,101 @@ public class produccionBean implements Serializable {
     }
 
     // 🟠 Cambiar estado de producción (Pendiente → Aceptada → Finalizada)
-    public void cambiarEstadoCiclo(produccion p) {
-        try {
-            String nuevoEstado = "";
-            Date fechaActual = new Date();
+    // 🟠 Cambiar estado de producción (Pendiente → Aceptada → Finalizada / Esperando insumos)
+public void cambiarEstadoCiclo(produccion p) {
+    try {
+        String nuevoEstado = "";
+        Date fechaActual = new Date();
 
-            switch (p.getEstado()) {
-                case "Pendiente":
-                    nuevoEstado = "Aceptada";
-                    dao.actualizarFechaAceptacion(p.getId_proc(), new Timestamp(fechaActual.getTime()));
-                    p.setFecha_aceptacion(fechaActual);
-                    break;
+        switch (p.getEstado()) {
+            case "Pendiente":
+                nuevoEstado = "Aceptada";
+                dao.actualizarFechaAceptacion(p.getId_proc(), new Timestamp(fechaActual.getTime()));
+                p.setFecha_aceptacion(fechaActual);
+                break;
 
-                case "Aceptada":
-                    if (!validarStockProduccion(p)) return;
+            case "Aceptada":
+                // 🔹 Validar stock antes de finalizar
+                if (!validarStockProduccion(p)) {
+                    // ❗ Si NO hay stock suficiente → poner en ESPERANDO INSUMOS
+                    String estadoInsuficiente = "Esperando insumos";
 
+                    if (dao.cambiarEstado(p.getId_proc(), estadoInsuficiente)) {
+                        p.setEstado(estadoInsuficiente);
+
+                        FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                "Stock insuficiente",
+                                "La producción ha pasado a estado: " + estadoInsuficiente));
+
+                        listar(); // refrescar tabla
+                    }
+
+                    return; // detener aquí
+                }
+
+                // 🔹 Si hay stock suficiente → finalizar normal
+                nuevoEstado = "Finalizada";
+                dao.actualizarFechaFinalizacion(p.getId_proc(), new Timestamp(fechaActual.getTime()));
+                p.setFecha_finalizacion(fechaActual);
+                descontarStockProduccion(p);
+                break;
+
+            case "Esperando insumos":
+                // 🔹 Reintentar finalizar si ahora hay stock suficiente
+                if (validarStockProduccion(p)) {
                     nuevoEstado = "Finalizada";
                     dao.actualizarFechaFinalizacion(p.getId_proc(), new Timestamp(fechaActual.getTime()));
                     p.setFecha_finalizacion(fechaActual);
                     descontarStockProduccion(p);
-                    break;
 
-                default:
                     FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Información",
-                                    "La producción ya está finalizada."));
-                    return;
-            }
-
-            if (dao.cambiarEstado(p.getId_proc(), nuevoEstado)) {
-                FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO,
-                                "Estado actualizado", "Nuevo estado: " + nuevoEstado));
-
-                // ✅ Si finaliza, marcar venta como completada
-                if (nuevoEstado.equals("Finalizada")) {
-                    venta_produccionDao vpDao = new venta_produccionDao();
-                    int idVenta = vpDao.obtenerIdVentaPorProduccion(p.getId_proc());
-                    if (idVenta > 0) {
-                        ventasDao vDao = new ventasDao();
-                        vDao.actualizarEstado(idVenta, "Completada");
-                    }
+                            "Producción finalizada",
+                            "Ahora hay stock suficiente y la producción se ha finalizado."));
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                            "Stock insuficiente",
+                            "Todavía no hay suficiente stock para finalizar la producción."));
+                    return; // mantener en "Esperando insumos"
                 }
+                break;
 
-                listar();
+            default:
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Información",
+                                "La producción ya está finalizada."));
+                return;
+        }
+
+        // 🔹 Actualizar estado en DB
+        if (dao.cambiarEstado(p.getId_proc(), nuevoEstado)) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "Estado actualizado", "Nuevo estado: " + nuevoEstado));
+
+            // ✅ Si finaliza, marcar venta como completada
+            if (nuevoEstado.equals("Finalizada")) {
+                venta_produccionDao vpDao = new venta_produccionDao();
+                int idVenta = vpDao.obtenerIdVentaPorProduccion(p.getId_proc());
+                if (idVenta > 0) {
+                    ventasDao vDao = new ventasDao();
+                    vDao.actualizarEstado(idVenta, "Completada");
+                }
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-                            "No se pudo cambiar el estado de la producción."));
+            listar();
         }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+                        "No se pudo cambiar el estado de la producción."));
     }
+}
+
 
     // 🧩 Validar stock antes de finalizar
     private boolean validarStockProduccion(produccion p) {
