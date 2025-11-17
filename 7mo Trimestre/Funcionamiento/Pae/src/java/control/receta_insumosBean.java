@@ -6,10 +6,12 @@ import dao.insumosDao;
 import modelo.receta_insumos;
 import modelo.recetas;
 import modelo.insumos;
+import modelo.produccion;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
@@ -23,6 +25,10 @@ public class receta_insumosBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    // 🔹 Inyección del Bean de Producción/Recetas
+    @ManagedProperty(value = "#{produccionrecetasBean}")
+    private produccion_recetasBean produccion_recetasBean;
+
     private final receta_insumosDao dao = new receta_insumosDao();
     private final recetasDao rDao = new recetasDao();
     private final insumosDao iDao = new insumosDao();
@@ -33,15 +39,44 @@ public class receta_insumosBean implements Serializable {
     private List<insumos> lstInsumos;
 
     private recetas receta; // Receta actual seleccionada
+    private int recetaSeleccionadaId; // ID de receta seleccionada desde producción
 
+    // 🔹 Init automático al cargar la página
     @PostConstruct
     public void init() {
-        // 🔹 Recuperar receta seleccionada desde la sesión
-        receta = (recetas) FacesContext.getCurrentInstance()
-                .getExternalContext().getSessionMap().get("recetaSeleccionada");
+        FacesContext fc = FacesContext.getCurrentInstance();
 
+        // 1️⃣ Recuperar producción seleccionada desde la sesión
+        produccion prod = (produccion) fc.getExternalContext()
+                .getSessionMap().get("produccionSeleccionada");
+
+        if (prod != null && produccion_recetasBean != null) {
+            // 2️⃣ Obtener receta asociada a la producción
+            int idReceta = produccion_recetasBean.obtenerIdRecetaPorProduccion(prod.getId_proc());
+
+            if (idReceta > 0) {
+                this.recetaSeleccionadaId = idReceta;
+                cargarInsumosProduccion(idReceta);
+            } else {
+                System.err.println("⚠️ La producción no tiene receta asociada.");
+            }
+
+            // 3️⃣ Limpiar producción de la sesión
+            fc.getExternalContext().getSessionMap().remove("produccionSeleccionada");
+        } else {
+            // Modo edición normal: cargar receta desde sesión
+            receta = (recetas) fc.getExternalContext().getSessionMap().get("recetaSeleccionada");
+            if (receta != null) {
+                this.recetaSeleccionadaId = receta.getId_rec();
+                cargarInsumosProduccion(receta.getId_rec());
+            }
+        }
+
+        // 4️⃣ Cargar listas generales
         cargarRecetas();
         cargarInsumos();
+
+        // 5️⃣ Listar insumos si ya hay receta
         listar();
     }
 
@@ -184,6 +219,53 @@ public void listar() {
         recetaInsumo.setUnidad("");
     }
 }
+   
+   
+   public void cargarInsumosDesdeProduccion(int idProduccion) {
+    // 1️⃣ Obtener la receta asociada a la producción
+    int idReceta = produccion_recetasBean.obtenerIdRecetaPorProduccion(idProduccion);
+    
+    if(idReceta <= 0) {
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "La producción no tiene receta asociada"));
+        return;
+    }
+
+    // 2️⃣ Guardar el ID de receta seleccionada
+    this.recetaSeleccionadaId = idReceta;
+
+    // 3️⃣ Cargar los insumos de esa receta
+    cargarInsumosProduccion(idReceta);
+}
+
+
+// 🔍 Cargar insumos de una receta para vista de Producción (solo lectura)
+public void cargarInsumosProduccion(int idReceta) {
+        receta = rDao.obtenerPorId(idReceta);
+        lstRecetaInsumos = dao.buscarPorReceta(idReceta);
+
+        for (receta_insumos ri : lstRecetaInsumos) {
+            ri.setReceta(rDao.obtenerPorId(ri.getId_rec()));
+            ri.setInsumo(iDao.obtenerPorId(ri.getId_ins()));
+        }
+
+        if (lstRecetaInsumos.isEmpty()) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Sin resultados",
+                            "Esta receta no tiene insumos asignados"));
+        }
+
+        // Actualizar tabla de insumos en la vista
+        PrimeFaces.current().ajax().update("formProduccionLectura:tablaRecetaInsumos");
+    }
+
+
+
+
+public void seleccionarReceta(int idReceta) {
+    this.recetaSeleccionadaId = idReceta;
+    cargarInsumosProduccion(idReceta);
+}
 
 
 
@@ -239,4 +321,13 @@ public void listar() {
     public void setReceta(recetas receta) {
         this.receta = receta;
     }
+    
+    public void setProduccion_recetasBean(produccion_recetasBean produccion_recetasBean) {
+        this.produccion_recetasBean = produccion_recetasBean;
+    }
+    
+    public produccion_recetasBean getProduccion_recetasBean() {
+    return produccion_recetasBean;
+}
+
 }

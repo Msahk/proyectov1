@@ -3,13 +3,42 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/CorreoClientesBean.java</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/DetalleInsumoBean.java</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/venta_produccionBean.java</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/pagoDao.java</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/pagoBean.java</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/insumosDao.java</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/venta_recetasDao.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/editarVentas.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Usuarios/correo.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Insumos/nuevoinsumo.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Clientes/nuevoCliente.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Clientes/correo.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/pago.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Clientes/editarCliente.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Usuarios/editarusu.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Insumos/editarinsumo.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/CorreoBean.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/clientesBean.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/index.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/ventasBean.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Insumos/detalle_insumo.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Producciones/produccion.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/loginBean.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Insumos/insumos.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/pagoBean.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Producciones/editarproduccion.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/produccionBean.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/historialBean.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/historialDao.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/modelo/historial.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Dashboard.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/RecuperarBean.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/usuariosDao.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/modelo/usuarios.java</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Login.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Navbar.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/index.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Contraseña/recuperar.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Contraseña/codigo.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Contraseña/nuevaClave.xhtml</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/resources/css/index.css</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/resources/css/index_1.css</file>
+            <file>file:/C:/Users/sebas/OneDrive/Documentos/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/produccionDao.java</file>
         </group>
     </open-files>
 </project-private>

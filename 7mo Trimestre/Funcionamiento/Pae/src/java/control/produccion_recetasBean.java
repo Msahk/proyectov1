@@ -42,7 +42,7 @@ public class produccion_recetasBean implements Serializable {
             cargarRecetasPorProduccion();
 
             // Limpiar la producción de la sesión para no dejar datos obsoletos
-            fc.getExternalContext().getSessionMap().remove("produccionSeleccionada");
+            //fc.getExternalContext().getSessionMap().remove("produccionSeleccionada");
         }
     }
 
@@ -62,6 +62,18 @@ public class produccion_recetasBean implements Serializable {
         }
         return "Desconocida";
     }
+    
+    public int obtenerIdRecetaPorProduccion(int idProduccion) {
+    if (lstProduccionRecetas != null) {
+        for (produccion_recetas pr : lstProduccionRecetas) {
+            if (pr.getId_produccion() == idProduccion) { // <--- aquí el getter correcto
+                return pr.getId_rec(); // Devuelve el id de la receta asociada
+            }
+        }
+    }
+    return -1; // Devuelve -1 si no encuentra ninguna receta
+}
+
 
     // 🧩 Getters
     public List<produccion_recetas> getLstProduccionRecetas() {
