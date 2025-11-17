@@ -3,55 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/nuevaVenta.xhtml</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Navbar.xhtml</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/gestionarrecetas.xhtml</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/index.xhtml</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Clientes/Index.xhtml</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/editarVentas.xhtml</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/usuariosDao.java</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/ventasBean.java</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/ventasDao.java</file>
             <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/CorreoClientesBean.java</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/web/views/Ventas/migrarVentas.xhtml</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/CorreoBean.java</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/modelo/detalle_insumo.java</file>
-            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/modelo/historial.java</file>
-=======
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Recetas/gestionarinsumos.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Producciones/produccionrecetas.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Producciones/editarproduccion.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Recetas/recetas.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Insumos/detalle_insumo.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Producciones/nuevaproduccion.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Producciones/produccion.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Insumos/insumos.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Ventas/editarVentas.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Recetas/editarreceta.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/resources/css/formularios_1.css</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/resources/css/import.css</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Ventas/gestionarrecetas.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Ventas/nuevaVenta.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Ventas/pago.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Ventas/index.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/assets/js/tabla.js</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Recetas/nuevareceta.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/resources/css/navbar.css</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/resources/css/formularios.css</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Usuarios/Index.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Ventas/migrarVentas.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/src/java/control/DetalleInsumoBean.java</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Insumos/editarinsumo.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/src/java/control/insumosDataSource.java</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/src/java/control/insumosBean.java</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Navbar.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Insumos/nuevoinsumo.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/views/Recetas/receta_insumos.xhtml</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/src/java/control/venta_recetasBean.java</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/src/java/control/ventasBean.java</file>
-            <file>file:/C:/Users/sebas/OneDrive/Documentos/Pae/web/resources/css/formularios_2.css</file>
->>>>>>> c30a9bde235d75faad634dd7fe2acf705bc3f90b
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/DetalleInsumoBean.java</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/venta_produccionBean.java</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/pagoDao.java</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/control/pagoBean.java</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/insumosDao.java</file>
+            <file>file:/C:/Users/esteb/OneDrive/Documents/GitHub/ProyectoPaea/proyectov1/7mo%20Trimestre/Funcionamiento/Pae/src/java/dao/venta_recetasDao.java</file>
         </group>
     </open-files>
 </project-private>
